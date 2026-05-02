@@ -1,0 +1,59 @@
+% Use fontspec with Unicode-rich fonts so subscripts (₁ ₂ ₐ ₑ ₛ),
+% arrows (→ ↔), triangles (▸), angle brackets (⟨ ⟩), and Greek
+% letters (Σ φ α β) render natively as the source Unicode codepoints
+% rather than being substituted to LaTeX math constructs. This
+% preserves Lean code-copy fidelity from the PDF text layer.
+%
+% The font files are bundled in ./fonts/ alongside this .tex file
+% so the build is hermetic — works on arXiv's auto-build server
+% and any TeX Live install with xelatex, regardless of which fonts
+% are pre-installed system-wide.
+\usepackage{fontspec}
+\setmainfont{DejaVuSerif.ttf}[
+  Path = ./fonts/,
+  BoldFont = DejaVuSerif-Bold.ttf,
+  ItalicFont = DejaVuSerif-Italic.ttf,
+  BoldItalicFont = DejaVuSerif-BoldItalic.ttf
+]
+\setmonofont{DejaVuSansMono.ttf}[
+  Path = ./fonts/,
+  BoldFont = DejaVuSansMono-Bold.ttf,
+  ItalicFont = DejaVuSansMono-Oblique.ttf,
+  BoldItalicFont = DejaVuSansMono-BoldOblique.ttf,
+  Scale = 0.82
+]
+\usepackage{unicode-math}
+\setmathfont{STIXTwoMath-Regular.otf}[Path = ./fonts/]
+
+% Code block fancyvrb settings (verbatim used by default without --listings)
+\usepackage{fancyvrb}
+\fvset{
+  fontsize=\small,
+  frame=single,
+  framesep=2mm,
+  rulecolor=\color{black!20},
+  commandchars=\\\{\}
+}
+
+% Hyperref polish (load hyperref first since pandoc defers it)
+\usepackage{hyperref}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue!40!black,
+  citecolor=blue!40!black,
+  urlcolor=blue!60!black
+}
+
+% URL break-point list: remove hyphen so \url{...github.com/Nakammura/
+% spinoza-ethica-lean} cannot wrap at internal hyphens (which would
+% cause readers' PDF copy-paste to drop the hyphen and yield an
+% invalid URL). Allow breaks at slashes only.
+% Delayed via AtBeginDocument because pandoc's standalone template
+% loads xurl after this header.tex include and would reset
+% \UrlBreaks.  Also disable url-package's hyphens-passes-as-break
+% behaviour, which pandoc enables by default.
+\AtBeginDocument{%
+  \def\UrlBreaks{\do\/\do\.\do\?}%
+  \def\UrlBigBreaks{\do\:}%
+  \def\UrlNoBreaks{\do\-}%
+}
