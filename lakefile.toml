@@ -1,0 +1,16 @@
+name = "ethica"
+version = "0.1.0"
+defaultTargets = ["Ethica"]
+
+# Mathlib will be enabled once we start using its sets / quotients /
+# classical-logic infrastructure (planned for the modal-form sibling
+# layer). For the base axiomatic layer, Lean core is sufficient.
+# Uncomment when needed:
+#
+# [[require]]
+# name = "mathlib"
+# git  = "https://github.com/leanprover-community/mathlib4.git"
+# rev  = "v4.13.0"
+
+[[lean_lib]]
+name = "Ethica"

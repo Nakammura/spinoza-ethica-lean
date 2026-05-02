@@ -1,0 +1,34 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite both the article and the software."
+type: software
+title: "Spinoza's Ethica in Lean 4"
+authors:
+  - family-names: Nakamura
+    given-names: Yuki
+    affiliation: "The Open University of Japan"
+    orcid: "https://orcid.org/0009-0001-7174-6737"
+date-released: 2026-05-03
+version: "1.0.0"
+license: MIT
+url: "https://github.com/Nakammura/spinoza-ethica-lean"
+repository-code: "https://github.com/Nakammura/spinoza-ethica-lean"
+identifiers:
+  - type: doi
+    value: "10.5281/zenodo.20111521"
+    description: "Concept DOI (resolves to the latest software release)."
+  - type: doi
+    value: "10.5281/zenodo.20111520"
+    description: "DOI for the v1.0.0 release."
+  - type: other
+    value: "arXiv:2605.02331"
+    description: "arXiv preprint of the accompanying paper."
+preferred-citation:
+  type: article
+  authors:
+    - family-names: Nakamura
+      given-names: Yuki
+      affiliation: "The Open University of Japan"
+      orcid: "https://orcid.org/0009-0001-7174-6737"
+  title: "Bennett's Conjecture in Lean 4: Counter-Models for the PSR-Reducibility of Spinoza's Propositions V and XIV"
+  year: 2026
+  status: "preprint"

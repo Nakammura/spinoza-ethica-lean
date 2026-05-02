@@ -1,0 +1,27 @@
+# Lean / Lake build artifacts
+/.lake
+build/
+*.olean
+*.ilean
+*.hash
+
+# Paper build directory is tracked (overrides build/ above)
+!papers/cluster_a_irreducibility/build/
+!papers/cluster_a_irreducibility/build/**
+
+# Copyrighted PDFs (verification material) and assorted non-source
+# artefacts kept locally but never committed.
+*.pdf
+!papers/cluster_a_irreducibility/build/cluster_a.pdf
+arxiv*
+*.log
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*~
+.DS_Store
+
+# Local-only verification marker
+.verified
