@@ -158,4 +158,5 @@ Nakamura, Y. [ORCID 0009-0001-7174-6737] (2026).
 Bennett's Conjecture in Lean 4: Counter-Models for the
 PSR-Reducibility of Spinoza's Propositions V and XIV.
 https://github.com/Nakammura/spinoza-ethica-lean
+https://arxiv.org/abs/2605.02331
 ```
