@@ -35,7 +35,7 @@ not state this explicitly.
 `ax1_exclusive : ∀ x, ¬ (inItself x ∧ inAnother x)` to the
 `Pars1Axioms` typeclass.
 
-**Status**: ✅ closed (commit `31115fd`). `Pars1Axioms.ax1_exclusive`
+**Status**: ✅ closed. `Pars1Axioms.ax1_exclusive`
 added; `prop_1_substanceDisjointFromModes` discharges via
 `ax1_exclusive x ⟨hself, hother⟩`. Catalogued as A1ₑ in
 `auxiliary_axioms.md`. The modal-layer derivation is still open as a
@@ -64,7 +64,7 @@ constitutive, not a further claim.
 "∃ a, Attribute a x ∧ Attribute a y", which makes the bridge
 analytic.
 
-**Status**: ✅ closed via path (b) (commit `f2b94f8`). `sameNature`
+**Status**: ✅ closed via path (b). `sameNature`
 removed from the `EthicaWorld` typeclass (no longer primitive) and
 redefined in `Definitions.lean` as `∃ a, Attribute a x ∧ Attribute
 a y`. Prop. II now closes analytically:
@@ -98,26 +98,24 @@ cause") + A5 ("nothing in common implies no intelligibility through
 one another").
 
 **Status**:
-  - ✅ initial closure (commit `2ab8039`). `CausalWorld` extending
+  - ✅ initial closure. `CausalWorld` extending
     `EthicaWorld` with `Cause` and `intelligibleThrough`; A4 and A5
     substantive in `CausalAxioms`. `prop_3_noCommonNoCause` proved
     by contraposition via A4 + A5; symmetric corollary provided.
-  - 🔧 soundness patch (commit `935e530`). Triggered by review of
-    2026-05-02 §3.1: with `sameNature` derived from `Attribute`
-    (GAP-2 path b, hence implicitly substance-only), the original
-    fully-general A5 forced `¬ Cause m₁ m₂` for every pair of
-    modes — wiping out the finite-mode causation Pars II–V depend
-    on. Fix:
+  - 🔧 soundness patch. With `sameNature`
+    derived from `Attribute` (GAP-2 path b, hence implicitly
+    substance-only), a fully-general A5 would force `¬ Cause m₁ m₂`
+    for every pair of modes — wiping out the finite-mode causation
+    Pars II–V depend on. Fix:
     - A5 substantive restricted to substances:
       `∀ x y, Substance x → Substance y → ¬ sameNature x y → ¬ intelligibleThrough x y`.
     - `prop_3_noCommonNoCause` and its symmetric corollary now
       require `Substance x` and `Substance y` hypotheses.
     - `CausalAxioms extends Pars1Axioms` so downstream theorems
       consume one typeclass.
-    - Removed the pre-review duplicate
-      `ax3_causeGroundsIntelligibility` (literally the same Lean
-      signature as A4); A3's distinct ontological-necessitation
-      content opened as GAP-7.
+    - No `ax3_causeGroundsIntelligibility` field (it would carry
+      literally the same Lean signature as A4); A3's distinct
+      ontological-necessitation content opened as GAP-7.
     - The general A5 awaits the modal layer's `hasAttribute`.
 
 Catalogued as A4ₛ + A5ₛ in `auxiliary_axioms.md`.
@@ -151,7 +149,7 @@ the iffs.
 - `ax_inItself_iff_perSeConceived`
 - `ax_inAnother_iff_conceivedThroughAnother`
 
-**Status**: ✅ closed (commit `02b435c`). Both axioms (A8, A9)
+**Status**: ✅ closed. Both axioms (A8, A9)
 catalogued in `auxiliary_axioms.md`. `prop_4_partition` proves
 `Substance x ∨ Mode x` by case-split on A1 and bridging via A8/A9.
 
@@ -240,10 +238,9 @@ given a determinate cause, the effect *necessarily* follows. A4 is
 cause. Don Garrett (*A Spinoza Reader* introduction) flags the
 independence of these two as a load-bearing interpretive choice.
 
-The pre-review draft of `CausalAxioms` carried two fields,
-`ax3_causeGroundsIntelligibility` and
-`ax4_effectIntelligibleThroughCause`, with **literally identical**
-Lean signatures. They have been collapsed into A4 only; A3's
+`CausalAxioms` carries only `ax4_effectIntelligibleThroughCause`:
+a separate `ax3_causeGroundsIntelligibility` field would have a
+**literally identical** Lean signature, so it is omitted. A3's
 distinct ontological content needs a *modal* relation
 (e.g. `∀ world, c.exists_in world → e.exists_in world`) that we
 have not yet introduced.
@@ -291,8 +288,8 @@ expressible thanks to A21) is deferred.
 
 ## GAP-8 — IsGod and Def. VI's two substantive clauses
 
-The pre-review of 2026-05-02 §A.1 conflated two **logically
-independent** content gaps in Def. VI. They are now split:
+Def. VI contains two **logically independent** content gaps, kept
+separate here:
 
 - **GAP-8a**: *cardinality* — God has *infinitely many* attributes.
 - **GAP-8b**: *universality over substance attributes* — God has
@@ -335,8 +332,8 @@ either (a) Mathlib's `Set.Infinite` over the attributes of `g`, or
   clause).
 - `Ethica/Pars1/Propositions.lean`, `prop_14_onlyGodIsSubstance`
   second explicit hypothesis (`god_has_every_substance_attribute`).
-  The pre-soundness-fix encoding used a `private axiom`; that has
-  been withdrawn — review of 2026-05-02 §A.
+  An earlier `private axiom` encoding of this clause has been
+  withdrawn in favour of the A15 field.
 
 **Issue**: For Prop. XIV's demonstration to go through, we need
 "every attribute of any substance `s` is also an attribute of God".
@@ -350,21 +347,21 @@ metaphysical commitment in its own right.
 **Resolution path**: Promote `skeleton_IsGod_has_attribute_of` to a
 substantive clause of `IsGod`, or as a Section III axiom A15.
 
-**Status**: ✅ closed via A15 promotion (post-review of 2026-05-02
-§F.α). `ax_IsGod_has_attribute_of` is now a `Pars1Axioms` field;
+**Status**: ✅ closed via A15 promotion.
+`ax_IsGod_has_attribute_of` is now a `Pars1Axioms` field;
 `prop_14_onlyGodIsSubstance` consumes it directly.
-`Models/TwoSubstance.lean` falsifies A15 and was migrated to
+`Models/TwoSubstance.lean` falsifies A15 and sits at
 "Bennett-line non-Spinoza bench" status (no `Pars1Axioms`
-instance) per closure-protocol step 6(d). The kernel-inconsistency
-risk that the pre-soundness-fix `private axiom` encoding produced
-is now structurally impossible.
+instance). With A15 as a typeclass field, a kernel inconsistency
+of the kind a `private axiom` encoding could introduce is
+structurally impossible.
 
 **Demote attempt (§δ-4)**: A15 demote is a **decomposition** into
 A25 (plenitude) + A26 (god uniqueness), both Section III strength.
 **Plenitude alone fails** to deliver A15. The kernel-level hard
 fact is **a counter-model**: see
 `Ethica/Pars1/Models/Counterexamples.lean` `A15CounterModel`, a
-3-element `EthicaWorld` instance with two attribute-distinct
+3-element `StatedAxioms` instance with two attribute-distinct
 gods, satisfying plenitude (each god is its own attribute-
 bearer) but falsifying A15 (g₁ does not have g₂'s extra
 attribute). This is the **second mechanical irreducibility
@@ -372,10 +369,10 @@ result** in the project (after A12). Bennett 1984 §17 / §18's
 reading that A15 is irreducible to PSR's existence-explanatory
 commitments is mechanically confirmed.
 
-The previous draft used a `: True := trivial` marker theorem
-(`A15_NOT_demotable_from_plenitude_alone`) — retired in the same
-review pass that retired the A12 marker (review of 2026-05-03
-§A.6).
+A `: True := trivial` marker theorem
+(`A15_NOT_demotable_from_plenitude_alone`) would prove nothing
+about provability; like the analogous A12 marker, no such marker is
+used — the counter-model carries the result instead.
 
 ---
 
@@ -407,9 +404,9 @@ incomplete via the doc comment.
 **Location**: `Ethica/Pars1/Propositions.lean`,
 `prop_14_onlyGodIsSubstance` first explicit hypothesis
 (`substance_has_attribute`); cross-referenced in
-`auxiliary_axioms.md` Section III (A14-candidate). The pre-soundness-
-fix encoding used a `private axiom`; that has been withdrawn —
-review of 2026-05-02 §A.
+`auxiliary_axioms.md` Section III (A14-candidate). An earlier
+`private axiom` encoding of this hypothesis has been withdrawn in
+favour of the A14 field.
 
 **Issue**: Spinoza's Defs. III + IV jointly *suggest* that every
 substance has at least one attribute (Def. IV defines an attribute
@@ -421,9 +418,9 @@ the intellect can so perceive). But the formal definitions
 do not entail `∃ a, intellectPerceivesAsEssence s a`. An
 "attribute-less substance" is a model of the current `Pars1Axioms`.
 
-This was surfaced by the `prop_14_onlyGodIsSubstance` skeleton work
-(review of 2026-05-02 §A.2): writing the demonstration in the
-form Spinoza uses revealed the implicit dependency.
+This was surfaced by the `prop_14_onlyGodIsSubstance` skeleton work:
+writing the demonstration in the form Spinoza uses revealed the
+implicit dependency.
 
 **Reading**: Della Rocca 2008 ch. 2 takes this for granted under
 PSR (any substance has *some* essence; intellect can perceive that
@@ -449,16 +446,15 @@ committing PSR as a modal-layer axiom and (ii) bridging
 their own commitment cost; this is a **relocation** of the
 commitment, not its elimination.
 
-The pre-review draft proposed "PSR + the substantive A6" as the
-modal route, but A6 (true idea agrees with object) does not in
-fact bear on substance-attribute existence — that mistake has
-been corrected here.
+"PSR + the substantive A6" is *not* a viable modal route: A6 (true
+idea agrees with object) does not in fact bear on substance-attribute
+existence.
 
-**Status**: ✅ closed via A14 promotion (post-review of 2026-05-02
-§F.α). `ax_substance_has_attribute` is now a `Pars1Axioms` field;
-`prop_14_onlyGodIsSubstance` consumes it directly. The intermediate
-explicit-hypothesis encoding (post-review §A) is removed. Bennett-
-honest scoping recorded in `auxiliary_axioms.md` §III.
+**Status**: ✅ closed via A14 promotion.
+`ax_substance_has_attribute` is now a `Pars1Axioms` field;
+`prop_14_onlyGodIsSubstance` consumes it directly. No intermediate
+explicit-hypothesis encoding remains. Bennett-honest scoping
+recorded in `auxiliary_axioms.md` §III.
 
 **Demote attempt (§δ-3)**: under A24 (`PSREssencePerception`
 class commitment, `auxiliary_axioms.md` modal-layer Section III),
@@ -540,18 +536,19 @@ hence delivers the all-shared case.
 
 **Full closure refused** (Bennett-line evidence): full A12
 content (substances sharing **any** attribute are identical) is
-**NOT** derivable from PSR + base axioms. The kernel-level hard
-fact is **a counter-model**: see
+**NOT** derivable from the stated register + PSR. The kernel-level
+hard fact is **a counter-model**: see
 `Ethica/Pars1/Models/Counterexamples.lean` `A12CounterModel`, a
-4-element `EthicaWorld` + `PSRSubstance` instance where two
-distinct substances share the attribute `a_shared`, falsifying
-A12. If A12 were derivable from PSR + base, the derivation
-would yield `False` on this model.
+4-element `StatedAxioms` + `PSRSubstance` instance (all four
+elements substances) where two distinct substances share the
+attribute `a_shared`, falsifying A12. If A12 were derivable from
+the stated register + PSR, the derivation would yield `False` on
+this model.
 
-The previous draft used a `: True := trivial` marker theorem
-(`A12_full_NOT_demotable_from_PSR_alone`) — a Lean-as-rhetoric
-trick that has been retired (review of 2026-05-03 §A.2). The
-counter-model replaces it with kernel-level evidence.
+A `: True := trivial` marker theorem
+(`A12_full_NOT_demotable_from_PSR_alone`) would be a Lean-as-rhetoric
+trick proving nothing about provability; no such marker is used. The
+counter-model carries the result with kernel-level evidence instead.
 
 This is **the first mechanical evidence in the project for
 Bennett's reading** that Spinoza's Prop. V exceeds what is
@@ -645,13 +642,13 @@ taxonomy.
 into A25 (plenitude) + A26 (god uniqueness), neither strictly
 weaker than A15. **Plenitude alone fails**: the counter-model
 `A15CounterModel` in `Ethica/Pars1/Models/Counterexamples.lean`
-exhibits a 3-element `EthicaWorld` instance where plenitude
+exhibits a 3-element `StatedAxioms` instance where plenitude
 holds but A15 fails. This is the **second mechanical
 irreducibility result** in the project (after A12), confirming
 Bennett 1984 §17 / §18's reading.
 
-**A26 strictly weaker than Prop. XIV** (review of 2026-05-03
-§A.5): A26 asserts only that any two gods are identical, not
+**A26 strictly weaker than Prop. XIV**: A26 asserts only that any
+two gods are identical, not
 that every substance is a god. Prop. XIV requires both A26 and
 A15's universality reach. Hence the A15 demote replaces one
 universality with a different one, not a reduction.
@@ -673,11 +670,10 @@ Each gap closure must:
 No silent removals. No `set_option pp.all false` to hide breakage.
 **No `axiom` declarations of any kind** (public or `private`) for
 forward-reference content — use explicit theorem hypotheses or
-typeclass fields. Review of 2026-05-02 §A: the `private axiom`
-pattern was withdrawn after it produced kernel-level inconsistency
-in conjunction with counter-witness models. Public `axiom` is
-strictly worse (globally trusted *and* publicly named); the rule
-covers both.
+typeclass fields. The `private axiom` pattern is avoided because it
+produces kernel-level inconsistency in conjunction with
+counter-witness models. Public `axiom` is strictly worse (globally
+trusted *and* publicly named); the rule covers both.
 
 ### 5. Hypothesis-premise discipline
 
@@ -686,8 +682,8 @@ whose content is **not yet committed** in `Pars1Axioms` /
 `CausalAxioms`, the missing premise is encoded as an **explicit
 hypothesis** of `prop_N`, not as a `private axiom`.
 
-Rationale (review of 2026-05-02 §A — kernel-level inconsistency
-averted): Lean 4's `private` modifier restricts *name resolution*,
+Rationale (kernel-level inconsistency averted): Lean 4's `private`
+modifier restricts *name resolution*,
 but a `private axiom` is still a polymorphic global axiom that
 the kernel trusts for **every** `Thing` instance simultaneously,
 *including* counter-witness models (e.g. `TwoSubst`). Combining a
@@ -706,10 +702,9 @@ or wait until the commitment is promoted to a typeclass field.
 A plain `axiom` is even worse than `private axiom` — both are
 kernel-trusted polymorphic, but `private axiom` is at least
 *file-scope-restricted in name*; a plain `axiom` is both
-globally trusted *and* publicly named. The earlier codification
-(review of 2026-05-02 §A) singled out `private axiom` because
-that was the concrete misuse the soundness incident exhibited;
-the underlying rule is broader. Project-wide:
+globally trusted *and* publicly named. The rule singles out
+`private axiom` because that is the concrete misuse a soundness
+incident can exhibit; the underlying rule is broader. Project-wide:
 `grep -rE "^axiom|^private axiom" Ethica/` should return empty.
 
 Counter-witness models remain valuable: a model that *falsifies* an

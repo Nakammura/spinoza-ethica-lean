@@ -4,7 +4,7 @@
 
 Recall §3.3: A12 (`ax_substanceIdByAttribute`) regiments
 Proposition V's content as `∀ s₁ s₂ a : Thing, Attribute a s₁
-→ Attribute a s₂ → s₁ = s₂` — a single shared attribute suffices
+→ Attribute a s₂ → s₁ = s₂`: a single shared attribute suffices
 to force identity. The demote experiment asks whether A12 can
 be derived from the base axioms plus a Della-Rocca-flavoured PSR
 commitment.
@@ -37,10 +37,13 @@ A22 is logically weaker than the *conjunction* A12 + A14 in our
 framework: A12 together with A14 (substance has at least one
 attribute) entails A22, while A22 does not entail A12, as the
 counter-model in §5.4 witnesses. (A12 alone does not entail A22:
-in a model with no attributes, A12 holds vacuously while A22
-holds vacuously as well, so the entailment is uninformative
-without A14's existence guarantee.) The asymmetry — A12 + A14 →
-A22 holds, A22 → A12 fails — is what makes A22 a meaningful
+in a model with two distinct attribute-less substances, A12 holds
+vacuously — no shared attribute forces any identity — while A22
+*fails*, since the two substances then have no discriminating
+attribute. A14 is what makes the entailment go through: it supplies
+an attribute of one substance which, by A12, the other must lack.)
+The asymmetry (A12 + A14 →
+A22 holds, A22 → A12 fails) is what makes A22 a meaningful
 demote candidate. If A12 followed from
 A22 + base, then any model satisfying A22 + base would satisfy
 A12; that this is not the case will be the substance of §5.4.
@@ -82,8 +85,8 @@ substantial fragment of Proposition V's content: the
 all-attributes case. The result mechanically tracks Bennett's
 own §17 prediction that Spinoza's argument "cannot yield more
 than the conclusion that two substances could not have all
-their attributes in common" (Bennett 1984, p. 69) — Bennett
-identified the all-attributes ceiling in prose; we recover it
+their attributes in common" (Bennett 1984, p. 69): Bennett
+identified the all-attributes ceiling in prose, and we recover it
 at kernel level. The full content of Proposition V, however,
 requires more.
 
@@ -103,12 +106,15 @@ inductive T where
   | a_only_s1 : T
 ```
 
-`s₁` and `s₂` are intended as substances; `a_shared` and
-`a_only_s1` as attributes. The `EthicaWorld T` instance assigns
-`isSubstance` to `s₁` and `s₂`, with all the usual base
-predicates (`inItself`, `perSeConceived`, `involvesExistence`,
-…) restricted to the substances. The non-trivial assignment is
-`intellectPerceivesAsEssence`:
+All four elements are substances. This is forced by the stated
+register: A10 (every attribute is per se conceived, Spinoza Ip10)
+together with A8 (in-itself ↔ per-se-conceived) require any
+attribute-thing to be in itself and per se conceived, hence a
+substance by Definition III. The `EthicaWorld T` instance accordingly
+sets `inItself` and `perSeConceived` true everywhere (and the
+mode-side predicates `inAnother`, `conceivedThroughAnother` false),
+so `a_shared` and `a_only_s1` are substances that serve as attributes
+of others. The non-trivial assignment is `intellectPerceivesAsEssence`:
 
 ```lean
 def perceivesAsEssence : T → T → Prop
@@ -117,22 +123,29 @@ def perceivesAsEssence : T → T → Prop
   | T.s₁, T.a_only_s1 => True
   | T.s₂, T.s₂ => True
   | T.s₂, T.a_shared => True
+  | T.a_shared, T.a_shared => True
+  | T.a_only_s1, T.a_only_s1 => True
   | _, _ => False
 ```
 
-Both substances perceive `a_shared` as their essence, but only
-`s₁` perceives `a_only_s1`. This makes both `Attribute a_shared
-s₁` and `Attribute a_shared s₂` hold (via Definition IV), giving
-us a single shared attribute between two distinct substances.
+Both `s₁` and `s₂` perceive `a_shared` as their essence, but only
+`s₁` perceives `a_only_s1`; each attribute-substance perceives
+itself. The shared row makes both `Attribute a_shared s₁` and
+`Attribute a_shared s₂` hold (via Definition IV), giving a single
+shared attribute between two distinct substances.
 
-The model satisfies `PSRSubstance T`: distinct substances differ
-in some attribute. The discriminator is `a_only_s1`, which `s₁`
-has but `s₂` does not. The full instance proof handles all 16
-case-pairs (4 elements × 4 elements) with a routine
-`cases s₁ <;> cases s₂` tactic block; non-substance cases are
-discharged by the substance hypotheses; the substance pairs
-either reduce to `(hne rfl).elim` (when the substances are
-identical) or produce the discriminator (when distinct).
+The model satisfies the full stated register `StatedAxioms T` —
+A1–A7 with the Section I bridges — every field discharging trivially
+because the ontological and conceptual predicates are constant and
+A10 holds (every element is per se conceived). It also satisfies
+`PSRSubstance T`: distinct substances differ in some attribute. Since
+every element is a substance, the instance proof discharges all 16
+case-pairs (4 × 4) with a `cases x <;> cases y` block; the four
+identical pairs reduce to `(hne rfl).elim`, and each of the twelve
+distinct pairs supplies a discriminating attribute (for `s₁` versus
+`s₂` the discriminator is `a_only_s1`, which `s₁` has and `s₂` lacks;
+the self-attributes `a_shared`, `a_only_s1` discriminate the
+attribute-substance pairs).
 
 The falsification of A12 on this model is one theorem:
 
@@ -154,18 +167,18 @@ since the constructors are distinct).
 
 The model and the falsification together establish the
 non-derivation. Suppose, for contradiction, that A12 were
-derivable from `[EthicaWorld T] + [PSRSubstance T]`. Specialise
+derivable from `[StatedAxioms T] + [PSRSubstance T]`. Specialise
 the derivation to our concrete `T` and the available instances.
 The result would be a Lean theorem of type
 `∀ s₁ s₂ a : T, Attribute a s₁ → Attribute a s₂ → s₁ = s₂`.
 (The `Substance` hypotheses one might expect are absorbed by
 `Attribute`, since `Attribute a s` carries `Substance s`
-constitutively — Definition IV.) Apply it to the witnesses
+constitutively, by Definition IV.) Apply it to the witnesses
 provided by `A12_falsified`: we obtain `T.s₁ = T.s₂`. But
 `A12_falsified`'s last clause provides `T.s₁ ≠ T.s₂`. So we
 derive `False` from the assumed derivability of A12. Lean's
 kernel does not admit `False`; therefore no derivation of A12
-from `[EthicaWorld T] + [PSRSubstance T]` exists.
+from `[StatedAxioms T] + [PSRSubstance T]` exists.
 
 ## §5.5 Discussion
 
@@ -184,53 +197,51 @@ recovery; an uncharitable one would not. Our formalisation
 makes the partial recovery explicit.
 
 *The non-derivation is mechanical.* Bennett's expression of
-doubt about Proposition V — that no valid argument from
-Spinoza's stated resources is available — receives its first
+doubt about Proposition V, that no valid argument from
+Spinoza's stated resources is available, receives its first
 machine-checked counter-model against the specific Della Rocca
 PSR-substance reconstruction (the non-derivability claim itself
 a meta-logical consequence of kernel consistency, §4.3). The
-result is bounded in two ways. The strict claim is irreducibility
-of A12 against `[EthicaWorld T] + [PSRSubstance T]`; the
-relationship to the broader Section I + II + A1–A7 register and
-the F2 fidelity caveat that bears on this scope are recorded in
-§8.1. The result also does not apply to alternative PSR
-commitments (Della Rocca's "thoroughgoing PSR" remains
-unrefuted, and indeed unspecified in Della Rocca 2008's prose),
-nor to alternative reconstructions (Garrett's strong-Definition-
-III route is a different demote candidate, not yet attempted).
+strict claim is irreducibility of A12 against `[StatedAxioms T] +
+[PSRSubstance T]` — the full stated register (A1–A7 with the
+Section I bridges) plus PSR, as §8.1 records. The result does not
+apply to alternative PSR commitments (Della Rocca's "thoroughgoing
+PSR" remains unrefuted, and indeed unspecified in Della Rocca
+2008's prose), nor to alternative reconstructions (Garrett's
+strong-Definition-III route is a different demote candidate, not
+yet attempted).
 
 *The Spinoza-fidelity caveats apply.* The four-element
-counter-model collapses Spinoza's three-category ontology
-(substance, attribute, mode) into a two-category split,
-treating attribute-things `a_shared` and `a_only_s1` as modes
-rather than as essence-aspects of substance. It also assigns
-`expressesEternalEssence` uniformly true. Neither caveat
-affects the meta-logical claim: the falsification of A12
-depends only on the `intellectPerceivesAsEssence` graph, which
-the caveats leave untouched. They do, however, bear on the
-philosophical interpretation: a Spinoza purist would object
-that attribute-things are not "modes proper" and that
-`expressesEternalEssence` is over-applied. We discuss the
-philosophical bearing in §8 and treat the caveats as
-opportunities for refinement in future work rather than as
-defects in the present claim.
+counter-model treats every element as a substance (with `a_shared`
+and `a_only_s1` as substance-attributes), so it contains no modes,
+and it assigns `expressesEternalEssence` uniformly true. Neither
+caveat affects the meta-logical claim: the falsification of A12
+depends only on the `intellectPerceivesAsEssence` graph, which the
+caveats leave untouched. They do, however, bear on the philosophical
+interpretation: a Spinoza purist would object that the model has no
+genuine modes and that `expressesEternalEssence` is over-applied.
+(An earlier construction instead treated the attribute-things as
+modes, which left the stated-axiom register unsatisfiable; §8.3
+records the retirement of that choice.) We discuss the philosophical
+bearing in §8 and treat the caveats as opportunities for refinement
+in future work rather than as defects in the present claim.
 
 *The result is a kernel-level test of the Negative-based reply
 specifically.* As §2.3 noted in connection with Garrett 2018's
 Postscript, A22 regiments the *Negative* aspect of the
-substance–mode asymmetry — substance is not in and not
-conceived through its modes — by asserting that distinct
+substance–mode asymmetry (substance is not in and not
+conceived through its modes) by asserting that distinct
 substances differ in some attribute, an existence-claim about
 discriminator attributes that the Negative aspect makes
 available. The partial-reduction theorem is therefore a
 kernel-level test of the Negative-based PSR reply to the
 Hooker-Bennett and Leibniz-Bennett objections. Garrett 2018's
-Postscript argues that Negative-based replies "ultimately
-require appeal to" their Positive-based counterparts (Garrett
-2018, p. 93); whether a Positive-based PSR (substance is *in*
-and *conceived through* its attributes more strictly than its
-modes) admits a formal regimentation reaching A12's full
-content is open future work.
+Postscript argues that the full defence and explanation of the
+negative-based reply "effectively requires appeal to" its
+positive-based counterpart (Garrett 2018, p. 93); whether a
+Positive-based PSR (substance is *in* and *conceived through* its
+attributes more strictly than its modes) admits a formal
+regimentation reaching A12's full content is open future work.
 
 The combined picture: PSR-substance + base axioms reach the
 all-shared-attribute fragment of Proposition V's content; the

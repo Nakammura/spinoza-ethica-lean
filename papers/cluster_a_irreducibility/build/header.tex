@@ -44,10 +44,9 @@
   urlcolor=blue!60!black
 }
 
-% URL break-point list: remove hyphen so \url{...github.com/Nakammura/
-% spinoza-ethica-lean} cannot wrap at internal hyphens (which would
-% cause readers' PDF copy-paste to drop the hyphen and yield an
-% invalid URL). Allow breaks at slashes only.
+% URL break-point list: stop a long \url{...} from wrapping at
+% internal hyphens (which would cause readers' PDF copy-paste to drop
+% the hyphen and yield an invalid URL). Allow breaks at slashes only.
 % Delayed via AtBeginDocument because pandoc's standalone template
 % loads xurl after this header.tex include and would reset
 % \UrlBreaks.  Also disable url-package's hyphens-passes-as-break

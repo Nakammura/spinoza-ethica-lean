@@ -60,9 +60,8 @@ open EthicaWorld
   Spinoza-textual one. -/
 
 /-- Prop. II (Della-Rocca form): if two things share no attribute,
-    they share no nature. The substance-side `_hx`/`_hy` hypotheses
-    were dropped after the review of 2026-05-02 §1.3, since `Attribute
-    a _` already carries `Substance _`. -/
+    they share no nature. No substance-side hypotheses are needed,
+    since `Attribute a _` already carries `Substance _`. -/
 theorem prop_2_distinctSubstancesShareNothing
     (x y : Thing)
     (hdiff : ∀ a, ¬ (Attribute a x ∧ Attribute a y))
@@ -149,7 +148,7 @@ theorem prop_4_partition (x : Thing) : Substance x ∨ Mode x := by
     not given internal structure here; mode-individuation by
     affection awaits Pars II's body / mode machinery.
 
-    **Note on textual scope** (review of 2026-05-02 §A.1):
+    **Note on textual scope**:
     Spinoza's Prop. IV *demonstratio* addresses only same-category
     distinctions — `(substance, substance)` and `(mode, mode)` —
     treating mixed-category distinction as trivial (different
@@ -313,17 +312,15 @@ theorem prop_8_substanceIsNotFinite
   attribute `a`. But God also has `a`. Hence by Prop. V (A12),
   `s = God`.
 
-  After the post-review-2026-05-02 §A soundness fix, A14 and A15
-  were committed at the axiom layer (`Pars1Axioms` Section III).
-  `prop_14` collapses back to its short form here, with the two
+  A14 and A15 are committed at the axiom layer (`Pars1Axioms`
+  Section III), so `prop_14` is a short-form theorem, with the two
   Section III axioms doing the load-bearing work transparently.
 
-  Historical note: an earlier draft encoded A14 / A15 as `private
-  axiom` skeleton premises, which produced kernel-level
-  inconsistency in conjunction with `Models/TwoSubstance.lean`'s
-  counter-witness. The intermediate fix took both as explicit
-  theorem hypotheses; this final form moves them to `Pars1Axioms`
-  fields once their Section III status was settled. -/
+  Note: encoding A14 / A15 as `private axiom` skeleton premises
+  would produce kernel-level inconsistency in conjunction with
+  `Models/TwoSubstance.lean`'s counter-witness; committing them as
+  `Pars1Axioms` fields avoids this while keeping the Section III
+  status explicit. -/
 
 theorem prop_14_onlyGodIsSubstance
     (g : Thing) (hgod : IsGod g)
@@ -339,11 +336,9 @@ end needs_axioms
 /-! ### Section 3 — propositions that need the causal layer.
 
   Prop. VI uses Prop. III's contrapositive (`cause_implies_sameNature`,
-  in `Causation.lean`) plus A12. Prop. XIV used to live here when its
-  proof was a `sorry` with prose; after the review of 2026-05-02 §A.1
-  / §B.1 it was moved to Section 2 because its (skeletal) proof
-  consumes only `Pars1Axioms` + private premise axioms — no causal
-  machinery. -/
+  in `Causation.lean`) plus A12. Prop. XIV lives in Section 2 rather
+  than here because its (skeletal) proof consumes only `Pars1Axioms`
+  + private premise axioms — no causal machinery. -/
 
 section needs_causal_axioms
 variable {Thing : Type u} [CausalWorld Thing] [CausalAxioms Thing]

@@ -24,10 +24,11 @@
 
   We adopt (a) as the *base layer*: it is the most legible to readers
   trained in modern analytic philosophy and is what Curley, Garrett,
-  and Della Rocca implicitly assume in their commentaries. Modal and
-  categorical reformulations are *planned* as sibling files
-  (`ModalForm.lean`, `CategoryForm.lean`); neither has been
-  implemented yet — see `docs/coverage.md` for current status.
+  and Della Rocca implicitly assume in their commentaries. The modal
+  reformulation is implemented as the sibling file `ModalForm.lean`
+  (the demote experiments of the irreducibility paper run on it); the
+  categorical reformulation (`CategoryForm.lean`) is planned but not
+  yet implemented — see `docs/coverage.md` for current status.
 -/
 
 namespace Ethica.Pars1
@@ -123,9 +124,8 @@ open EthicaWorld
     as "id est" (Curley 1985 p. 408): the second clause re-expresses
     the first. We define `causaSui` via the first clause only and
     recover the second via `Pars1Axioms.ax_causaSui_iff` (A11) when
-    needed. The pre-review draft used `∧` over both clauses, mixing
-    definitional conjunction with material biconditional; this is
-    the corrected form. -/
+    needed. Defining it via the first clause alone avoids mixing
+    definitional conjunction with material biconditional. -/
 def causaSui (x : Thing) : Prop :=
   involvesExistence x
 
@@ -223,8 +223,7 @@ def Mode (x : Thing) : Prop :=
     *at least one* attribute, and every attribute it has expresses
     eternal and infinite essence.
 
-    The `∃ a, Attribute a g` clause was added after the review of
-    2026-05-02 §2.5 — the prior draft only had a `∀`, which was
+    The `∃ a, Attribute a g` clause is required: a bare `∀` would be
     vacuously satisfiable by an attribute-free entity. This still
     falls short of Spinoza's "constantem *infinitis* attributis":
     encoding the infinite-cardinality claim requires a counting
@@ -263,8 +262,8 @@ def Constrained (x : Thing) : Prop := constrained x
 
 /-- A thing is *eternal* iff its existence follows necessarily from
     its definition alone. We treat `eternal` as primitive at this
-    layer; a fuller modal reconstruction is planned for the future
-    `ModalForm.lean` (not yet implemented). -/
+    layer; a fuller modal reconstruction is developed in the sibling
+    `ModalForm.lean`. -/
 def Eternal (x : Thing) : Prop := eternal x
 
 end Ethica.Pars1

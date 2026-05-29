@@ -34,8 +34,8 @@ ax_god_unique :
 
 A25 (plenitude) and A26 (god uniqueness). Each is a Section III
 commitment in our register. A26 in particular is essentially
-Proposition XIV's content stated as axiom — a relocation rather
-than a reduction of substantive commitment.
+Proposition XIV's content stated as axiom, a relocation rather than
+a reduction of substantive commitment.
 
 A25 alone is *strictly weaker* than A15: a model with two
 distinct gods, each with its own attributes, can satisfy
@@ -92,9 +92,11 @@ inductive T where
   | attr_g₂ : T
 ```
 
-`g₁` and `g₂` are intended as substances, with `attr_g₂` an
-additional attribute. The intellect-perception graph has each
-substance perceiving itself, plus `g₂` perceiving `attr_g₂`:
+All three elements are substances (forced by A10 + A8, as in §5.4);
+`g₁` and `g₂` are the two gods, while `attr_g₂` is a
+substance-attribute of `g₂` that is not absolutely infinite, hence
+not itself a god. The intellect-perception graph has `g₁` perceiving
+itself, and `g₂` perceiving itself and `attr_g₂`:
 
 ```lean
 def perceivesAsEssence : T → T → Prop
@@ -104,24 +106,19 @@ def perceivesAsEssence : T → T → Prop
   | _, _ => False
 ```
 
-Both `g₁` and `g₂` satisfy `IsGod`. The fourth conjunct of
-`IsGod` (every attribute expresses eternal essence) is
-discharged via the uniform `expressesEternalEssence := True`
-caveat (§8.3 F1); the existence-of-attribute conjunct is
-satisfied by each god being its own attribute-bearer in the
-perception graph — a self-reference structure that is
-Spinoza-unfaithful (Spinoza's attributes are essence-aspects
-of substance, not the substance itself, per §8.3 F2) but
-harmless to the meta-logical claim, since the falsification of
-A15 depends only on the asymmetric `attr_g₂` row of the
-perception graph. Plenitude holds: every realised attribute
-(`g₁`, `g₂`, or `attr_g₂`) belongs to some god (`g₁`, `g₂`, or
-`g₂` respectively). The first two witnesses use the
-self-reference structure noted above — a Spinoza-faithful
-model would discharge plenitude through attribute-things
-distinct from the gods themselves — but the non-derivation
-depends only on the asymmetric `attr_g₂` row, not on these
-witnesses.
+The model satisfies the stated register `StatedAxioms T` (A1–A7
+with the Section I bridges, every field trivial as in §5.4). Both
+`g₁` and `g₂` satisfy `IsGod`: each is absolutely infinite, each has
+an attribute (itself), and the fourth conjunct (every attribute
+expresses eternal essence) is discharged via the uniform
+`expressesEternalEssence := True` caveat (§8.3 F1). Each god being
+its own attribute-bearer is a self-reference that is
+Spinoza-unfaithful (§8.3 F3) but harmless to the meta-logical claim,
+since the falsification of A15 depends only on the asymmetric
+`attr_g₂` row. Plenitude holds: every realised attribute (`g₁`, `g₂`,
+or `attr_g₂`) belongs to some god (`g₁`, `g₂`, or `g₂`
+respectively). The non-derivation depends only on the asymmetric
+`attr_g₂` row, not on the self-reference witnesses.
 
 A15 fails. Take `g := g₁`, `s := g₂`, `a := attr_g₂`. Then
 `IsGod g₁` holds, `Substance g₂` holds, `Attribute attr_g₂ g₂`
@@ -129,9 +126,9 @@ holds, but `Attribute attr_g₂ g₁` is false (the perception graph
 sends `g₁ × attr_g₂` to false).
 
 The non-derivation argument runs as in §5.4: an assumed
-derivation of A15 from plenitude + base would specialise to
-this model, yielding `Attribute attr_g₂ g₁`; but the model
-proves the negation; so we would derive `False`; the kernel
+derivation of A15 from plenitude + the stated register would
+specialise to this model, yielding `Attribute attr_g₂ g₁`; but the
+model proves the negation; so we would derive `False`; the kernel
 forbids; no derivation exists.
 
 ## §6.5 Discussion: A15's pattern and A26's status
@@ -159,7 +156,7 @@ are identical; Proposition XIV says all substances are identical
 to God. The latter requires that every substance is also a god,
 which combines A26 with A15's universality reach across
 substances. Stating A26 in the demote attempt is therefore not
-stating Proposition XIV as axiom — but A26 remains Section III
+stating Proposition XIV as axiom, but A26 remains Section III
 strength, asserting a universal identity no base axiom delivers.
 
 The pattern illustrates a methodological subtlety: a

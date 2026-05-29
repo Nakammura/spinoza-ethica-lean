@@ -13,10 +13,9 @@
   introduced an inconsistency relative to the single-substance
   reading and we catch it immediately.
 
-  Added in response to the review of 2026-05-02 §3.4: the typeclass
-  layout was advertised as enabling concrete-model checking, but no
-  model existed. This file fills that gap and would have caught the
-  GAP-2 / A5 soundness regression flagged in §3.1.
+  This model makes the typeclass layout's concrete-model checking
+  concrete: it would catch the GAP-2 / A5 soundness regression
+  (`¬ Cause m₁ m₂` for all mode pairs) at typecheck time.
 
   Caveat: `Unit` is *not* the intended model of Spinoza's God
   (which has *infinitely many* attributes). It is the smallest model
@@ -160,10 +159,10 @@ example : IsGod () :=
 
 /-! ## Prop. XIV in this model
 
-  After A14 and A15 were promoted to `Pars1Axioms` fields (post-
-  review of 2026-05-02 §A.α), the `Pars1Axioms Unit` instance above
-  discharges them; `prop_14_onlyGodIsSubstance` therefore applies
-  to `Unit` as a short-form theorem with no extra premises. -/
+  Because A14 and A15 are `Pars1Axioms` fields, the `Pars1Axioms
+  Unit` instance above discharges them; `prop_14_onlyGodIsSubstance`
+  therefore applies to `Unit` as a short-form theorem with no extra
+  premises. -/
 
 /-- Prop. XIV holds on `Unit`: every substance equals the unique
     god (which is the unique element). -/
@@ -194,13 +193,13 @@ example : ∀ g : Unit, IsGod g → ∀ s : Unit, Substance s → s = g :=
 
   This is a **trivial-case witness**, not a non-trivial test of the
   modal-layer commitments. A non-trivial test requires a multi-world
-  model — planned but not in this commit. -/
+  model — not yet implemented. -/
 
 /-- World-relative existence on `Unit`: the unique element exists
     at every world (only one world, so this is degenerate). The
     `toEthicaWorld := inferInstance` pattern shares the base
-    `EthicaWorld` instance per closure-protocol diamond
-    discipline. -/
+    `EthicaWorld` instance, keeping the typeclass diamond
+    coherent. -/
 instance modalEthicaWorld : Modal.ModalEthicaWorld Unit Unit where
   toEthicaWorld := ethicaWorld
   existsAt _ _ := True

@@ -71,7 +71,7 @@ Pars I has 36 propositions. Status of each:
 | XI   | God necessarily exists.                                         | ⏳     | The big payoff. **Critical path is longer than initially estimated.** Bennett 1984 §18 catalogues four reading paths through Spinoza's *demonstrationes* (causa-sui direct; reductio via PSR; power-based; *a posteriori* in the scholium); each requires at least one substantive Section III commitment **beyond** A12 + A13 + GAP-8a. Candidates: a "consistent essence ⇒ instantiation" axiom (Della Rocca / modal ontological-argument flavour), or its PSR-flavoured equivalent. Bennett line holds these commitments are not derivable within Spinoza's stated axioms. Closing **GAP-8a (cardinality)** alone is **not sufficient**; additional Section III commitment(s) are required for at least one of the four reading paths. |
 | XII  | No attribute can be conceived such that substance is divisible. | ⏳     | Depends on Prop. X. |
 | XIII | Absolutely infinite substance is indivisible.                   | ⏳     | Depends on Prop. XII. |
-| XIV  | Besides God, no substance can be given or conceived.            | 📜     | `prop_14_onlyGodIsSubstance` mechanised in short form via A12 + A14 + A15 (Section III commitments) — **closing GAP-8b + GAP-13** in the process. 3-line proof, `sorry`-free. The 📜 marker is retained because the proof rests on three Section III axioms (V, VI, X are still the only theorems mechanised in the substantive sense). `Models/TwoSubstance.lean` **falsifies A15** and is therefore a Bennett-line non-Spinoza bench — it cannot carry a `Pars1Axioms` instance, which is the correct migration outcome (closure-protocol step 6(d)). |
+| XIV  | Besides God, no substance can be given or conceived.            | 📜     | `prop_14_onlyGodIsSubstance` mechanised in short form via A12 + A14 + A15 (Section III commitments) — **closing GAP-8b + GAP-13** in the process. 3-line proof, `sorry`-free. The 📜 marker is retained because the proof rests on three Section III axioms (V, VI, X are still the only theorems mechanised in the substantive sense). `Models/TwoSubstance.lean` **falsifies A15** and is therefore a Bennett-line non-Spinoza bench — it cannot carry a `Pars1Axioms` instance, which is the correct migration outcome. |
 | XV   | Whatever is, is in God; nothing without God can be conceived.   | ⏳     | Depends on Prop. XIV + Defs. III, V. |
 | XVI  | From divine nature, infinite things in infinite ways follow.    | ⏳     | Depends on Prop. XI + Def. VI. |
 | XVII | God acts from the laws of his own nature alone.                 | ⏳     | Depends on Prop. XI + Def. VII. |
@@ -95,10 +95,9 @@ Pars I has 36 propositions. Status of each:
 | XXXV | What we conceive to be in God's power necessarily exists.       | ⏳     | Depends on Prop. XXXIV. |
 | XXXVI| Nothing exists from whose nature an effect does not follow.     | ⏳     | Depends on Prop. XXIX + XXV. |
 
-**Tally** (after the review of 2026-05-02 §B.2 honesty pass — the
-prior "fully mechanised" count over-counted theorems that are
-direct invocations of a Section III commitment axiom; updated
-post-GAP-10 closure and Prop. IV expansion):
+**Tally** (the "fully mechanised" count excludes theorems that are
+direct invocations of a Section III commitment axiom; it reflects
+the post-GAP-10 closure and the Prop. IV expansion):
 
 - ✅ **4 mechanised in the substantive sense** (with one qualifier
   on Prop. IV — see row note: both-modes case is structurally
@@ -166,8 +165,8 @@ mechanisation altogether.
 | Single-substance (`Unit`) | Consistency witness; S5 modal collapse | Base + modal | ✅ `Models/SingleSubstance.lean` — full `Pars1Axioms` + `CausalAxioms` + all six modal-layer instances on `Unit` × `Unit`. Bridges A18/A19/A20/A21 discharge trivially; A16/A17 hold vacuously. Prop. XIV applies. |
 | Two-substance Bennett-line bench | A15 falsifier (post-promotion) | Base | ✅ `Models/TwoSubstance.lean` — `EthicaWorld` only; **falsifies A15** via `twosubst_falsifies_A15`. |
 | Multi-world A18 bridge-bite | A18 non-trivial bite witness | Modal | ✅ `Models/MultiWorld.lean` — `Thing := necessary \| contingent`, `World := w0 \| w1`. A18 fires non-vacuously on the `False ↔ False` branch. Does **not** exercise A19/A20/A21. |
-| A12 counter-model | Irreducibility witness (Bennett #1) | Base + PSR | ✅ `Models/Counterexamples.lean` `A12CounterModel` — 4-element world; PSR + base satisfied, A12 falsified. Kernel-level hard fact. |
-| A15 counter-model | Irreducibility witness (Bennett #2) | Base + plenitude | ✅ `Models/Counterexamples.lean` `A15CounterModel` — 3-element world; plenitude satisfied, A15 falsified. Kernel-level hard fact. |
+| A12 counter-model | Irreducibility witness (Bennett #1) | StatedAxioms + PSR | ✅ `Models/Counterexamples.lean` `A12CounterModel` — 4-element all-substance world; `StatedAxioms` + `PSRSubstance` satisfied, A12 falsified. Kernel-level hard fact. |
+| A15 counter-model | Irreducibility witness (Bennett #2) | StatedAxioms + plenitude | ✅ `Models/Counterexamples.lean` `A15CounterModel` — 3-element all-substance world; `StatedAxioms` + plenitude satisfied, A15 falsified. Kernel-level hard fact. |
 | Multi-attribute substance | Planned future bench | Base | ⏳ `MultiAttribute.lean` (not started). |
 | Prop. III bite-test | Non-identity `Cause` exercising A4ₛ + A5ₛ contrapositively | Causal | ⏳ Not started; current TwoSubstance uses identity-restricted `Cause` so doesn't exercise A4ₛ+A5ₛ. |
 

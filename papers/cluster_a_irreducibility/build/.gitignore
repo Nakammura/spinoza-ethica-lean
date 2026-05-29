@@ -1,6 +1,12 @@
 body.md
 cluster_a.tex
 cluster_a.pdf
+body_anonymous.md
+cluster_a_anonymous.tex
+cluster_a_anonymous.pdf
+cluster_a_anonymous.docx
+cluster_a_anonymous_latex.zip
+cluster_a_arxiv.tar.gz
 *.aux
 *.log
 *.bbl

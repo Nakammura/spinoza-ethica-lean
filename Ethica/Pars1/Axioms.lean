@@ -105,7 +105,7 @@ class Pars1Axioms (Thing : Type u) [EthicaWorld Thing] : Prop where
       cannot be understood through one another. The substantive form
       is in `Causation.lean` (`CausalAxioms.ax5_noCommonNoIntelligibility`),
       properly typed against `intelligibleThrough` and restricted to
-      substances (soundness fix from review of 2026-05-02 §3.1).
+      substances (a soundness requirement; see `Causation.lean`).
 
       ⚠ DO NOT REFERENCE in proofs. -/
   ax5_nothingInCommonNoUnderstanding : True
@@ -140,13 +140,12 @@ class Pars1Axioms (Thing : Type u) [EthicaWorld Thing] : Prop where
     ∀ x : Thing, inAnother x ↔ conceivedThroughAnother x
 
   /-- A10 (attribute–substance identity-of-conception): every attribute
-      *of a substance* is itself per se conceived. Strengthened from
-      a pre-review draft that quantified over arbitrary
-      `intellectPerceivesAsEssence` perceptions; that earlier shape
-      let A10 fire on spurious essence-attributions, beyond what the
-      Della Rocca / Garrett reading licenses. The hypothesis is now
-      the full `Attribute a s`, which carries `Substance s`. Closes
-      GAP-5. -/
+      *of a substance* is itself per se conceived. The hypothesis is
+      the full `Attribute a s` (which carries `Substance s`) rather
+      than an arbitrary `intellectPerceivesAsEssence` perception:
+      the weaker hypothesis would let A10 fire on spurious
+      essence-attributions, beyond what the Della Rocca / Garrett
+      reading licenses. Closes GAP-5. -/
   ax_attribute_perSe :
     ∀ a s : Thing, Attribute a s → perSeConceived a
 
@@ -155,8 +154,7 @@ class Pars1Axioms (Thing : Type u) [EthicaWorld Thing] : Prop where
       coextensive (Spinoza's "sive" read as "id est", per Curley 1985
       p. 408). Lets `causaSui` be defined as the single clause
       `involvesExistence` while the second clause is recoverable on
-      demand. Closes the comment-vs-code mismatch flagged in the
-      review of 2026-05-02 §2.4. -/
+      demand. -/
   ax_causaSui_iff :
     ∀ x : Thing, involvesExistence x ↔ natureRequiresExistence x
 
@@ -192,9 +190,8 @@ class Pars1Axioms (Thing : Type u) [EthicaWorld Thing] : Prop where
       under PSR; Bennett 1984 §17 treats it as an independent
       commitment of Spinoza's metaphysics. We commit visibly. This
       is a Section III axiom (substantive metaphysical commitment;
-      see `auxiliary_axioms.md`). Promoted from the A14-candidate
-      explicit-hypothesis form after the soundness-fix pass of
-      review 2026-05-02 §A.
+      see `auxiliary_axioms.md`). The explicit-hypothesis A14-candidate
+      form is promoted to a committed axiom here.
 
       Closes GAP-13. -/
   ax_substance_has_attribute :
@@ -210,9 +207,8 @@ class Pars1Axioms (Thing : Type u) [EthicaWorld Thing] : Prop where
       clause as a substantive metaphysical commitment in its own
       right. Della Rocca 2008 ch. 2 derives it from PSR + plenitude.
       Either way the commitment is real. We commit visibly. This
-      is a Section III axiom; promoted from the A15-candidate
-      explicit-hypothesis form after the soundness-fix pass of
-      review 2026-05-02 §A.
+      is a Section III axiom; the explicit-hypothesis A15-candidate
+      form is promoted to a committed axiom here.
 
       **Counter-bench**: `Models/TwoSubstance.lean` is a
       Bennett-style multi-substance world that **falsifies** A15.
@@ -256,5 +252,68 @@ class Pars1Axioms (Thing : Type u) [EthicaWorld Thing] : Prop where
       half of Def. I is recoverable on demand. -/
   ax_substance_involves_existence :
     ∀ s : Thing, Substance s → involvesExistence s
+
+/-- **The stated-axiom register**: Spinoza's seven axioms A1–A7 plus
+    the Section I definitional bridges (A1ₑ, A8–A11) and the Section II
+    placeholders, *without* the Section III substantive commitments
+    (A12 / A13 / A14 / A15).
+
+    This is `Pars1Axioms` minus its Section III fields. We keep it as a
+    *separate* class — not as a parent of `Pars1Axioms` — for one
+    structural reason that is itself the point of the demote project:
+
+    A counter-model for "A12 is not derivable from the stated register
+    plus PSR" must be an instance of a typeclass that contains the
+    stated register but **not** A12. A `Pars1Axioms` instance is
+    impossible for such a model, because A12
+    (`ax_substanceIdByAttribute`) is a *field* of `Pars1Axioms`: any
+    `Pars1Axioms` instance satisfies A12 by construction, so it could
+    never falsify it. `StatedAxioms` is exactly the register against
+    which the Section III axioms can be shown non-derivable at kernel
+    level (`Models/Counterexamples.lean`).
+
+    The A1–A11 field signatures duplicate those of `Pars1Axioms`
+    verbatim; the duplication is deliberate and documents the
+    register boundary. Every `Pars1Axioms` instance trivially yields a
+    `StatedAxioms` instance (drop the Section III fields), but the
+    converse fails — witnessed by the counter-models. -/
+class StatedAxioms (Thing : Type u) [EthicaWorld Thing] : Prop where
+  /-- A1: everything is in itself or in another. -/
+  ax1_inItselfOrInAnother :
+    ∀ x : Thing, inItself x ∨ inAnother x
+  /-- A1ₑ: "in se" and "in alio" do not co-apply. -/
+  ax1_exclusive :
+    ∀ x : Thing, ¬ (inItself x ∧ inAnother x)
+  /-- A2: what cannot be conceived through another is conceived
+      through itself. -/
+  ax2_perSeOrThroughAnother :
+    ∀ x : Thing, perSeConceived x ∨ conceivedThroughAnother x
+  /-- A3 placeholder (substantive form in `ModalForm.lean`). -/
+  ax3_causationDeterminate : True
+  /-- A4 placeholder (substantive form in `Causation.lean`). -/
+  ax4_effectKnowledgeFromCause : True
+  /-- A5 placeholder (substantive form in `Causation.lean`). -/
+  ax5_nothingInCommonNoUnderstanding : True
+  /-- A6 placeholder (idea/ideatum machinery is Pars II). -/
+  ax6_trueIdeaAgreesWithIdeatum : True
+  /-- A7: whatever is conceivable as non-existent has an essence not
+      involving existence. -/
+  ax7_conceivableAsNonExistent :
+    ∀ x : Thing,
+      ¬ natureRequiresExistence x → ¬ involvesExistence x
+  /-- A8 (Section I): in-itself and per-se-conceived are coextensive. -/
+  ax_inItself_iff_perSeConceived :
+    ∀ x : Thing, inItself x ↔ perSeConceived x
+  /-- A9 (Section I): in-another and conceived-through-another are
+      coextensive. -/
+  ax_inAnother_iff_conceivedThroughAnother :
+    ∀ x : Thing, inAnother x ↔ conceivedThroughAnother x
+  /-- A10 (Section I): every attribute of a substance is per se
+      conceived (Spinoza Ip10). -/
+  ax_attribute_perSe :
+    ∀ a s : Thing, Attribute a s → perSeConceived a
+  /-- A11 (Section I): the two clauses of Def. I are coextensive. -/
+  ax_causaSui_iff :
+    ∀ x : Thing, involvesExistence x ↔ natureRequiresExistence x
 
 end Ethica.Pars1

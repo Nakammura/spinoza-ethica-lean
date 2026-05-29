@@ -79,8 +79,8 @@
   provide. The engineering cost is not a workaround: it is a
   Bennett-line trace in the formalisation itself.
 
-  Status of GAP attempts after this commit
-  ----------------------------------------
+  Status of the GAP attempts
+  --------------------------
   * **GAP-6** (Prop. I priority): scaffolding plus
     `ConceptualBridges` (definitional, Section I) plus
     `ConceptualDepAxioms` (substantive, Section III candidates
@@ -95,9 +95,8 @@
     contrapositive — see below). Bridge `Cause ↔ ∀ w, causeAt`
     now lives as a `ModalCausalAxioms` field, so base-layer
     Causation.lean's `Cause` is connected to the modal layer.
-  * **A12 / A13 / A14 / A15 demote attempts**: not in this
-    commit. Bridges established here are the prerequisite for
-    those attempts.
+  * **A12 / A13 / A14 / A15 demote attempts**: developed below
+    (§δ–§δ-4), building on the bridges established here.
   * **GAP-8a (cardinality)**: still requires Mathlib's
     `Set.Infinite` or equivalent; deferred.
 -/
@@ -406,9 +405,9 @@ theorem prop_5_demote_via_PSR_all_attributes
 -- [EthicaWorld T]`, the derivation would yield `False` on this
 -- model — but `False` is not provable, hence A12 is not derivable.
 -- Bennett 1984 §17 makes this point in prose; the project
--- mechanises it via the counter-model. (Review of 2026-05-03
--- §A.2 retired the previous `: True := trivial` marker as
--- Lean-as-rhetoric.)
+-- mechanises it via the counter-model. A `: True := trivial`
+-- marker would be Lean-as-rhetoric, proving nothing about
+-- provability, so none is used.
 
 end demote_attempt
 
@@ -726,26 +725,21 @@ theorem prop_A15_demote_via_decomposition
 -- this model. Hence the demote requires the additional
 -- god-uniqueness commitment (A26), and A15 is irreducible to
 -- plenitude alone. Bennett 1984 §17 / §18 makes this point in
--- prose; the project mechanises it via the counter-model.
--- (Review of 2026-05-03 §A.6 retired the previous `: True :=
--- trivial` marker.)
+-- prose; the project mechanises it via the counter-model. A
+-- `: True := trivial` marker would prove nothing about
+-- provability, so none is used.
 
 end a15_demote
 
-/-! ## What is *not* in this commit
+/-! ## Deferred and future work
 
-  - **A12 / A13 / A14 / A15 demote attempts**. Bridges are now in
-    place; demote attempts can be authored next. The strategic
-    sequence: try to derive each `Pars1Axioms` Section III axiom
-    from PSR + the modal-layer bridges. Success → Della Rocca
-    line confirmed; failure → Bennett line confirmed.
   - **A4ₛ-from-A3-substantive demote**. With
     `ax_cause_iff_necCauseAt` and `ax3_causeNecessitatesEffect`,
     the chain is now expressible; deferred.
   - **GAP-8a (cardinality)**. Mathlib import judgement.
   - **Modal-layer instances on `SingleSubstance` / `TwoSubstance`**.
     A `ModalEthicaWorld Unit (Fin 1)` showing S5 modal collapse is
-    the natural sanity-check; not in this commit.
+    the natural sanity-check; not yet implemented.
 -/
 
 end Ethica.Pars1.Modal

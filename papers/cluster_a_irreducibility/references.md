@@ -39,10 +39,9 @@ Hackett printing.]
 
 Curley, Edwin, ed. and trans. 1985. *The Collected Works of
 Spinoza*. Vol. 1. Princeton: Princeton University Press.
-[verified — Curley's editorial discussion of *sive* (e.g.
-fn. 36 on Letter 4) treats it as "the 'or' of identity,"
-supporting the identifying reading we adopt for *ejusdem
-naturae sive attributi* in §3.2. No verbatim text from this
+[verified — Curley's editorial notes on *sive* treat it as
+"the 'or' of identity," supporting the identifying reading we
+adopt for *ejusdem naturae sive attributi* in §3.2. No verbatim text from this
 volume is quoted in the present paper.]
 
 Della Rocca, Michael. 2008. *Spinoza*. Routledge Philosophers.
@@ -54,7 +53,7 @@ necessitarian reading. Verbatim quotes used in this paper —
 "Non-identities, by the PSR, require explanation, and the way
 to explain non-identity is to appeal to some difference in
 properties" (p. 47), "thoroughgoing commitment to the PSR"
-(p. 1) — checked against the 2008 Routledge printing. The
+(p. 42) — checked against the 2008 Routledge printing. The
 absence of an explicit modal-logic system (S5, possible-world
 machinery) in Della Rocca's prose is also confirmed.]
 
@@ -90,6 +89,37 @@ this paper — title (cover, title page, LCC), Postscript phrases
 *Positive* / *Negative* (p. 91) — checked against the 2018 OUP
 printing.]
 
+## Machine-checked philosophy (related work)
+
+Benzmüller, Christoph, and Bruno Woltzenlogel Paleo. 2014.
+"Automating Gödel's Ontological Proof of God's Existence with
+Higher-order Automated Theorem Provers." In *ECAI 2014: 21st European
+Conference on Artificial Intelligence*, edited by Torsten Schaub,
+Gerhard Friedrich, and Barry O'Sullivan, 93–98. Frontiers in
+Artificial Intelligence and Applications 263. Amsterdam: IOS Press.
+[verified — IOS Press publisher record (DOI 10.3233/978-1-61499-419-0-93)
+and dblp confirm author order (Benzmüller first, Woltzenlogel Paleo
+second), FAIA volume 263, pages 93–98, and the ECAI 2014 editors
+(Schaub, Friedrich, O'Sullivan); content (Isabelle/HOL verification of
+Gödel's argument; consistency of Scott's variant; modal collapse)
+confirmed via the published article. Cited in §1.4 to distinguish
+argument-validity mechanisation from the interpretive question this
+paper addresses.]
+
+Fitelson, Branden, and Edward N. Zalta. 2007. "Steps Toward a
+Computational Metaphysics." *Journal of Philosophical Logic* 36 (2):
+227–247. [verified — Springer/Journal of Philosophical Logic record:
+36(2):227–247 (April 2007), DOI 10.1007/s10992-006-9038-7; title is
+"Steps Toward" (no terminal *s*). Content (automated reasoning over
+Zalta's object theory) confirmed. Cited in §1.4.]
+
+Oppenheimer, Paul E., and Edward N. Zalta. 2011. "A
+Computationally-Discovered Simplification of the Ontological
+Argument." *Australasian Journal of Philosophy* 89 (2): 333–349.
+[verified — Australasian Journal of Philosophy record: 89(2):333–349
+(June 2011). Content (prover-discovered one-premise simplification of
+the ontological argument) confirmed. Cited in §1.4.]
+
 ## Lean 4 and formalisation infrastructure
 
 Carneiro, Mario. 2019. *The Type Theory of Lean*. MSc thesis,
@@ -119,5 +149,7 @@ adapts to Lean's kernel specifically.]
 
 ## Verification before submission
 
-All references are verified against printed-edition or
-authenticated-PDF sources. No blocking-verify items remain.
+All references are verified against printed-edition, authenticated-PDF,
+or authoritative publisher/DOI records (IOS Press, Springer, and dblp
+for the §1.4 machine-checked-philosophy entries). No blocking-verify
+items remain.

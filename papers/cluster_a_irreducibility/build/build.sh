@@ -38,6 +38,8 @@ YAML
   cat <<'REFS'
 Bennett, Jonathan. 1984. *A Study of Spinoza's Ethics*. Indianapolis: Hackett.
 
+Benzmüller, Christoph, and Bruno Woltzenlogel Paleo. 2014. "Automating Gödel's Ontological Proof of God's Existence with Higher-order Automated Theorem Provers." In *ECAI 2014: 21st European Conference on Artificial Intelligence*, edited by Torsten Schaub, Gerhard Friedrich, and Barry O'Sullivan, 93–98. Frontiers in Artificial Intelligence and Applications 263. Amsterdam: IOS Press.
+
 Carneiro, Mario. 2019. *The Type Theory of Lean*. MSc thesis, Carnegie Mellon University. https://github.com/digama0/lean-type-theory/releases.
 
 Curley, Edwin, ed. and trans. 1985. *The Collected Works of Spinoza*. Vol. 1. Princeton: Princeton University Press.
@@ -50,9 +52,13 @@ Della Rocca, Michael. 2008. *Spinoza*. Routledge Philosophers. London: Routledge
 
 Elwes, R. H. M., trans. 1883. *The Chief Works of Benedict de Spinoza*. Vol. 2. London: George Bell and Sons.
 
+Fitelson, Branden, and Edward N. Zalta. 2007. "Steps Toward a Computational Metaphysics." *Journal of Philosophical Logic* 36 (2): 227–247.
+
 Garrett, Don. 1990. "Ethics IP5: Shared Attributes and the Basis of Spinoza's Monism." In *Central Themes in Early Modern Philosophy: Essays Presented to Jonathan Bennett*, edited by J. A. Cover and Mark Kulstad, 69–107. Indianapolis: Hackett.
 
 Garrett, Don. 2018. *Nature and Necessity in Spinoza's Philosophy*. New York: Oxford University Press.
+
+Oppenheimer, Paul E., and Edward N. Zalta. 2011. "A Computationally-Discovered Simplification of the Ontological Argument." *Australasian Journal of Philosophy* 89 (2): 333–349.
 
 Spinoza, Benedictus de. 1677. *Ethica Ordine Geometrico Demonstrata*. In *B. d. S. Opera Posthuma*, edited by Jarig Jelles. Amsterdam: Jan Rieuwertsz.
 

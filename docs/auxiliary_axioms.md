@@ -142,10 +142,10 @@ conceiving `a` itself.
 modes of conception under which substance is grasped, making this
 identity definitional. Garrett *Spinoza on the Essence of the Human
 Mind* treats it similarly. The hypothesis of A10 is the full
-`Attribute a s` (which carries `Substance s`); the pre-review draft
-quantified over arbitrary `intellectPerceivesAsEssence s a`, which
-was over-strong (it would license the conclusion on spurious
-essence-attributions).
+`Attribute a s` (which carries `Substance s`) rather than an
+arbitrary `intellectPerceivesAsEssence s a`: the latter would be
+over-strong, licensing the conclusion on spurious
+essence-attributions.
 
 **Used by**: `prop_10_attributePerSe`.
 
@@ -168,17 +168,14 @@ concipi nisi existens* — joins two clauses with *sive*. Curley
 re-expresses the first. We define `causaSui` as the first clause
 only; A11 lets us recover the second on demand.
 
-**Commentary**: A pre-review draft encoded `causaSui` as the
-*conjunction* of both clauses, which was a stronger commitment
-than *sive = id est* warrants and conflicted with the doc-comment
-(which advertised a biconditional). The split into single-clause
-definition + bridging axiom resolves the inconsistency cleanly.
+**Commentary**: Encoding `causaSui` as the *conjunction* of both
+clauses would be a stronger commitment than *sive = id est* warrants.
+The single-clause definition + bridging axiom A11 keeps the
+definition aligned with the biconditional reading.
 
 **Used by**: `prop_7_natureRequiresExistence` (corollary of Prop. VII;
 the first load-bearing use of A11). Will also be used in Prop. XI's
 aggregation.
-
-**Closes**: review of 2026-05-02 §2.4.
 
 ---
 
@@ -198,11 +195,10 @@ ax4_effectIntelligibleThroughCause :
 placeholder; the real epistemic content needs the `Cause` and
 `intelligibleThrough` primitives introduced in `CausalWorld`.
 
-**Commentary**: A pre-review draft also carried
-`ax3_causeGroundsIntelligibility` with literally the same Lean
-signature; the two were collapsed (A3's distinct
-*ontological-necessitation* content awaits the modal layer; tracked
-as GAP-7).
+**Commentary**: A separate `ax3_causeGroundsIntelligibility` field
+would carry literally the same Lean signature, so it is omitted;
+A3's distinct *ontological-necessitation* content awaits the modal
+layer (tracked as GAP-7).
 
 **Used by**: `prop_3_noCommonNoCause`.
 
@@ -226,15 +222,15 @@ finite-mode causation Pars II–V depend on. The substance-restricted
 form preserves Prop. III's substance-side use while leaving
 mode-causation expressible.
 
-**Commentary**: This is the soundness fix flagged in the review of
-2026-05-02 §3.1. The fully general A5 will be reinstated at the
-modal layer, where a separate `hasAttribute : Thing → Thing → Prop`
-relation will give `sameNature` proper coverage over modes as well.
+**Commentary**: The substance-restriction is a soundness fix. The
+fully general A5 will be reinstated at the modal layer, where a
+separate `hasAttribute : Thing → Thing → Prop` relation will give
+`sameNature` proper coverage over modes as well.
 
 **Used by**: `prop_3_noCommonNoCause`.
 
-**Closes**: review of 2026-05-02 §3.1 (soundness regression of
-GAP-2).
+**Closes**: the GAP-2 soundness regression (restricting A5ₛ to
+substances so that finite-mode causation survives).
 
 ---
 
@@ -430,8 +426,8 @@ permanently.
 
 ## A14 — Substance has at least one attribute
 
-**Status**: ✅ **promoted** (post-review of 2026-05-02 §F.α).
-Now a `Pars1Axioms` field (`ax_substance_has_attribute`).
+**Status**: ✅ **promoted**. Now a `Pars1Axioms` field
+(`ax_substance_has_attribute`).
 
 **Lean signature**:
 ```lean
@@ -487,9 +483,9 @@ promise it closes.
 
 ## A15 — God has every substance's attribute (substantive Def. VI)
 
-**Status**: ✅ **promoted** (post-review of 2026-05-02 §F.α).
-Now a `Pars1Axioms` field (`ax_IsGod_has_attribute_of`). Closes
-GAP-8b. Cardinality (GAP-8a) remains separately tracked.
+**Status**: ✅ **promoted**. Now a `Pars1Axioms` field
+(`ax_IsGod_has_attribute_of`). Closes GAP-8b. Cardinality (GAP-8a)
+remains separately tracked.
 
 **Lean signature**:
 ```lean
@@ -536,11 +532,10 @@ the attempt without promising it closes.
 
 **Counter-bench**: `Ethica/Pars1/Models/TwoSubstance.lean`
 provides a Bennett-style multi-substance world where A15 is
-**falsified**. After promotion, that model can no longer carry
-a `Pars1Axioms` instance — the failure now lives at the type
-level, exactly as closure-protocol step 6(d) anticipated. The
-falsification theorem `twosubst_falsifies_A15` documents the
-concrete content of A15's commitment.
+**falsified**. Because A15 is a `Pars1Axioms` field, that model
+cannot carry a `Pars1Axioms` instance — the failure lives at the
+type level. The falsification theorem `twosubst_falsifies_A15`
+documents the concrete content of A15's commitment.
 
 ---
 
@@ -704,12 +699,12 @@ the structural status of the §III.A axioms:
 **Counter-models** (`Ethica/Pars1/Models/Counterexamples.lean`)
 provide the kernel-level hard facts for the two irreducibility
 results:
-- `A12CounterModel`: an `EthicaWorld` + `PSRSubstance` instance
+- `A12CounterModel`: a `StatedAxioms` + `PSRSubstance` instance
   where two distinct substances share an attribute → A12 not
-  derivable from PSR alone.
-- `A15CounterModel`: an `EthicaWorld` instance with two
+  derivable from the stated register + PSR.
+- `A15CounterModel`: a `StatedAxioms` instance with two
   attribute-distinct gods, plenitude holding, A15 falsified →
-  A15 not derivable from plenitude alone.
+  A15 not derivable from the stated register + plenitude.
 
 ---
 
@@ -743,15 +738,16 @@ demonstrating that the *partial* form of A12 (substances sharing
 content) is **NOT** derivable from `[PSRSubstance Thing]` +
 base axioms alone. The kernel-level evidence is **a
 counter-model**: see `Ethica/Pars1/Models/Counterexamples.lean`
-`A12CounterModel`, a 4-element `EthicaWorld` + `PSRSubstance`
-instance where two distinct substances share an attribute,
-falsifying A12. If A12 were derivable from PSR + base, the
-derivation would yield `False` on this model.
+`A12CounterModel`, a 4-element `StatedAxioms` + `PSRSubstance`
+instance (all four elements substances) where two distinct
+substances share an attribute, falsifying A12. If A12 were derivable
+from the stated register + PSR, the derivation would yield `False`
+on this model.
 
-The previous draft used a marker theorem
-`A12_full_NOT_demotable_from_PSR_alone : True := trivial` — a
-Lean-as-rhetoric trick (review of 2026-05-03 §A.2 retired this);
-the counter-model replaces it with a kernel-level hard fact.
+A marker theorem `A12_full_NOT_demotable_from_PSR_alone : True :=
+trivial` would be a Lean-as-rhetoric trick (`True` proves nothing
+about provability); the counter-model replaces any such marker with
+a kernel-level hard fact.
 This is the **first mechanical evidence in the project for
 Bennett 1984 §17's reading** that Spinoza's Prop. V exceeds what
 PSR-alone can deliver.

@@ -4,10 +4,10 @@
   This file constructs a two-element universe with disjoint
   attribute graphs and demonstrates that **A15** (universality of
   God's attributes; `Pars1Axioms.ax_IsGod_has_attribute_of`) is
-  *falsified* here. After A14 / A15 were promoted to `Pars1Axioms`
-  fields (post-review of 2026-05-02 §A.α), this model can no longer
-  instantiate `Pars1Axioms` — that is the philosophical point: it
-  is a Bennett-style multi-substance world, not a Spinoza one.
+  *falsified* here. Because A14 / A15 are `Pars1Axioms` fields, this
+  model cannot instantiate `Pars1Axioms` — that is the philosophical
+  point: it is a Bennett-style multi-substance world, not a Spinoza
+  one.
 
   ## What this model is for
 
@@ -20,19 +20,19 @@
 
   ## What this model is NOT
 
-  - Not a `Pars1Axioms`-instance carrier. The `Pars1Axioms TwoSubst`
-    instance was removed when A14 / A15 were promoted; this model
-    cannot satisfy A15. Per closure-protocol step 6(d), the model
-    is migrated to "Bennett-line non-Spinoza bench" status.
+  - Not a `Pars1Axioms`-instance carrier. Because A14 / A15 are
+    `Pars1Axioms` fields and this model cannot satisfy A15, it
+    carries no `Pars1Axioms` instance; it sits at "Bennett-line
+    non-Spinoza bench" status.
   - Not a `CausalAxioms`-instance carrier (since `CausalAxioms`
     extends `Pars1Axioms`).
   - Not a witness for Props. III / V / VI (those need `Pars1Axioms`
     or `CausalAxioms` instances). For witness-model checks of those
     propositions, see `Models/SingleSubstance.lean`.
 
-  This is what closure-protocol step 6(d) calls *migration*: when a
-  Section III axiom is promoted, models that falsify the axiom lose
-  their typeclass instance and are reclassified.
+  This is the *migration* pattern: when a Section III axiom is
+  committed, models that falsify the axiom lose their typeclass
+  instance and are reclassified.
 -/
 import Ethica.Pars1.Definitions
 import Ethica.Pars1.Axioms
@@ -122,8 +122,7 @@ example : IsGod TwoSubst.s₂ :=
     clause — multi-substance worlds with disjoint attribute graphs
     satisfy the bare ontology (`EthicaWorld`) but falsify A15.
     Hence this model **cannot** carry a `Pars1Axioms` instance,
-    which is precisely the migration outcome anticipated in
-    closure-protocol step 6(d). -/
+    which is precisely the expected migration outcome. -/
 theorem twosubst_falsifies_A15 :
     ¬ (∀ g s a : TwoSubst, IsGod g → Substance s → Attribute a s →
         Attribute a g) := by
@@ -141,20 +140,16 @@ theorem twosubst_falsifies_A15 :
   exact attr_s2_s1.2.elim
 
 /-
-  Migration note (closure-protocol step 6(d)): when A15 was promoted
-  to `Pars1Axioms.ax_IsGod_has_attribute_of`, this model lost its
-  ability to carry a `Pars1Axioms` instance. `CausalWorld` /
-  `CausalAxioms` instances were correspondingly removed (since
-  `CausalAxioms extends Pars1Axioms`). The pre-migration
-  identity-restricted causation graph is preserved as a comment in
-  git history (commit 8d39962).
+  Migration note: because A15 is `Pars1Axioms.ax_IsGod_has_attribute_of`,
+  this model carries no `Pars1Axioms` instance, and hence no
+  `CausalWorld` / `CausalAxioms` instance either (since `CausalAxioms
+  extends Pars1Axioms`).
 
-  This is the correct behaviour: the kernel inconsistency that the
-  pre-soundness-fix `private axiom` encoding produced (review of
-  2026-05-02 §A) is no longer re-introducible. Any attempt to
-  `prop_14`-call into this model will fail at typeclass resolution,
-  not at proof typecheck — the failure is now visible in the type
-  system, not silently latent in the kernel base.
+  This is the correct behaviour: a kernel inconsistency cannot be
+  introduced here. Any attempt to `prop_14`-call into this model will
+  fail at typeclass resolution, not at proof typecheck — the failure
+  is visible in the type system, not silently latent in the kernel
+  base.
 -/
 
 end Ethica.Pars1.Models.TwoSubstance

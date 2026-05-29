@@ -15,8 +15,8 @@
   this restriction, the Della Rocca closure of GAP-2 (which makes
   `sameNature` derived from `Attribute`, hence substance-only) would
   collectively force `¬ Cause m₁ m₂` for any pair of modes — wiping
-  out the finite-mode causation Pars II–V depend on. Tracked as the
-  soundness fix from the review of 2026-05-02 §3.1.
+  out the finite-mode causation Pars II–V depend on. Restricting A5
+  to substances is the soundness fix that avoids this.
 
   Latin (recap):
     A3. Ex data causa determinata necessario sequitur effectus, et
@@ -62,12 +62,11 @@ open EthicaWorld CausalWorld
     base-layer axioms. This avoids forcing downstream theorems to
     juggle two typeclass instances.
 
-    The pre-review draft carried `ax3_causeGroundsIntelligibility`
-    and `ax4_effectIntelligibleThroughCause` as separate fields with
-    *literally identical* signatures; the duplication has been
-    removed. A3's ontological-necessitation content (distinct from
-    A4's epistemic content) is now tracked as GAP-7 and awaits the
-    modal layer. -/
+    Only `ax4_effectIntelligibleThroughCause` is carried as a field:
+    a separate `ax3_causeGroundsIntelligibility` field would have a
+    *literally identical* signature, so it is omitted. A3's
+    ontological-necessitation content (distinct from A4's epistemic
+    content) is tracked as GAP-7 and awaits the modal layer. -/
 class CausalAxioms (Thing : Type u) [CausalWorld Thing]
     extends Pars1Axioms Thing : Prop where
   /-- A4 (substantive): knowledge of an effect involves knowledge of
@@ -81,8 +80,8 @@ class CausalAxioms (Thing : Type u) [CausalWorld Thing]
       substances with no shared nature are not intelligible through
       one another.
 
-      The substance-restriction is the soundness fix from the review
-      of 2026-05-02 §3.1: with `sameNature` derived as
+      The substance-restriction is a soundness requirement: with
+      `sameNature` derived as
       `∃ a, Attribute a x ∧ Attribute a y` (GAP-2 path b), the
       substance-implicit nature of `sameNature` would, without this
       restriction, render `¬ Cause m₁ m₂` provable for every pair of
@@ -173,7 +172,7 @@ theorem prop_3_noCommonNoCause_symm [CausalAxioms Thing]
 
 /-- Prop. II — Spinoza-textual form.
 
-    **Note on the proof routing** (review of 2026-05-02 §A.3):
+    **Note on the proof routing**:
     this theorem is named "via Def. III" because A5ₛ — which the
     proof invokes — has a substance-restriction whose body unfolds
     to `inItself ∧ perSeConceived` (Def. III). Def. III is
@@ -200,7 +199,7 @@ theorem prop_2_via_def3 [CausalAxioms Thing]
     **documentation alias** making that fact citable by name; it
     has no proof content beyond invoking
     `CausalAxioms.ax5_noCommonNoIntelligibility` (eta-equivalent
-    re-statement). Review of 2026-05-02 §A.4. -/
+    re-statement). -/
 theorem prop_2_forms_equivalent [CausalAxioms Thing]
     (x y : Thing) (hx : Substance x) (hy : Substance y) :
     ¬ sameNature x y → ¬ intelligibleThrough x y :=
