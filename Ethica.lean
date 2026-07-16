@@ -25,6 +25,10 @@ import Ethica.Pars1.Models.InherenceWitness
 import Ethica.Pars1.Models.CounterexamplesII
 import Ethica.Pars1.Consecutio
 import Ethica.Pars1.Models.ConsecutioWitness
+import Ethica.Pars1.Realitas
+import Ethica.Pars1.Models.MultiAttribute
+import Ethica.Pars1.Classificatio
+import Ethica.Pars1.Models.ClassificatioWitness
 
 -- Future Pars (stubs):
 -- import Ethica.Pars2.Definitions   -- De natura et origine mentis

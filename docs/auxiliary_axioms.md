@@ -93,6 +93,16 @@ Adopting A8 commits us to the Della Rocca / Curley reading.
 
 **Closes**: GAP-4 (in-half).
 
+**Cross-reference (attribute-collapse)**: A8, together with A10,
+A12, A14, and A15, feeds `Realitas.lean`'s attribute-collapse
+theorem — in any `Pars1Axioms` world with a God, every attribute of
+every substance equals that God (`attribute_collapse`). A8's role:
+its `.mpr` direction is what upgrades an attribute's "per se
+conceived" status (A10) to "in itself", i.e. to substance-hood
+(`attribute_is_substance`). Any future revision of the attribute
+ontology touching A8 must renegotiate this result — see
+`coverage.md`'s "Attribute-collapse result" subsection.
+
 ---
 
 ## A9 — Ontological–conceptual parallelism (*in alio* / *per alio*)
@@ -152,6 +162,12 @@ essence-attributions.
 **Used by**: `prop_10_attributePerSe`.
 
 **Closes**: GAP-5.
+
+**Cross-reference (attribute-collapse)**: A10 supplies the
+`perSeConceived a` half of `attribute_is_substance`
+(`Realitas.lean`) — the first step of the attribute-collapse
+theorem (with A8, A12, A14, A15). See A8's cross-reference note
+above and `coverage.md`'s "Attribute-collapse result" subsection.
 
 ---
 
@@ -532,16 +548,17 @@ content into the causal form), both `Consecutio.lean`.
 # Section III — Substantive metaphysical commitments
 
 The Section III register has grown across the project's lifetime
-to ~18 commitments. Sub-categorisation by role:
+to ~19 commitments. Sub-categorisation by role:
 
 - **§III.A** — Base `Pars1Axioms` Section III commitments (A12,
   A13, A14, A15). The four substantive metaphysical claims that
   fill demonstratio gaps in Spinoza's text.
 - **§III.A′** — Extension-typeclass base-layer commitments (A27,
-  A32, A35, and now A40–A43). Same weight and role as §III.A, but
-  committed in typeclasses extending `Pars1Axioms`
+  A32, A35, A40–A43, and now A44). Same weight and role as §III.A,
+  but committed in typeclasses extending `Pars1Axioms`
   (`TheologiaAxioms`, `MereologyAxioms`, `InherenceAxioms`,
-  `ConsecutioAxioms`) rather than in `Pars1Axioms` itself.
+  `ConsecutioAxioms`, `ClassificatioAxioms`) rather than in
+  `Pars1Axioms` itself.
 - **§III.B** — Modal-layer conceptual asymmetry candidates (A16,
   A17). The Prop. I priority asymmetry between substance and
   mode dependence.
@@ -654,6 +671,13 @@ register permanently.
 `Ethica/Pars1/Models/TwoSubstance.lean` for a model that exercises
 A12 non-trivially (single-substance Unit model satisfies A12
 vacuously and so cannot witness the axiom's bite).
+
+**Cross-reference (attribute-collapse)**: A12 supplies the final
+identification step of `attribute_collapse` (`Realitas.lean`) —
+once an attribute-of-an-attribute is handed to God via A15, A12
+identifies the original attribute with God. Joint with A8, A10,
+A14, A15. See A8's cross-reference note above and `coverage.md`'s
+"Attribute-collapse result" subsection.
 
 ---
 
@@ -779,6 +803,13 @@ is correct, A14 stays in Section III permanently — the commitment
 relocates rather than dissolves. We track the attempt; we do not
 promise it closes.
 
+**Cross-reference (attribute-collapse)**: A14 supplies
+`attribute_is_substance`'s attribute-of-an-attribute witness in
+`Realitas.lean`'s `attribute_collapse` theorem (step 4 of the
+collapse's five-step chain). Joint with A8, A10, A12, A15. See A8's
+cross-reference note above and `coverage.md`'s "Attribute-collapse
+result" subsection.
+
 ---
 
 ## A15 — God has every substance's attribute (substantive Def. VI)
@@ -837,29 +868,44 @@ cannot carry a `Pars1Axioms` instance — the failure lives at the
 type level. The falsification theorem `twosubst_falsifies_A15`
 documents the concrete content of A15's commitment.
 
+**Cross-reference (attribute-collapse)**: A15 supplies the final
+transfer step of `attribute_collapse` (`Realitas.lean`) — handing
+an attribute's own attribute to God, which A12 then uses to
+identify the original attribute with God. Joint with A8, A10, A12,
+A14; the consequence is that Def. VI's *infinitis attributis*
+clause is unsatisfiable for any God in the register
+(`def6_infinitis_attributis_unsatisfiable`). Any future revision of
+the attribute ontology touching A15 — or any of A8/A10/A12/A14 —
+must renegotiate this result; see `coverage.md`'s
+"Attribute-collapse result" subsection and `gaps.md` GAP-25.
+
 ---
 
-## §III.A′ — Extension-typeclass base-layer commitments (A27, A32, A35, A40–A43)
+## §III.A′ — Extension-typeclass base-layer commitments (A27, A32, A35, A40–A44)
 
-Unlike A12–A15, these seven live in typeclasses that *extend*
+Unlike A12–A15, these eight live in typeclasses that *extend*
 `Pars1Axioms` (`TheologiaAxioms`, `MereologyAxioms`,
-`InherenceAxioms`, `ConsecutioAxioms`) rather than in
-`Pars1Axioms` itself — they are committed for their own downstream
-propositions and are not prerequisites for anything mechanised
-before their respective extension sessions. They share §III.A's
-weight (heavy, demonstrably-incomplete-step-filling commitments)
-and are catalogued here for that reason, kept typographically
-distinct from A12–A15 to preserve the historical record of what
-was in `Pars1Axioms` at v1.0.0.
+`InherenceAxioms`, `ConsecutioAxioms`, `ClassificatioAxioms`)
+rather than in `Pars1Axioms` itself — they are committed for their
+own downstream propositions and are not prerequisites for anything
+mechanised before their respective extension sessions. They share
+§III.A's weight (heavy, demonstrably-incomplete-step-filling
+commitments) and are catalogued here for that reason, kept
+typographically distinct from A12–A15 to preserve the historical
+record of what was in `Pars1Axioms` at v1.0.0.
 
 **Irreducibility parity**: all three axioms of the first extension
 batch (A27, A32, A35) now carry kernel-level irreducibility
 witnesses (`Models/NoGod.lean`, `Models/CounterexamplesII.lean`),
 each against a baseline **stronger** than the paper's
 `StatedAxioms` register — see the individual entries. The
-Consecutio batch's 📜-pattern axioms (A40–A43) do not yet have
-dedicated counter-models; their Section III status rests on the
-demonstratio-gap grounds documented per entry.
+Consecutio batch's 📜-pattern axioms (A40–A43) and the Classificatio
+batch's A44 do not yet have dedicated counter-models; their Section
+III status rests on the demonstratio-gap grounds documented per
+entry. A44 is additionally distinguished from A40–A43 by being
+**demotable**: `Classificatio.lean` shows A42 (itself 📜-pattern)
+is an equal-strength decomposition once A44 is granted — see A42's
+and A44's entries below.
 
 ---
 
@@ -1145,6 +1191,35 @@ premises it would take to derive it.
 **Consistency witness**: `Models/ConsecutioWitness.lean` —
 discharges vacuously (`Mode` unsatisfiable on `ConsecutioW`).
 
+**Demote outcome (equal-strength decomposition, post-Classificatio)**:
+`Classificatio.lean`'s `A42_demote_via_trichotomy` proves A42's full
+content from Σ = `TrichotomySigma` — the base+inherence register
+plus duplicated signatures for A38, A40, A41, and **A44**
+(`ax_consecution_trichotomy`), deliberately excluding A42 itself.
+The proof case-splits on the trichotomy A44 supplies: the first two
+horns (absolute consecution / infinite-mode transfer) are ruled out
+by A40/A41's own eternity conclusion contradicting the finite-mode
+hypothesis; the third horn hands back almost exactly A42's
+conclusion, with A38 converting the surviving `followsFrom` to
+`Cause`. Mirrors the A15 outcome (`ModalForm.lean`,
+`prop_A15_demote_via_decomposition`): A42 is an **equal-strength
+decomposition**, not a reduction — the destination axiom (A44) is
+no weaker than A42, and Prop. XXIII's own classification content is
+exactly what Prop. XXVIII's finite-mode-causal chain needs, no more
+and no less. Unlike A15's decomposition (one axiom → two, neither
+weaker), A42's decomposition trades one axiom for a register
+{A38, A40, A41, A44} already committed elsewhere for independent
+reasons (A38 for Prop. XVI Cor. I; A40/A41 for Props. XXI/XXII)
+*plus* exactly one new commitment (A44) — so the net new-commitment
+cost of dropping A42 in favour of A44 is a single axiom. Contrast
+with A27/A32/A35, which resist decomposition entirely
+(counter-witnessed in `Models/`). `instance
+trichotomySigma_of_classificatio` shows Σ is non-vacuously
+satisfiable by every model this project already trusts (every
+`ClassificatioAxioms` instance yields a `TrichotomySigma` instance).
+See README's demote-experiments table (A42 row) and A44's entry
+below.
+
 ---
 
 ## A43 — Everything has some effect follow from it (📜 Prop. XXXVI)
@@ -1179,6 +1254,58 @@ and needs an actual witness `e` for every `x`.
 **Consistency witness**: `Models/ConsecutioWitness.lean` —
 discharges non-vacuously (the unique element is its own witness;
 `followsFrom` uniformly `True`).
+
+---
+
+## A44 — Consecution trichotomy (Section III; Prop. XXVIII's silent premise)
+
+**Lean signature** (in `ClassificatioAxioms`, `Ethica/Pars1/Classificatio.lean`):
+```lean
+ax_consecution_trichotomy :
+  ∀ x : Thing, Mode x →
+    (∃ g a, IsGod g ∧ Attribute a g ∧ followsAbsolutely x a) ∨
+    (∃ m, Mode m ∧ Eternal m ∧ ¬ finitumInSuoGenere m ∧ followsFrom x m) ∨
+    (∃ y, Mode y ∧ finitumInSuoGenere y ∧ y ≠ x ∧ followsFrom x y)
+```
+
+**Why we add it**: A42's own docstring already flagged that Prop.
+XXVIII's *demonstratio* silently consumes an exhaustiveness premise
+— every mode follows either absolutely from an attribute of God
+(Prop. XXI's route), from an eternal-and-infinite mode (Prop.
+XXII's route), or from another finite mode (the route Prop. XXVIII
+itself concludes to, by elimination of the first two): "*at id
+quod finitum est … ab absoluta natura alicujus Dei attributi
+produci non potuit* … *at ex Deo vel aliquo ejus attributo quatenus
+affectum est modificatione quae aeterna et infinita est, sequi
+etiam non potuit* … *debuit ergo sequi* … *a Deo vel aliquo ejus
+attributo quatenus modificatum est modificatione quae finita est*".
+An elimination argument of this shape only closes if the three
+horns are jointly exhaustive — a fact Spinoza nowhere argues for
+independently. This is precisely **Prop. XXIII's own content**
+(the trichotomy clause, minus the necessarily-infinite exclusion —
+see `coverage.md`'s Prop. XXIII row), committed here directly so
+Prop. XXVIII's elimination step has a visible premise to rest on.
+
+**Commentary**: Bennett 1984 §25 flags the classification as an
+unargued premise of the infinite-mode doctrine — exactly the target
+this entry commits visibly rather than leaving buried in Prop.
+XXVIII's *demonstratio*.
+
+**Used by**: `prop_23_partial_classification` (direct,
+`Classificatio.lean` — the trichotomy clause of Prop. XXIII);
+`A42_demote_via_trichotomy` (the A42 demote experiment, same file —
+see A42's entry above for the decomposition outcome).
+
+**Consistency witness**: `Models/ClassificatioWitness.lean` — A44
+discharges vacuously on `ConsecutioW` (`Mode x` is `False` there),
+exactly as A42 does in `Models/ConsecutioWitness.lean`.
+
+**Caveat**: A44 commits only the trichotomy's *exhaustiveness*, not
+Prop. XXIII's further exclusion of the finite branch for
+necessarily-infinite modes — that residue needs a finite-source
+transfer principle not committed anywhere in this formalisation
+(cross-ref `gaps.md` GAP-23's residual half, and GAP-22 for the
+ternary-relation prerequisite the fully general form would need).
 
 ---
 

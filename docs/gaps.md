@@ -334,7 +334,31 @@ some readings of Prop. XI.
 either (a) Mathlib's `Set.Infinite` over the attributes of `g`, or
 (b) a dedicated cardinality predicate.
 
-**Status**: ⏳ deferred.
+**Status**: 🟡 **partially closed — the framework exists, but is
+unsatisfiable-with-a-God**.
+
+**Update (Realitas session)**: `Ethica/Pars1/Realitas.lean` closes
+the missing-framework half directly: `hasAtLeastNAttributes s n`
+(cardinality-free, via a `Fin n` injection) and
+`HasInfiniteAttributes s` (`∀ n, hasAtLeastNAttributes s n`) make
+Def. VI's "*infinitis attributis*" clause **stateable** for the
+first time in this formalisation, with **no new axiom** and no
+Mathlib dependency. What remains open is not formalisation but
+**consistency**: `def6_infinitis_attributis_unsatisfiable` proves
+`HasInfiniteAttributes g` is impossible for any God `g` in the
+current `Pars1Axioms` register — a consequence of the
+attribute-collapse theorem (`attribute_collapse`, from A8 + A10 +
+A12 + A14 + A15, no new axiom), which forces every attribute of
+every substance to equal God whenever a God exists
+(`god_no_two_attributes` already rules out God having even *two*
+distinct attributes). The godless side is witnessed consistent by
+`Models/MultiAttribute.lean` (`multiAttribute_infinitude`, carrier
+`Nat`) — attribute plurality/infinitude is satisfiable on the
+**full** register, but only in the absence of a God-existence
+commitment (A27). See `coverage.md`'s "Attribute-collapse result"
+subsection and the new **GAP-25** (attribute typing / collapse
+escape) for the three named ways this incompatibility could be
+revised.
 
 **Update (Consecutio session)**: Prop. XVI's "*infinita infinitis
 modis*" clause is a second consumer of the same missing counting
@@ -345,6 +369,9 @@ and in how many ways). No separate GAP is opened for it: the
 prerequisite is identical to GAP-8a's, and any counting framework
 adopted here should be checked against both Def. VI's "*infinitis
 attributis*" and Prop. XVI's "*infinita infinitis modis*" uses.
+(The framework `Realitas.lean` supplies for GAP-8a — `Fin n`-based
+`hasAtLeastNAttributes`/`HasInfiniteAttributes` — is available for
+this use too, unattempted here.)
 
 ### GAP-8b — Universality of God's attributes over other substances
 
@@ -945,8 +972,42 @@ XXI + XXII + the trichotomy — at which point A42 could be demoted
 to a theorem (the usual demote-experiment discipline applies:
 the classification commitment may well be no weaker than A42).
 
-**Status**: ⏳ open — the precise successor to GAP-19's Prop.
-XXIII residue.
+**Status**: 🟡 **premise half CLOSED; residual half open.**
+
+**Update (Classificatio session)**: resolution path (ii) is done —
+`Ethica/Pars1/Classificatio.lean` commits the trichotomy's
+exhaustiveness directly as **A44** (`ClassificatioAxioms.
+ax_consecution_trichotomy`), without needing the ternary relation
+of (i): the binary `followsFrom`/`followsAbsolutely` primitives
+already available suffice to state the three horns generally
+(quantified over *every* mode, not just necessarily-infinite ones).
+`prop_23_partial_classification` mechanises this general trichotomy
+— the premise Prop. XXVIII's *demonstratio* silently consumed —
+closing GAP-23's premise half. As the resolution path predicted,
+A42 is now demotable: `A42_demote_via_trichotomy` proves A42's
+full content from Σ = {A38, A40, A41, A44}, an **equal-strength
+decomposition** (the classification commitment is exactly as
+strong as A42, no weaker) — see `auxiliary_axioms.md`'s A42/A44
+entries and README's demote table.
+
+**Residual half, unchanged and still open**: A44 (and hence
+`prop_23_partial_classification`) commits the trichotomy generally,
+for every mode — it does **not** additionally exclude the finite
+branch specifically for modes that are themselves
+necessarily-and-infinite, which is Prop. XXIII's actual conclusion
+(a disjunction of exactly *two* horns for that restricted class of
+modes). That exclusion needs a **finite-source transfer principle**
+— "what follows from a finite mode is itself finite" — which
+nothing in this formalisation commits to; without it, nothing rules
+out a necessarily-infinite mode following from a finite one. This
+residue is intentionally *not* split into a separate GAP number: it
+is exactly GAP-23's original content, now sharpened by A44's
+closure of the premise half. Resolution path for the residue is
+unchanged from (i) above — the ternary consecution relation of
+GAP-22 is likely the natural home for a form-faithful finite-source
+transfer principle as well, since Prop. XXVIII's own "*quatenus
+modificatum est modificatione quae finita est*" is itself a
+ternary construction.
 
 ---
 
@@ -994,6 +1055,92 @@ delivery vehicle); GAP-21 (the eternity senses also become
 disentanglable once essences are objects).
 
 **Status**: ⏳ open, deferred to Pars II.
+
+---
+
+## GAP-25 — Attribute typing / collapse escape
+
+**Location**: `Ethica/Pars1/Realitas.lean`, `/-! ## The
+attribute-collapse theorem -/` section (`attribute_collapse`,
+`attribute_is_substance`, `god_no_two_attributes`,
+`def6_infinitis_attributis_unsatisfiable`); cross-referenced from
+GAP-8a and from `coverage.md`'s "Attribute-collapse result"
+subsection.
+
+**Issue**: `Realitas.lean` proves, from five already-committed
+pieces of the register (attributes typed as `Thing`; A10
+`ax_attribute_perSe`; A8 `ax_inItself_iff_perSeConceived`; A14
+`ax_substance_has_attribute`; A15 `ax_IsGod_has_attribute_of`), that
+**any** `Pars1Axioms` world containing a God collapses every
+attribute of every substance onto that God
+(`attribute_collapse`). Consequences: God cannot have even two
+distinct attributes (`god_no_two_attributes`), and Def. VI's
+"*constantem infinitis attributis*" clause is therefore
+**unsatisfiable**, not merely unformalised, in any model with a God
+(`def6_infinitis_attributis_unsatisfiable`). `Models/
+MultiAttribute.lean` confirms the incompatibility is sharp: the
+full register tolerates infinite attribute plurality, but only in
+GODLESS models (`multiAttribute_hasNoGod`). No current axiom
+revision is proposed — this GAP catalogues the escape routes
+without endorsing one, since each is a genuine revision of a
+Section I/III commitment, not a bug fix.
+
+**Escape routes** (named in `Realitas.lean`'s header; each blocks a
+different step of the five-step collapse chain):
+
+1. **Restrict A12** (`ax_substanceIdByAttribute`) to non-attribute
+   substances. Blocks the final identification step
+   (`attribute_collapse`'s last line, where A12 identifies the
+   attribute-of-an-attribute-bearing substance with God). Cost: A12
+   currently earns its keep across 7 propositions (`coverage.md`'s
+   Section III utilization table); a restricted form would need to
+   be re-verified against every one of them, and the restriction
+   itself needs principled grounds for distinguishing
+   "attribute-typed" substances from ordinary ones within a single
+   `Thing` universe.
+2. **Weaken A10 and/or A8's bite specifically on attributes**
+   (Bennett's own line, Bennett 1984 §16 — declining exactly the A8
+   coextension when the subject is an attribute). Blocks step 3 of
+   the chain, `attribute_is_substance` (an attribute of a substance
+   is itself a substance). Cost: A8/A10 are both load-bearing
+   elsewhere (A8 for `prop_4_partition`'s substance/mode partition;
+   A10 for `prop_10_attributePerSe`) — any restriction must not
+   disturb those uses.
+3. **Type attributes off the `Thing` universe entirely**, giving
+   them their own type distinct from substances/modes. Blocks step
+   1 at the ground floor — `Attribute a s` currently has `a :
+   Thing`, the same universe as substances and modes; a genuinely
+   separate `Attributum` type would make `attribute_is_substance`
+   inexpressible, not merely false. Cost: the largest of the three
+   — every axiom and theorem mentioning `Attribute` (A8, A10, A12,
+   A14, A15, and every proposition built on them) would need
+   re-typing, and the "one universe of things" simplicity the base
+   layer currently enjoys would be lost.
+
+**Reading**: the collapse also formally validates (and then
+falsifies the joint tenability of) the Ep. 9 (to de Vries) identity
+reading of substance and attribute — "one and the same thing, ...
+only distinguished in respect of the different names by which it is
+called" — showing the register cannot simultaneously hold that
+identity reading AND attribute plurality once a God exists. Framed
+via the Wolfson (attributes as intellect-relative appearances) vs.
+Gueroult (attributes as objective aspects of substance)
+subjective/objective controversy, the collapse turns what is
+usually treated as a standing interpretive option into a forced
+choice: whichever side one takes, a Spinozistic God with more than
+one attribute is not a model of `Pars1Axioms`.
+
+**Resolution path**: a future `Attributum.lean` redesign committing
+to one of the three escape routes above (most plausibly route 3, a
+modal-layer or dedicated-type treatment of attributes, given routes
+1–2's collateral cost to already-load-bearing axioms), or an
+explicit acceptance of the collapse as correct Spinoza exegesis
+(some readings of Ep. 9 might welcome it). No route is adopted in
+this formalisation; the escape routes are catalogued, not chosen.
+
+**Status**: ⏳ open — newly opened by the Realitas/MultiAttribute
+session. Cross-reference: GAP-8a (the cardinality clause this
+theorem makes unsatisfiable-with-a-God).
 
 ---
 

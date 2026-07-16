@@ -53,6 +53,8 @@ Ethica/
     ├── Mereology.lean                    -- Props XII, XIII; A32 (MereologyAxioms)
     ├── Inherence.lean                    -- Props XV, XVIII, XXIV, XXVI, XXIX; A33–A36 (InherenceAxioms)
     ├── Consecutio.lean                   -- Props XVI, XX (partial), XXI, XXII, XXV cor., XXVIII, XXXVI; A37–A43 (ConsecutioAxioms)
+    ├── Realitas.lean                     -- Prop IX; counting framework (GAP-8a); the attribute-collapse theorem
+    ├── Classificatio.lean                -- Prop XXIII (partial); A44 (ClassificatioAxioms); A42 demote experiment
     └── Models/
         ├── SingleSubstance.lean          -- Unit-instance consistency witness
         ├── TwoSubstance.lean             -- Bennett-line falsifier bench
@@ -63,14 +65,17 @@ Ethica/
         ├── GodWorld.lean                 -- TheologiaAxioms consistency witness
         ├── MereologyWitness.lean         -- MereologyAxioms consistency witness
         ├── InherenceWitness.lean         -- InherenceAxioms consistency witness
-        └── ConsecutioWitness.lean        -- Full-register (A1–A15 + A27–A43) consistency witness
+        ├── ConsecutioWitness.lean        -- Full-register (A1–A15 + A27–A43) consistency witness
+        ├── MultiAttribute.lean           -- Godless infinite-attribute-plurality witness (Nat carrier)
+        └── ClassificatioWitness.lean     -- A44 (+ A42-demote register Σ) consistency witness
 texts/
 ├── ethica1_la.txt … ethica5_la.txt       -- Latin per Pars
 └── en_part1_elwes.txt … en_part5_elwes.txt   -- Elwes EN per Pars
 docs/
 ├── gaps.md                               -- GAP-N catalogue
 ├── coverage.md                           -- Per-proposition status
-└── auxiliary_axioms.md                   -- Section I/II/III register
+├── auxiliary_axioms.md                   -- Section I/II/III register
+└── HALLAZGOS.md                          -- Spanish findings digest (maintained separately)
 papers/
 └── cluster_a_irreducibility/             -- Bennett–Della Rocca paper
 ```
@@ -122,6 +127,56 @@ Joint consistency of the entire extended register — A1–A15 plus
 A27–A43, every non-modal layer at once — is witnessed on a single
 carrier by `Models/ConsecutioWitness.lean`, the largest
 single-model consistency proof in the project.
+
+A further pair of modules — `Realitas.lean` and
+`Classificatio.lean` — extends the arc again, **without adding a
+single new axiom to `Realitas.lean`'s own content** (Prop. IX is a
+genuine derivation) and with exactly one new axiom in
+`Classificatio.lean` (A44).
+
+**Prop. IX and the counting framework**: `Realitas.lean` mechanises
+Prop. IX (`prop_9_moreRealityMoreAttributes` + corollary
+`prop_9_cor_godMaximalReality`) under the Della Rocca *constitutive*
+reading of reality — "more reality" just *is* attribute-dominance —
+reducing the proposition to a one-line transfer theorem, no new
+axiom required. Along the way it introduces `hasAtLeastNAttributes`
+and `HasInfiniteAttributes`, a `Fin`-based, Mathlib-free counting
+framework that finally makes Def. VI's "*infinitis attributis*"
+clause **stateable** — closing the missing-framework half of
+GAP-8a.
+
+**The attribute-collapse theorem**: pointing that counting
+framework at `IsGod` reveals a sharp result. Five *already-committed*
+pieces of the register — attributes typed as `Thing`, plus A8, A10,
+A12, A14, A15 — jointly force that in **any** `Pars1Axioms` world
+containing a God, every attribute of every substance equals that
+God (`attribute_collapse`); God cannot have even two distinct
+attributes. Def. VI's "*infinitis attributis*" clause is therefore
+not merely unformalised but **unsatisfiable** wherever a God exists
+(`def6_infinitis_attributis_unsatisfiable`). `Models/
+MultiAttribute.lean` shows the incompatibility is sharp, not an
+artifact of a weak framework: the full register tolerates a
+substance with *infinitely* many attributes (carrier `Nat`,
+`multiAttribute_infinitude`) — but only in a **godless** model
+(`multiAttribute_hasNoGod`). Godless attribute plurality is
+consistent; godful attribute plurality is impossible. Three escape
+routes (restrict A12 to non-attribute substances; weaken A8/A10's
+bite on attributes; type attributes off the `Thing` universe
+entirely), each with its own cost, are catalogued but not adopted —
+tracked as `docs/gaps.md` GAP-25.
+
+**A44 and Prop. XXIII (partial)**: `Classificatio.lean` commits
+**A44** (`ax_consecution_trichotomy`, Section III) — the
+exhaustiveness premise Prop. XXVIII's *demonstratio* silently
+consumes: every mode follows absolutely from an attribute of God,
+from an eternal-infinite mode, or from another finite mode.
+`prop_23_partial_classification` mechanises this trichotomy
+directly, closing the premise half of GAP-23 (the finite-branch
+exclusion for necessarily-infinite modes specifically remains
+open). Running the project's demote-experiment discipline on A42
+against this new axiom yields `A42_demote_via_trichotomy`: **A42 is
+an equal-strength decomposition** over Σ = {A38, A40, A41, A44} —
+see the demote-experiments table above.
 
 ## Build
 
@@ -175,7 +230,9 @@ of A from Σ would specialise to the model, contradicting the
 constructed falsification.
 
 Outcome patterns observed across Pars I's four demotable Section
-III axioms (A12, A13, A14, A15):
+III axioms of v1.0.0 (A12, A13, A14, A15), plus the post-v1.0.0
+A42 demote (a different mechanism — a base-layer classification
+commitment rather than modal-layer PSR, see below):
 
 | Axiom | Demote Σ | Outcome |
 |-------|----------|---------|
@@ -183,12 +240,21 @@ III axioms (A12, A13, A14, A15):
 | A13 | `PSRSelfCause` modulo bridge A18 | Equal-strength translation |
 | A14 | `PSREssencePerception` | Trivial redescription |
 | A15 | `PSRPlenitude` (plenitude + uniqueness) | Decomposition only |
+| A42 | `TrichotomySigma` (A38+A40+A41+A44) | Equal-strength decomposition |
 
 Universality clauses (A12, A15) resist Della-Rocca-flavoured
 PSR-driven reduction; existence clauses (A13, A14) translate at
 equal strength. The structural distinction is not made explicit
 by the prose commentary on Spinoza and is the subject of the
-companion paper.
+companion paper. A42's demote runs a structurally similar
+experiment one layer down — a base-layer register Σ (no modal
+layer, no PSR) built from already-committed consecution axioms
+plus one new commitment (A44, the trichotomy Prop. XXVIII's own
+*demonstratio* consumes silently) — and lands on the same
+"equal-strength decomposition" outcome A15 does: A42 is derivable,
+but the destination register is no weaker than A42 itself. See
+`Ethica/Pars1/Classificatio.lean` and `docs/auxiliary_axioms.md`'s
+A42/A44 entries.
 
 ### Gap policy
 
