@@ -308,6 +308,17 @@ Different propositions consume different halves: Prop. XIV
 *ontological* arguments require GAP-8a (the "infinitely many"
 clause is what guarantees God is *the* maximal substance).
 
+**Update (Theologia.lean session)**: Prop. XI as actually
+mechanised (`prop_11_godNecessarilyExists`, `Theologia.lean`) does
+**not** go through GAP-8a at all. It uses the direct Section III
+commitment A27 (`TheologiaAxioms.ax_god_exists`, "Deus datur")
+instead of aggregating A13 with a cardinality clause — see
+`auxiliary_axioms.md` A27 and `coverage.md`'s Prop. XI row. GAP-8a
+therefore remains open but is no longer on Prop. XI's critical
+path; it would still matter for a *cardinality*-faithful
+mechanisation of Def. VI (a substance with *infinitely many*
+attributes) should that be pursued independently of A27.
+
 ### GAP-8a — Infinite-attribute cardinality
 
 **Location**: `Ethica/Pars1/Definitions.lean`, `IsGod` (the
@@ -324,6 +335,16 @@ either (a) Mathlib's `Set.Infinite` over the attributes of `g`, or
 (b) a dedicated cardinality predicate.
 
 **Status**: ⏳ deferred.
+
+**Update (Consecutio session)**: Prop. XVI's "*infinita infinitis
+modis*" clause is a second consumer of the same missing counting
+framework — `prop_16_modesFollowFromGod` (`Consecutio.lean`)
+mechanises only the **qualitative** content (every mode follows
+from God), not the cardinality claim (*how many* things follow,
+and in how many ways). No separate GAP is opened for it: the
+prerequisite is identical to GAP-8a's, and any counting framework
+adopted here should be checked against both Def. VI's "*infinitis
+attributis*" and Prop. XVI's "*infinita infinitis modis*" uses.
 
 ### GAP-8b — Universality of God's attributes over other substances
 
@@ -396,6 +417,14 @@ and similarly for `Constrained` (the contrast term).
 
 **Status**: ⏳ deferred. The current alias is honest about being
 incomplete via the doc comment.
+
+**Update (Theologia/Inherence session)**: this gap now also blocks
+the action-clause fragments of two new theorems that mechanise only
+the existence-clause reading of Def. VII: `prop_17_godIsFree`
+(`Theologia.lean`, Prop. XVII) and `prop_26_modesDeterminedByGod`
+(`Inherence.lean`, Prop. XXVI, partial). Both are honestly flagged
+in their own docstrings and in `coverage.md`. Cross-referenced as
+GAP-18 to avoid duplicating this entry.
 
 ---
 
@@ -652,6 +681,319 @@ two gods are identical, not
 that every substance is a god. Prop. XIV requires both A26 and
 A15's universality reach. Hence the A15 demote replaces one
 universality with a different one, not a reduction.
+
+---
+
+## GAP-16 — Prop. XII/XIII epistemic wrapper (*"vere concipi"*)
+
+**Location**: `Ethica/Pars1/Mereology.lean`,
+`prop_12_substanceIndivisible`,
+`prop_13_absolutelyInfiniteSubstanceIndivisible`.
+
+**Issue**: Spinoza states Prop. XII *epistemically* — "*Nullum
+substantiae attributum potest vere concipi ex quo sequatur
+substantiam posse dividi*", no attribute can be **truly conceived**
+from which it follows that substance can be divided — not directly
+as a claim that substance is not divisible. The base layer has no
+"truly conceiving" operator (that machinery belongs to Pars II's
+theory of ideas), so the epistemic wrapper cannot yet be
+mechanised. What is mechanised (`prop_12_substanceIndivisible`,
+via A32 + A12) is the shared *ontological core* both XII and XIII's
+demonstrationes actually turn on: no substance has a proper part.
+
+**Resolution path**: Pars II's idea/conception machinery — once a
+"truly conceived" (`vereConcipi` or similar) predicate exists, the
+epistemic wrapper can be added as a further clause and the
+ontological core re-used as its consequent.
+
+**Status**: ⏳ open, deferred to Pars II.
+
+---
+
+## GAP-17 — Prop. XV second clause (*"nec concipi potest sine Deo"*)
+
+**Location**: `Ethica/Pars1/Inherence.lean`, `prop_15_allInGod`.
+
+**Issue**: Prop. XV's full statement has two clauses — the
+ontological ("*Quicquid est, in Deo est*", whatever is, is in God)
+and the epistemic ("*nihil sine Deo esse neque concipi potest*",
+nothing can be, or be conceived, without God). Only the ontological
+clause is mechanised (`prop_15_allInGod`, via A33 +
+`prop_14_onlyGodIsSubstance` + `prop_4_partition`). The epistemic
+half needs the same conception machinery GAP-16 is waiting on.
+
+**Resolution path**: Pars II conception machinery — the same
+prerequisite as GAP-16; the two gaps may close together once a
+"conceived through" chain to God is formalised.
+
+**Status**: ⏳ open, deferred to Pars II.
+
+---
+
+## GAP-18 — Prop. XVII / XXVI action-clause fragments
+
+**Location**: `Ethica/Pars1/Theologia.lean`, `prop_17_godIsFree`;
+`Ethica/Pars1/Inherence.lean`, `prop_26_modesDeterminedByGod`.
+
+**Issue**: Both propositions carry an action-clause half that is
+not mechanised. Prop. XVII: `prop_17_godIsFree` mechanises Cor.
+II's *existence*-clause reading only ("*ex sola suae naturae
+necessitate existit*"); the *action*-clause ("*ad agendum a se
+solo determinatur*") is not captured. Prop. XXVI:
+`prop_26_modesDeterminedByGod` mechanises that the mode is
+`Constrained` and caused by God, but the "*ad aliquid operandum*"
+self-determination clause (the statement's second half, and the
+whole of Prop. XXVII) is not captured. Both fragments are the same
+underlying gap as **GAP-9** (Def. VII's two-clause structure for
+`Free`/`Constrained`) — this entry cross-references rather than
+duplicates it.
+
+**Resolution path**: identical to GAP-9's — Pars II's action /
+*conatus* machinery, redefining `Free`/`Constrained` with a
+`selfDeterminedToAct` conjunct. Closing GAP-9 closes this gap for
+both propositions simultaneously.
+
+**Status**: ⏳ open — see GAP-9 for the shared resolution path.
+
+---
+
+## GAP-19 — Consecution relation (*"ex necessitate divinae naturae sequi"*)
+
+**Location**: blocks Props. XVI, XXI, XXII, XXIII (and
+transitively XXVIII, XXXIII) in `docs/coverage.md`.
+
+**Issue**: Spinoza's "follows from the necessity of the divine
+nature" (Prop. XVI: "*Ex necessitate divinae naturae infinita
+infinitis modis [...] sequi debent*") names a distinct relation —
+*following from* an attribute's or God's nature — that nothing in
+`Pars1Axioms`, `CausalAxioms`, `TheologiaAxioms`, `MereologyAxioms`,
+or `InherenceAxioms` currently formalises. `InherenceAxioms`
+mechanises *inherence* (`inheresIn`) and its causal reading (A34),
+which is adjacent but not the same relation — Prop. XVIII (God as
+immanent cause of what is *in* him) does not need consecution, but
+Prop. XVI (what *follows from* his nature) does.
+
+**Resolution path**: a planned `Consecutio.lean` introducing a
+`sequiturEx`/consecution primitive (`Thing → Thing → Prop`, "x
+follows from y's nature") plus the axioms connecting it to
+`Attribute`/`IsGod`, sufficient to state and prove Props.
+XVI/XXI/XXII/XXIII.
+
+**Status**: ✅ closed via `Ethica/Pars1/Consecutio.lean`.
+`ConsecutioWorld` (extending `InherenceWorld`) introduces two
+primitives — `followsFrom` ("*ex necessitate naturae ejus
+sequitur*") and `followsAbsolutely` (Prop. XXI's "*ex absoluta
+natura*") — and `ConsecutioAxioms` (extending `InherenceAxioms`)
+commits A37–A43 (catalogued in `auxiliary_axioms.md`: A39 Section
+I; A37/A38 Section II; A40–A43 Section III 📜-pattern). Mechanised
+on top: Props. XVI (partial — qualitative clause), XVI Cor. I, XX
+(partial), XXI, XXII, XXV cor., XXVIII (+ derived corollary),
+XXXVI. Consistency witnessed by `Models/ConsecutioWitness.lean`
+(whole extended register A1–A15 + A27–A43 on one carrier).
+**Residue split into precise successor gaps**: Prop. XXIII's
+exhaustiveness premise (GAP-23), the ternary
+attribute-relativisation (GAP-22), the eternity/sempiternity
+conflation (GAP-21), and Prop. XVI's cardinality clause (GAP-8a
+cross-reference). Prop. XXXIII's consecution dependency is
+unblocked on this side but still needs the modal layer.
+
+---
+
+## GAP-20 — Horn (ii) of Prop. XII's dilemma (destruction/persistence)
+
+**Location**: `Ethica/Pars1/Mereology.lean`, `MereologyAxioms`
+(A32's docstring).
+
+**Issue**: Spinoza's *demonstratio* of Prop. XII runs a two-horn
+dilemma on a hypothesised division of substance: horn (i), the
+parts *retain* the substance's nature (rival same-nature substances
+— absurd per Prop. V); horn (ii), the parts do *not* retain that
+nature, in which case the substance could lose its nature and
+*cease to exist* (absurd per Prop. VII). A32 encodes only horn (i)
+— the load-bearing horn for the actual contradiction, and the only
+one expressible without further machinery. Horn (ii) needs a notion
+of a substance ceasing to exist over time or across possibility
+(destruction/persistence), which the base layer does not have; this
+belongs with a modal / temporal extension, not the current base
+layer.
+
+**Resolution path**: at the modal layer, introduce a
+persists-at-`w`/ceases-to-exist notion (extending
+`ModalEthicaWorld`'s `existsAt`) and formalise horn (ii) as a
+second disjunct of A32 (or a sibling axiom), then show the
+disjunction is exhaustive and each horn independently yields
+`False`.
+
+**Status**: ⏳ open, deferred to the modal layer. A32 is honest
+about covering horn (i) only via its own docstring and the
+`coverage.md` Prop. XII/XIII row notes.
+
+---
+
+## GAP-21 — Eternity vs sempiternity conflation in A40/A41
+
+**Location**: `Ethica/Pars1/Consecutio.lean`,
+`ax_absoluteConsecution_eternalInfinite` (A40) and
+`ax_infiniteModeTransfer` (A41).
+
+**Issue**: Def. VIII defines eternity as existence "*quatenus ex
+sola rei aeternae definitione necessario sequi concipitur*" —
+**essence-grounded** eternity, the kind `prop_19_godIsEternal`
+attributes to God via A28. Prop. XXI's "*aeterna*" for the
+infinite modes is arguably a different modality: the infinite
+modes "*semper … existere debuerunt*" — a **cause-derived
+sempiternity** (always existing *through* the attribute they
+follow from, "*per idem attributum aeterna*"), not existence
+following from their own definition alone. Indeed A35 (Prop.
+XXIV) explicitly *denies* that any mode's essence involves
+existence — so an infinite mode's "eternity" cannot be Def.
+VIII's essence-grounded kind on pain of tension with A35. A40 and
+A41 nonetheless conclude with the single `Eternal` primitive Def.
+VIII supplies, conflating the two senses — as Spinoza's own text
+invites ("*per idem attributum aeterna*" glosses the distinction
+over), but a mechanisation should keep the promissory note
+visible.
+
+**Reading**: the essence-eternity vs sempiternity distinction is
+standard in the commentary on Def. VIII vs Props. XXI–XXIII (the
+"duration without beginning or end" versus "atemporal necessity"
+debate). The current single-primitive encoding takes no side; it
+merely cannot yet *express* the difference.
+
+**Resolution path**: the modal layer's world-relative existence
+machinery (`ModalForm.lean`'s `existsAt`) can distinguish (a)
+essence-grounded eternity — existence at every world following
+from the thing's own nature (A18-style) — from (b) sempiternity
+through a cause — existence at every world *inherited via*
+`causeAt` from an eternal cause. Once both are expressible, A40/
+A41's conclusions should be re-typed to the cause-derived sense
+and the tension with A35 dissolved explicitly.
+
+**Status**: ⏳ open, deferred to the modal layer.
+
+---
+
+## GAP-22 — Prop. XXII's ternary attribute-relativisation flattened
+
+**Location**: `Ethica/Pars1/Consecutio.lean`,
+`ax_infiniteModeTransfer` (A41), `prop_22_infiniteModeTransfer`.
+
+**Issue**: Spinoza's Prop. XXII is genuinely **ternary**:
+"*Quicquid ex aliquo Dei attributo, quatenus modificatum est tali
+modificatione quae … sequitur*" — a thing follows from an
+**attribute-as-modified-by-a-modification**, not simply from the
+modification taken on its own. `ConsecutioWorld` has only the
+binary `followsFrom : Thing → Thing → Prop`, so the
+attribute-relativisation ("*ex aliquo Dei attributo quatenus
+modificatum*") cannot be represented; A41 flattens the statement
+to a binary transfer along `followsFrom` from the infinite mode
+itself.
+
+**Reading**: the "*quatenus*" construction is load-bearing in
+Spinoza's causal metaphysics (it recurs in Prop. XXVIII's
+"*quatenus modificatum est modificatione quae finita est*" and
+throughout Pars II); flattening it is a genuine loss of logical
+form, not just of idiom.
+
+**Resolution path**: introduce a **ternary consecution relation**
+— `followsFromQua : Thing → Thing → Thing → Prop` ("x follows
+from attribute a insofar as a is modified by m") — when a
+consumer needs it, with A39-style bridges projecting the ternary
+form onto the binary `followsFrom`. The same ternary relation is
+the prerequisite for Prop. XXIII's trichotomy (GAP-23) and for a
+form-faithful Prop. XXVIII; introduce it once, for all three.
+
+**Status**: ⏳ open — deferred until a consumer requires the
+ternary form.
+
+---
+
+## GAP-23 — Prop. XXIII as classification/exhaustiveness premise
+
+**Location**: `Ethica/Pars1/Consecutio.lean`,
+`ax_finiteMode_causedByFiniteMode` (A42's docstring); coverage
+row XXIII.
+
+**Issue**: Prop. XXIII ("every mode which exists necessarily and
+as infinite must follow either from the absolute nature of an
+attribute or from an attribute modified by an infinite
+modification") functions in Spinoza's architecture as a
+**classification/exhaustiveness premise**: every mode follows
+either absolutely, or via an infinite modification, or via a
+finite one. Prop. XXVIII's *demonstratio* consumes this
+trichotomy **silently** — it rules out the first two horns (via
+Props. XXI/XXII) to land finite modes on the third. The
+formalisation does not commit the trichotomy: A42 commits Prop.
+XXVIII's *conclusion* directly instead (the honest minimal form —
+see A42's entry in `auxiliary_axioms.md`), leaving Prop. XXIII
+itself unmechanised and the exhaustiveness reasoning unavailable.
+
+**Reading**: the trichotomy is where Spinoza's taxonomy of modes
+(immediate infinite / mediate infinite / finite) lives; it is
+also, notoriously, where the *Ethica* leans on the letters (Ep.
+64's examples of the infinite modes) for content the text itself
+underspecifies.
+
+**Resolution path**: (i) the ternary consecution relation of
+GAP-22, so "follows from an attribute *quatenus modificatum*"
+is expressible at all; (ii) an explicit Section III
+**classification commitment** asserting the trichotomy's
+exhaustiveness (every mode follows absolutely, via an infinite
+modification, or via a finite modification). With both, Prop.
+XXIII becomes statable and Prop. XXVIII re-derivable from
+XXI + XXII + the trichotomy — at which point A42 could be demoted
+to a theorem (the usual demote-experiment discipline applies:
+the classification commitment may well be no weaker than A42).
+
+**Status**: ⏳ open — the precise successor to GAP-19's Prop.
+XXIII residue.
+
+---
+
+## GAP-24 — Essence-as-object machinery (Prop. XX's identity; Prop. XXV proper)
+
+**Location**: `Ethica/Pars1/Consecutio.lean`,
+`prop_20_partial_attributesExpressBoth` (Prop. XX partial),
+`prop_25_cor_everythingGodOrMode` (corollary only).
+
+**Issue**: two propositions of the consecution arc make claims
+*about essences as objects*, which the current layer cannot
+express — every essence-flavoured notion in `EthicaWorld` is a
+predicate (`involvesExistence`, `expressesEternalEssence`,
+`intellectPerceivesAsEssence`), never a *term* denoting an
+essence:
+
+- **Prop. XX** ("*Dei existentia ejusque essentia unum et idem
+  sunt*") asserts an **identity** — God's essence and God's
+  existence are *the same thing*. What is mechanised
+  (`prop_20_partial_attributesExpressBoth`) is the conjunctive
+  content the *demonstratio* assembles (each attribute expresses
+  both essence and existence); the identity conclusion needs
+  "God's essence" and "God's existence" as terms that can flank
+  `=`.
+- **Prop. XXV proper** ("*Deus est causa efficiens rerum
+  existentiae sed etiam essentiae*") asserts God **causes the
+  essences** of things — `Cause` would need an essence-term as
+  its second argument. Only the corollary (provable from Prop. XV
+  + Def. V without essence-causation) is mechanised.
+
+**Reading**: essence-as-object is exactly what Pars II's "*ideae
+rerum singularium*" machinery trades in (ideas of essences,
+formal vs objective essence); it is also adjacent to the
+conception machinery GAP-16/GAP-17 await — the "truly conceived"
+operator and the essence-term machinery will likely arrive
+together with Pars II's theory of ideas.
+
+**Resolution path**: introduce an essence-assignment (e.g.
+`essenceOf : Thing → Essence` or a reified `Essence`-sorted
+domain) at the Pars II layer; restate Prop. XX as
+`essenceOf g = existenceOf g` (or the appropriate identification)
+and Prop. XXV proper as `Cause g (essenceOf x)`. Cross-reference:
+GAP-16/GAP-17 (Pars II conception machinery — likely the same
+delivery vehicle); GAP-21 (the eternity senses also become
+disentanglable once essences are objects).
+
+**Status**: ⏳ open, deferred to Pars II.
 
 ---
 

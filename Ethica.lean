@@ -15,6 +15,16 @@ import Ethica.Pars1.Models.TwoSubstance
 import Ethica.Pars1.ModalForm
 import Ethica.Pars1.Models.MultiWorld
 import Ethica.Pars1.Models.Counterexamples
+import Ethica.Pars1.Theologia
+import Ethica.Pars1.Models.NoGod
+import Ethica.Pars1.Models.GodWorld
+import Ethica.Pars1.Mereology
+import Ethica.Pars1.Models.MereologyWitness
+import Ethica.Pars1.Inherence
+import Ethica.Pars1.Models.InherenceWitness
+import Ethica.Pars1.Models.CounterexamplesII
+import Ethica.Pars1.Consecutio
+import Ethica.Pars1.Models.ConsecutioWitness
 
 -- Future Pars (stubs):
 -- import Ethica.Pars2.Definitions   -- De natura et origine mentis

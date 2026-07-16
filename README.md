@@ -49,11 +49,21 @@ Ethica/
     ├── Causation.lean                    -- Cause predicate, A3 / A4 substantive
     ├── Propositions.lean                 -- Props I–XIV with full proofs
     ├── ModalForm.lean                    -- S5 modal re-derivation
+    ├── Theologia.lean                    -- Props XI, XVII, XIX; A27–A31 (TheologiaAxioms)
+    ├── Mereology.lean                    -- Props XII, XIII; A32 (MereologyAxioms)
+    ├── Inherence.lean                    -- Props XV, XVIII, XXIV, XXVI, XXIX; A33–A36 (InherenceAxioms)
+    ├── Consecutio.lean                   -- Props XVI, XX (partial), XXI, XXII, XXV cor., XXVIII, XXXVI; A37–A43 (ConsecutioAxioms)
     └── Models/
         ├── SingleSubstance.lean          -- Unit-instance consistency witness
         ├── TwoSubstance.lean             -- Bennett-line falsifier bench
         ├── MultiWorld.lean               -- Bridge-axiom witness (modal layer)
-        └── Counterexamples.lean          -- Kernel-level non-derivation witnesses
+        ├── Counterexamples.lean          -- Kernel-level non-derivation witnesses
+        ├── NoGod.lean                    -- A27 irreducibility witness (falsifies A27 under full Pars1Axioms)
+        ├── CounterexamplesII.lean        -- A32/A35 irreducibility witnesses (ModeParts, NecessaryMode)
+        ├── GodWorld.lean                 -- TheologiaAxioms consistency witness
+        ├── MereologyWitness.lean         -- MereologyAxioms consistency witness
+        ├── InherenceWitness.lean         -- InherenceAxioms consistency witness
+        └── ConsecutioWitness.lean        -- Full-register (A1–A15 + A27–A43) consistency witness
 texts/
 ├── ethica1_la.txt … ethica5_la.txt       -- Latin per Pars
 └── en_part1_elwes.txt … en_part5_elwes.txt   -- Elwes EN per Pars
@@ -64,6 +74,54 @@ docs/
 papers/
 └── cluster_a_irreducibility/             -- Bennett–Della Rocca paper
 ```
+
+## Extensions beyond v1.0.0
+
+Since the v1.0.0 release, four further modules extend Pars I's
+theological, mereological, inherence, and consecution arcs —
+**without touching the v1.0.0 axiom register** (`Pars1Axioms`,
+`CausalAxioms`). Each new commitment lives in its own typeclass
+extending `Pars1Axioms` (`TheologiaAxioms`, `MereologyAxioms`,
+`InherenceAxioms`, `ConsecutioAxioms`), so the original register
+and its published irreducibility results are unchanged;
+downstream theorems opt in by consuming the extended typeclass.
+
+Propositions XI, XII, XIII, XV, XVII, XVIII, XIX, XXIV, XXVI, and
+XXIX were mechanised first (in full or in an honestly-flagged
+partial form) via ten new auxiliary axioms, A27–A36. A subsequent
+consecution batch (`Consecutio.lean`, axioms A37–A43) adds the
+Prop. XVI–XXXVI causal-cascade arc: Props. XXI, XXII, and XXVIII
+(📜 direct commitments, the last with a genuinely derived
+"no-first-finite-cause" corollary), Prop. XXXVI (derived from
+A43 + A38), Prop. XXV corollary, and partial forms of Props. XVI
+(qualitative clause; cardinality open) and XX (conjunctive
+content; the "unum et idem" identity open). Per-proposition
+status and the exact derivation chains are tracked in
+`docs/coverage.md`; full philosophical justification for each new
+axiom is in `docs/auxiliary_axioms.md`.
+
+Three kernel-level irreducibility witnesses now cover every
+Section III axiom of the first extension batch, each against a
+baseline **stronger** than the v1.0.0 counter-models for A12 and
+A15 (which run against `StatedAxioms`, the register *without* the
+Section III commitments):
+
+- `Models/NoGod.lean` — God's existence (A27 / Prop. XI) is not
+  derivable even from the full `Pars1Axioms` register (A1–A15).
+- `Models/CounterexamplesII.lean` `ModeParts` — A32 (Prop. XII's
+  parts-would-be-rival-substances horn) is falsified while
+  `Pars1Axioms` + `CausalAxioms` + `TheologiaAxioms` +
+  `InherenceAxioms` all hold: the parts-as-modes reading (Letter
+  12; Curley) is a live alternative.
+- `Models/CounterexamplesII.lean` `NecessaryMode` — A35 (Prop.
+  XXIV) is falsified while the register minus A35 holds: only A35
+  enforces the through-cause vs through-essence necessity
+  distinction.
+
+Joint consistency of the entire extended register — A1–A15 plus
+A27–A43, every non-modal layer at once — is witnessed on a single
+carrier by `Models/ConsecutioWitness.lean`, the largest
+single-model consistency proof in the project.
 
 ## Build
 
