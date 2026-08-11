@@ -68,6 +68,13 @@ Ethica/
         ├── ConsecutioWitness.lean        -- Full-register (A1–A15 + A27–A43) consistency witness
         ├── MultiAttribute.lean           -- Godless infinite-attribute-plurality witness (Nat carrier)
         └── ClassificatioWitness.lean     -- A44 (+ A42-demote register Σ) consistency witness
+└── Attributum/                           -- Re-typed attribute layer (GAP-25 / GAP-8a); parallel branch
+    ├── Core.lean                         -- AttrStructure, AttrWorld, Attributum, IsGodAttr, counting framework
+    ├── Axioms.lean                       -- A10′/A12′/A14′/A15′ (AttrAxioms); Props V, IX, X re-typed
+    ├── Bridge.lean                       -- Attr := Thing recovers Pars I; collapse transported
+    └── Models/
+        ├── DualAttribute.lean            -- A God with TWO attributes (cogitatio, extensio)
+        └── InfiniteAttribute.lean        -- A God with infinitely many attributes; Def. VI recovered
 texts/
 ├── ethica1_la.txt … ethica5_la.txt       -- Latin per Pars
 └── en_part1_elwes.txt … en_part5_elwes.txt   -- Elwes EN per Pars
@@ -164,6 +171,54 @@ routes (restrict A12 to non-attribute substances; weaken A8/A10's
 bite on attributes; type attributes off the `Thing` universe
 entirely), each with its own cost, are catalogued but not adopted —
 tracked as `docs/gaps.md` GAP-25.
+
+## The Attributum layer — GAP-25 resolved
+
+`Ethica/Attributum/` adopts the third escape route — type attributes
+off the `Thing` universe — as a **parallel branch**. Nothing under
+`Ethica/Pars1/` is modified: v1.0.0's register and the published
+irreducibility results stand exactly as they are, and the collapse
+remains true of Pars I.
+
+`AttrWorld Thing Attr` extends `EthicaWorld Thing`, so every Pars I
+primitive is reused verbatim; only attribution is re-routed, through
+`perceivedAsEssence : Thing → Attr → Prop`. Because `Attributum a s`
+has `a : Attr`, `Substance a` does not typecheck — the collapse
+chain's third step is **inexpressible, not merely false**. Prop. X
+survives via `perSeConceivedAttr`, a field of `AttrStructure Attr`,
+a class that does not mention `Thing` at all. What the layer
+withdraws is only A8's *bite on attributes* — precisely Bennett's
+position (1984 §16, attributes as "basic and irreducible ways of
+being"), now enforced by typing rather than by restricting an axiom.
+The four attribute axioms are re-typed verbatim as A10′/A12′/A14′/
+A15′, keeping their Section classifications.
+
+Two witnesses, both depending on **no axioms whatever**:
+
+- `Models/DualAttribute.lean` — a God with **two** distinct
+  attributes, `cogitatio` and `extensio`, in a world carrying
+  `AttrAxioms` *and* `StatedAxioms` (Spinoza's own A1–A11, the
+  register the published results run against).
+- `Models/InfiniteAttribute.lean` — a God with **infinitely many**
+  attributes (`inf_def6_recovered`). Def. VI is satisfied outright,
+  closing GAP-8a. Contrast `Models/MultiAttribute.lean`, which
+  achieves infinitude on the full Pars I register only by being
+  godless: here plurality and God hold *simultaneously*.
+
+`Bridge.lean` supplies the diagnosis. `legacyAttrWorld` instantiates
+`Attr := Thing`; under it `Attributum`, `IsGodAttr`,
+`hasAtLeastNAttrs` and `HasInfiniteAttrs` are *definitionally* their
+Pars I counterparts (four `Iff.rfl` lemmas), and `legacy_collapse`,
+`legacy_god_no_two_attributes` and `legacy_def6_unsatisfiable`
+transport Pars I's impossibility results into the new vocabulary.
+
+So the **same sentence, under the same axioms, is satisfiable when
+`Attr` is separate and refutable when `Attr := Thing`**. The
+attribute collapse is an artefact of the Prop. X scholium's
+identification of attributes with things — not a consequence of
+Spinoza's substantive commitments. This is also what unblocks
+Pars II, whose Props. I–II assert that Thought and Extension are two
+distinct attributes of God.
 
 **A44 and Prop. XXIII (partial)**: `Classificatio.lean` commits
 **A44** (`ax_consecution_trichotomy`, Section III) — the

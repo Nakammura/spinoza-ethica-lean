@@ -204,6 +204,64 @@ que el paper original encontró en el registro v1.0.0: las cláusulas de
 *universalidad/exhaustividad* son los compromisos duros; las cadenas
 causales se reducen a ellas.
 
+## 9. ⭐ El colapso era un artefacto del tipado — y la Def. VI se recupera
+
+**Archivos**: `Ethica/Attributum/` (capa nueva, rama paralela) ·
+**Teoremas**: `dual_god_with_two_attributes`, `inf_def6_recovered`,
+`legacy_god_no_two_attributes`, `legacy_collapse`
+
+El hallazgo 7 dejaba una pregunta abierta: ¿el colapso de atributos
+refleja un compromiso real de Spinoza, o un accidente de cómo lo
+formalizamos? Ahora está respondido, y la respuesta es **lo segundo**.
+
+La capa `Ethica/Attributum/` tipa los atributos fuera del universo
+`Thing` (`AttrWorld Thing Attr`, con `Attributum a s` donde
+`a : Attr`). Con eso, el paso 3 de la cadena de cinco
+—`attribute_is_substance`— deja de ser falso y pasa a ser
+**inexpresable**: `Substance a` no tipa. La Prop. X sobrevive vía
+`perSeConceivedAttr`, campo de una clase `AttrStructure Attr` que ni
+siquiera menciona `Thing`. Lo único que se retira es la *mordida de
+A8 sobre los atributos* — exactamente la posición de Bennett (1984
+§16), ahora impuesta por el sistema de tipos y no por restringir un
+axioma. Los cuatro axiomas de atributos se re-tipan verbatim como
+A10′/A12′/A14′/A15′, conservando su clasificación de Sección.
+
+Dos testigos, ambos **sin depender de ningún axioma** (verificado con
+`#print axioms`):
+
+- `Models/DualAttribute.lean` — un Dios con **dos** atributos
+  distintos, `cogitatio` y `extensio`, en un mundo que satisface
+  `AttrAxioms` **y** `StatedAxioms` (los A1–A11 propios de Spinoza,
+  el registro contra el que corre el paper publicado).
+- `Models/InfiniteAttribute.lean` — un Dios con **infinitos**
+  atributos. La cláusula *constantem infinitis attributis* de la
+  Def. VI queda satisfecha: **GAP-8a cerrado**. Contraste con
+  `Models/MultiAttribute.lean`, que lograba la infinitud sobre el
+  registro completo de Pars I solo a costa de ser *sin Dios*; aquí
+  Dios y pluralidad coexisten.
+
+El diagnóstico lo da `Bridge.lean`: `legacyAttrWorld` instancia
+`Attr := Thing`, y bajo esa instancia `Attributum`, `IsGodAttr`,
+`hasAtLeastNAttrs` y `HasInfiniteAttrs` son *definicionalmente* sus
+contrapartes de Pars I (cuatro lemas `Iff.rfl`). Los teoremas
+`legacy_collapse` y `legacy_god_no_two_attributes` transportan la
+imposibilidad de Pars I al vocabulario nuevo.
+
+> **La misma frase, bajo los mismos axiomas, es satisfacible cuando
+> `Attr` es un tipo aparte y refutable cuando `Attr := Thing`.**
+> El colapso no era un compromiso de Spinoza: era el escolio de la
+> Prop. X identificando atributos con cosas.
+
+Nada de `Ethica/Pars1/` fue modificado: la decisión fue **congelar
+v1.0.0** para que el paper publicado (arXiv:2605.02331) siga válido.
+El colapso sigue siendo verdadero de Pars I, y ahora sabemos
+exactamente por qué.
+
+Consecuencia práctica: **Pars II queda desbloqueada**. Sus
+Proposiciones I y II afirman que Pensamiento y Extensión son dos
+atributos distintos de Dios — literalmente lo que
+`dual_god_with_two_attributes` exhibe.
+
 ---
 
 ## Resumen numérico del estado (rama `pars1-extensions`)
@@ -214,11 +272,17 @@ causales se reducen a ellas.
 - **Axiomas auxiliares nuevos**: A27–A44 (18), de los cuales 5 de
   Sección III genuinos (A27, A32, A35, A40, A41, A44 — con A42
   descompuesto en A44) y el resto puentes/promociones.
-- **Modelos nuevos**: 9 (4 testigos de consistencia, 3 contramodelos
-  de irreducibilidad, 1 bench multiatributo, 1 testigo global).
+- **Modelos nuevos**: 11 (4 testigos de consistencia, 3 contramodelos
+  de irreducibilidad, 1 bench multiatributo, 1 testigo global, y 2 de
+  la capa Attributum).
 - **Teoremas de imposibilidad**: 2 (no-derivabilidad de la existencia
-  de Dios; incompatibilidad Dios ∧ pluralidad de atributos).
-- `lake build` limpio, **0 `sorry`**, ninguna declaración de v1.0.0
-  modificada.
+  de Dios; incompatibilidad Dios ∧ pluralidad de atributos **en el
+  registro de Pars I** — el hallazgo 9 muestra que la segunda depende
+  del tipado, no de los axiomas).
+- **Capa nueva `Ethica/Attributum/`**: 5 módulos; GAP-25 y GAP-8a
+  cerrados; Def. VI recuperada; Pars II desbloqueada.
+- `lake build` limpio, **0 `sorry`**, **0 `axiom`**, ninguna
+  declaración de v1.0.0 modificada. El gate de CI ahora verifica
+  mecánicamente las dos últimas condiciones.
 
 *Documento actualizado junto con cada tramo de trabajo.*

@@ -334,8 +334,28 @@ some readings of Prop. XI.
 either (a) Mathlib's `Set.Infinite` over the attributes of `g`, or
 (b) a dedicated cardinality predicate.
 
-**Status**: 🟡 **partially closed — the framework exists, but is
-unsatisfiable-with-a-God**.
+**Status**: ✅ **closed** — the framework exists (Realitas session)
+*and* is satisfied by an actual God in the Attributum layer
+(Attributum session). It remains unsatisfiable-with-a-God in the
+Pars I register, which `Bridge.lean` now explains rather than merely
+records. See the two updates below, in order.
+
+**Update (Attributum session)**: the consistency half is closed.
+`Ethica/Attributum/Models/InfiniteAttribute.lean` exhibits a God
+with infinitely many attributes — `inf_def6_recovered :
+HasInfiniteAttrs deus`, and `inf_god_with_infinite_attributes`
+packaging it with `IsGodAttr deus` — in a world carrying
+`AttrAxioms` (A10′/A12′/A14′/A15′, the same axioms re-typed) and
+`StatedAxioms` (Spinoza's own A1–A11). The theorem depends on no
+axioms at all (`#print axioms`).
+
+Def. VI's "*infinitis attributis*" clause is therefore not merely
+stateable but **true of something**. What blocked it was never
+Spinoza's commitments: it was the Prop. X scholium reading that puts
+attributes in `Thing`. `Ethica/Attributum/Bridge.lean`'s
+`legacy_def6_unsatisfiable` re-derives the Pars I impossibility by
+instantiating `Attr := Thing`, isolating the typing choice as the
+sole difference. See GAP-25's Update for the full module tree.
 
 **Update (Realitas session)**: `Ethica/Pars1/Realitas.lean` closes
 the missing-framework half directly: `hasAtLeastNAttributes s n`
@@ -1138,9 +1158,61 @@ explicit acceptance of the collapse as correct Spinoza exegesis
 (some readings of Ep. 9 might welcome it). No route is adopted in
 this formalisation; the escape routes are catalogued, not chosen.
 
-**Status**: ⏳ open — newly opened by the Realitas/MultiAttribute
-session. Cross-reference: GAP-8a (the cardinality clause this
-theorem makes unsatisfiable-with-a-God).
+**Update (Attributum session)**: route 3 is now **adopted and
+implemented**, as a *parallel branch* rather than as an in-place
+edit. New module tree `Ethica/Attributum/`:
+
+- `Core.lean` — `AttrStructure Attr` (the intrinsic structure of the
+  attribute universe, parameterised by `Attr` alone) and `AttrWorld
+  Thing Attr extends EthicaWorld Thing, AttrStructure Attr`, whose
+  attribution relation is `perceivedAsEssence : Thing → Attr → Prop`.
+  `Attributum a s` has `a : Attr`, so `Substance a` does not
+  typecheck and `attribute_is_substance` — step 3 of the collapse
+  chain — is **inexpressible**, not merely false. Prop. X survives
+  via the attribute-side predicate `perSeConceivedAttr`; what is
+  withdrawn is only A8's *bite on attributes*, exactly Bennett 1984
+  §16's position, now enforced by typing rather than by an axiom
+  restriction.
+- `Axioms.lean` — `AttrAxioms` carrying A10′/A12′/A14′/A15′, the
+  four attribute-mentioning axioms re-typed verbatim. Section
+  classification unchanged (A10′ Section I; A12′/A14′/A15′ Section
+  III). No A8′ exists or can exist. Props. V, IX and X are
+  re-derived in the new vocabulary.
+- `Models/DualAttribute.lean` — a God with **two** distinct
+  attributes (`cogitatio`, `extensio`), satisfying `AttrAxioms` and
+  `StatedAxioms` together (`dual_god_with_two_attributes`). Depends
+  on no axioms whatever (`#print axioms`).
+- `Models/InfiniteAttribute.lean` — a God with **infinitely many**
+  attributes (`inf_def6_recovered`), i.e. Def. VI satisfied outright.
+- `Bridge.lean` — the diagnosis. `legacyAttrWorld` instantiates
+  `Attr := Thing`; under it `Attributum`/`IsGodAttr`/
+  `hasAtLeastNAttrs`/`HasInfiniteAttrs` are *definitionally* their
+  Pars I counterparts (four `Iff.rfl` lemmas), and
+  `legacy_collapse` / `legacy_god_no_two_attributes` /
+  `legacy_def6_unsatisfiable` transport Pars I's impossibility
+  results into the new vocabulary.
+
+The pair (`dual_god_two_attributes`, `legacy_god_no_two_attributes`)
+is the mechanical content of the closure: the *same* sentence, under
+the *same* axioms, is satisfiable when `Attr` is separate and
+refutable when `Attr := Thing`. The collapse is therefore an
+artefact of the Prop. X scholium's identification of attributes with
+things, not a consequence of Spinoza's substantive commitments.
+
+**Nothing under `Ethica/Pars1/` is modified.** The v1.0.0 register
+and the published irreducibility results (arXiv:2605.02331) are
+untouched by construction, per the freeze decision recorded in
+`README.md`. The collapse remains true of Pars I — that is now a
+statement about Pars I's typing choice, which `Bridge.lean` makes
+precise.
+
+**Status**: ✅ closed by parallel branch (Attributum session). The
+route is chosen, implemented and witnessed on both sides. Residue,
+tracked here rather than in a new gap: the Attributum layer does not
+yet re-type the *extension* classes (A29's `Attribute a s → involves
+Existence a`, A40's and A44's attribute quantifiers in
+`Consecutio.lean` / `Classificatio.lean`); those are re-typed as
+Pars II consumes them. Cross-reference: GAP-8a.
 
 ---
 

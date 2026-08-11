@@ -103,6 +103,18 @@ conceived" status (A10) to "in itself", i.e. to substance-hood
 ontology touching A8 must renegotiate this result — see
 `coverage.md`'s "Attribute-collapse result" subsection.
 
+**Update (Attributum session — the renegotiation)**: it has now been
+done, in the parallel branch `Ethica/Attributum/` rather than by
+touching A8. There A8 keeps its full strength *on things* and simply
+has no attribute to apply to: attributes live in a separate type
+`Attr`, so `inItself a` is ungrammatical for `a : Attr` and no A8′
+exists or can be written. This is precisely Bennett 1984 §16's
+position — he declined the A8 coextension for attributes on
+philosophical grounds — enforced by typing instead of by an axiom
+restriction. A8 itself is unchanged in `Pars1Axioms`. See
+`Ethica/Attributum/Core.lean`'s header, the §Attributum section at
+the end of this file, and `gaps.md` GAP-25 (✅ closed).
+
 ---
 
 ## A9 — Ontological–conceptual parallelism (*in alio* / *per alio*)
@@ -878,6 +890,17 @@ clause is unsatisfiable for any God in the register
 the attribute ontology touching A15 — or any of A8/A10/A12/A14 —
 must renegotiate this result; see `coverage.md`'s
 "Attribute-collapse result" subsection and `gaps.md` GAP-25.
+
+**Update (Attributum session — the renegotiation)**: done, without
+touching A15. In `Ethica/Attributum/` the axiom is re-typed verbatim
+as A15′ (`ax_IsGod_has_attributum_of`, attribute argument in `Attr`)
+and its "final transfer step" role simply evaporates: with step 3 of
+the chain (`attribute_is_substance`) ungrammatical, there is no
+attribute-of-an-attribute to transfer. A15′ then does only the work
+Spinoza asks of it, and
+`Models/InfiniteAttribute.lean` satisfies Def. VI's *infinitis
+attributis* clause outright (`inf_def6_recovered`) with A15′ in
+force. See the §Attributum section below.
 
 ---
 
@@ -1727,3 +1750,154 @@ is precisely the asymmetric content Curley 1988 ch. 1 reads into
 **Closes**: GAP-6 (asymmetry side).
 
 **Related GAP (Bennett-honest scoping)**: same as A16.
+
+---
+
+# Attributum-layer auxiliary axioms (re-typed)
+
+`Ethica/Attributum/` is a **parallel branch** adopting escape route
+(iii) of GAP-25: attributes are typed off the `Thing` universe. It
+modifies nothing under `Ethica/Pars1/`; the v1.0.0 register and the
+published irreducibility results stand untouched.
+
+The layer re-types the four attribute-mentioning axioms of
+`Pars1Axioms`. Each keeps its Section classification, its
+philosophical justification and its commentary **verbatim** — the
+only change is the type of the attribute argument. What re-typing
+changes is not the weight of any single axiom but what the axioms
+can be *combined into*: the five-step attribute-collapse chain loses
+its step 3, because `attribute_is_substance` becomes ungrammatical.
+
+**A8 has no primed counterpart, by design.** It is the axiom that
+turned an attribute into a substance, and its bite on attributes is
+exactly what this layer withdraws. No A8′ exists or can be written:
+`inItself : Thing → Prop` cannot be applied to `a : Attr`. Bennett
+1984 §16.
+
+| Pars I | field | Attributum | field | Section |
+|--------|-------|------------|-------|---------|
+| A10 | `ax_attribute_perSe` | A10′ | `ax_attributum_perSe` | I |
+| A12 | `ax_substanceIdByAttribute` | A12′ | `ax_substanceIdByAttributum` | III |
+| A14 | `ax_substance_has_attribute` | A14′ | `ax_substance_has_attributum` | III |
+| A15 | `ax_IsGod_has_attribute_of` | A15′ | `ax_IsGod_has_attributum_of` | III |
+
+---
+
+## A10′ — Every attribute of a substance is per se conceived (re-typed)
+
+**Lean signature**:
+```lean
+ax_attributum_perSe :
+  ∀ (a : Attr) (s : Thing),
+    Attributum a s → AttrStructure.perSeConceivedAttr a
+```
+
+**Why we add it**: it is Prop. X (*Unumquodque unius substantiae
+attributum per se concipi debet*), stated in the attribute-side
+vocabulary. Pars I's A10 concluded `perSeConceived a` with
+`a : Thing`; here the conclusion is `perSeConceivedAttr a` with
+`a : Attr`, where `perSeConceivedAttr` is a field of
+`AttrStructure Attr` — a class that does not mention `Thing` at all.
+
+**Commentary**: the substantive difference is what is now *missing*.
+In Pars I this conclusion fed A8 and yielded `Substance a`. Here it
+terminates: nothing connects `perSeConceivedAttr` to the `Thing`
+side, and the class signature makes that visible rather than
+merely true. Prop. X is preserved; the inference from Prop. X to the
+substance-hood of attributes is not.
+
+**Used by**: `prop_10_attributumPerSe`.
+
+**Consistency witness**: `Models/DualAttribute.lean`,
+`Models/InfiniteAttribute.lean` (both discharge it non-vacuously).
+
+---
+
+## A12′ — Indiscernibility of substance by attribute (re-typed)
+
+**Lean signature**:
+```lean
+ax_substanceIdByAttributum :
+  ∀ (s₁ s₂ : Thing) (a : Attr),
+    Attributum a s₁ → Attributum a s₂ → s₁ = s₂
+```
+
+**Why we add it**: verbatim Pars I A12. Spinoza's *demonstratio* of
+Prop. V is widely judged to need this commitment.
+
+**Commentary**: unchanged (Bennett 1984 §17, Garrett 1990, Della
+Rocca 2008 ch. 2). Re-typing does **not** weaken A12: it still
+collapses any two substances sharing an attribute. What it can no
+longer do is collapse an *attribute* into God, because an attribute
+is not a substance and so is not in A12's range.
+
+**Used by**: `prop_5_uniqueSubstancePerAttributum`.
+
+**Consistency witness**: `Models/DualAttribute.lean`,
+`Models/InfiniteAttribute.lean`.
+
+---
+
+## A14′ — Substance has at least one attribute (re-typed)
+
+**Lean signature**:
+```lean
+ax_substance_has_attributum :
+  ∀ s : Thing, Substance s → ∃ a : Attr, Attributum a s
+```
+
+**Why we add it**: verbatim Pars I A14, existential ranging over
+`Attr`.
+
+**Commentary**: Della Rocca 2008 ch. 2 takes it for granted under
+PSR; Bennett 1984 §17 treats it as an independent commitment. In
+Pars I it supplied step 4 of the collapse chain, handing an
+attribute to the substance an attribute had just been shown to be.
+With step 3 gone it has no such role and does only the work Spinoza
+asks of it.
+
+**Consistency witness**: `Models/DualAttribute.lean`,
+`Models/InfiniteAttribute.lean`.
+
+---
+
+## A15′ — God has every substance's attribute (re-typed)
+
+**Lean signature**:
+```lean
+ax_IsGod_has_attributum_of :
+  ∀ (g s : Thing) (a : Attr),
+    IsGodAttr g → Substance s → Attributum a s → Attributum a g
+```
+
+**Why we add it**: verbatim Pars I A15, the universality reading of
+Def. VI (GAP-8b).
+
+**Commentary**: unchanged (Bennett 1984 §18 flags the universality
+clause as a substantive commitment; Della Rocca derives it from PSR
+plus plenitude). In Pars I this was step 5, the axiom that handed an
+attribute-of-an-attribute to God so A12 could identify the two. Here
+it lands harmlessly: `Attributum a g` for many distinct `a : Attr`
+is exactly what Def. VI wants.
+
+**Used by**: `prop_9_cor_godMaximalRealityAttr`.
+
+**Consistency witness**: `Models/DualAttribute.lean` (two
+attributes), `Models/InfiniteAttribute.lean` (infinitely many).
+
+**Closes**: the consistency half of GAP-8a —
+`inf_def6_recovered : HasInfiniteAttrs deus` satisfies Def. VI's
+*infinitis attributis* clause with A15′ in force, which
+`def6_infinitis_attributis_unsatisfiable` shows is impossible in the
+Pars I register.
+
+---
+
+## Note on the extension classes
+
+The Attributum layer re-types the `Pars1Axioms` attribute axioms
+only. The attribute quantifiers in the *extension* classes — A29
+(`Theologia.lean`), A40 (`Consecutio.lean`), A44
+(`Classificatio.lean`) — are not yet re-typed; they are re-typed as
+Pars II consumes them. Tracked in `gaps.md` GAP-25's residue note
+rather than as a separate gap.

@@ -30,6 +30,15 @@ import Ethica.Pars1.Models.MultiAttribute
 import Ethica.Pars1.Classificatio
 import Ethica.Pars1.Models.ClassificatioWitness
 
+-- Attributum — the re-typed attribute layer (GAP-25 / GAP-8a).
+-- A parallel branch: nothing under Ethica/Pars1/ is modified, so the
+-- v1.0.0 register and the published irreducibility results stand.
+import Ethica.Attributum.Core
+import Ethica.Attributum.Axioms
+import Ethica.Attributum.Bridge
+import Ethica.Attributum.Models.DualAttribute
+import Ethica.Attributum.Models.InfiniteAttribute
+
 -- Future Pars (stubs):
 -- import Ethica.Pars2.Definitions   -- De natura et origine mentis
 -- import Ethica.Pars3.Definitions   -- De origine et natura affectuum

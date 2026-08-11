@@ -11,4 +11,25 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+
+      # The two hard rules of docs/gaps.md's closure protocol. Until
+      # now both were convention-only; nothing mechanical enforced
+      # them. See gaps.md §5 ("Hypothesis-premise discipline"): a
+      # polymorphic `axiom` combined with a counter-witness model
+      # renders the kernel environment inconsistent, so this is a
+      # soundness gate, not a style gate.
+      - name: No `sorry` in the source tree
+        run: |
+          if grep -rn "sorry" --include="*.lean" Ethica Ethica.lean; then
+            echo "::error::Found 'sorry' — the tree must stay sorry-free."
+            exit 1
+          fi
+
+      - name: No `axiom` declarations
+        run: |
+          if grep -rnE "^axiom|^private axiom" --include="*.lean" Ethica Ethica.lean; then
+            echo "::error::Found an 'axiom' declaration. Forward-referenced commitments must be explicit theorem hypotheses or typeclass fields (docs/gaps.md §5)."
+            exit 1
+          fi
+
       - uses: leanprover/lean-action@v1

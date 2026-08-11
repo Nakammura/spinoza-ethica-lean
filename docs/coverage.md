@@ -23,7 +23,7 @@ Status legend:
 | III | *Substantia*                | ✅     | `Substance`. |
 | IV  | *Attributum*                | ✅     | `Attribute`. |
 | V   | *Modus*                     | ✅     | `Mode`. |
-| VI  | *Deus*                      | 🟡     | `IsGod` requires ≥1 attribute (third conjunct, **now redundant under A14** but retained for textual fidelity to Spinoza); (a) *infinitis attributis* cardinality — GAP-8a: **now STATEABLE** via `hasAtLeastNAttributes`/`HasInfiniteAttributes` (`Realitas.lean`) but **PROVED UNSATISFIABLE** alongside any God in the current register (`def6_infinitis_attributis_unsatisfiable` — the attribute-collapse discovery); consistent only in godless worlds (`Models/MultiAttribute.lean`). Escape routes tracked as **GAP-25**. (b) universality over substance attributes — GAP-8b ✅ (closed by A15 promotion). |
+| VI  | *Deus*                      | 🟡 (Pars I) / ✅ (Attributum) | `IsGod` requires ≥1 attribute (third conjunct, **now redundant under A14** but retained for textual fidelity to Spinoza); (a) *infinitis attributis* cardinality — GAP-8a: **STATEABLE** via `hasAtLeastNAttributes`/`HasInfiniteAttributes` (`Realitas.lean`) but **PROVED UNSATISFIABLE** alongside any God in the Pars I register (`def6_infinitis_attributis_unsatisfiable` — the attribute-collapse discovery); consistent only in godless worlds (`Models/MultiAttribute.lean`). **Resolved in the Attributum layer**: `IsGodAttr` (`Ethica/Attributum/Core.lean`) is the same definition with attributes typed in `Attr`, and `Models/InfiniteAttribute.lean`'s `inf_def6_recovered` satisfies the *infinitis attributis* clause outright — GAP-8a ✅, GAP-25 ✅. The Pars I row stays 🟡 because Pars I is frozen. (b) universality over substance attributes — GAP-8b ✅ (closed by A15 promotion). |
 | VII | *Liberum / Coactum*         | 🟡     | `Free`/`Constrained` thin aliases; second clause ("ad agendum determinatur") needs Pars II — GAP-9. |
 | VIII| *Aeternitas*                | ✅     | `Eternal` (primitive at this layer; modal reconstruction planned). |
 
@@ -269,8 +269,54 @@ is *sharp*, not an artifact of a weak counting framework: the
 infinitely many attributes (carrier `Nat`, `multiAttribute_infinitude`)
 precisely as long as the model is godless (`multiAttribute_hasNoGod`).
 Godless plurality is consistent; godful plurality is impossible.
-Escape routes (none adopted here) are catalogued in `Realitas.lean`'s
-header and tracked as **GAP-25**.
+Escape routes are catalogued in `Realitas.lean`'s header and tracked
+as **GAP-25**.
+
+### Resolution: the Attributum layer
+
+**GAP-25 is closed** (Attributum session) by adopting escape route
+(iii) — type attributes off the `Thing` universe — as a **parallel
+branch**, `Ethica/Attributum/`. Nothing under `Ethica/Pars1/` is
+modified, so everything above remains exactly true of the Pars I
+register and the published results are untouched.
+
+`AttrWorld Thing Attr` (`Attributum/Core.lean`) extends
+`EthicaWorld Thing` — every Pars I primitive is reused verbatim —
+and routes attribution through `perceivedAsEssence : Thing → Attr →
+Prop`. Since `Attributum a s` has `a : Attr`, `Substance a` does not
+typecheck: **step 3 of the collapse chain is inexpressible, not
+merely false**. Prop. X survives via the attribute-side predicate
+`perSeConceivedAttr` (a field of `AttrStructure Attr`, a class that
+does not mention `Thing`); what is withdrawn is only A8's *bite on
+attributes*, which is exactly Bennett 1984 §16's position, enforced
+by typing rather than by an axiom restriction.
+
+The four attribute axioms are re-typed verbatim as A10′/A12′/A14′/
+A15′ (`Attributum/Axioms.lean`), keeping their Section
+classifications. Props. V, IX and X are re-derived in the new
+vocabulary.
+
+Results, all `sorry`-free and (for the two headline theorems)
+dependent on **no axioms whatever**:
+
+| Theorem | File | Content |
+|---|---|---|
+| `dual_god_with_two_attributes` | `Attributum/Models/DualAttribute.lean` | A God with two distinct attributes (`cogitatio`, `extensio`), in a world carrying `AttrAxioms` **and** `StatedAxioms` |
+| `inf_def6_recovered` | `Attributum/Models/InfiniteAttribute.lean` | A God with infinitely many attributes — Def. VI satisfied outright |
+| `legacy_god_no_two_attributes` | `Attributum/Bridge.lean` | The same sentence, refuted, once `Attr := Thing` |
+| `legacy_collapse` | `Attributum/Bridge.lean` | `attribute_collapse` transported along the legacy embedding |
+
+The last two are the diagnosis. `Bridge.lean`'s `legacyAttrWorld`
+instantiates `Attr := Thing`, and under it `Attributum`, `IsGodAttr`,
+`hasAtLeastNAttrs` and `HasInfiniteAttrs` are *definitionally* their
+Pars I counterparts (four `Iff.rfl` lemmas). So the *same* sentence,
+under the *same* axioms, is satisfiable when `Attr` is separate and
+refutable when `Attr := Thing`. **The collapse is an artefact of the
+Prop. X scholium's identification of attributes with things, not a
+consequence of Spinoza's substantive commitments.**
+
+This is also what unblocks Pars II, whose Props. I–II assert that
+Thought and Extension are two distinct attributes of God.
 
 ---
 
@@ -293,6 +339,8 @@ header and tracked as **GAP-25**.
 | NecessaryMode (A35 irreducibility witness) | Kernel-level irreducibility witness (Bennett #5) | Full register minus A35 | ✅ `Models/CounterexamplesII.lean` — two-element world (`g`/`m`) with a **necessarily-existing mode** (the infinite-mode profile with necessity lodged in the mode's own essence). Satisfies `Pars1Axioms` + `CausalAxioms` + `TheologiaAxioms` plus A33/A34/A36 as standalone theorems (`necessaryMode_satisfies_A33/34/36`) while falsifying A35 (`A35_falsified`) — only A35 (= Prop. XXIV) enforces the through-cause vs through-essence necessity distinction. |
 | ConsecutioWitness (`ConsecutioAxioms` + full-register consistency) | Joint-consistency witness for A1–A15 + A27–A43 | Base (all non-modal layers) | ✅ `Models/ConsecutioWitness.lean` — fresh one-element carrier `ConsecutioW` with a uniformly *positive* profile (`Cause`, `inheresIn`, `followsFrom`, `followsAbsolutely` all `True`), so A43 and the other consecution fields discharge **non-vacuously** (unlike the `Unit` witnesses' all-`False` relations). Carries instances for `Pars1Axioms` + `CausalAxioms` + `TheologiaAxioms` + `MereologyAxioms` + `InherenceAxioms` + `ConsecutioAxioms` — joint consistency of the entire extended register A1–A15 + A27–A43 on one carrier (modal A16–A26 excluded; separate `World`-indexed layer). **Largest single-model consistency proof in the project.** |
 | ClassificatioWitness (`ClassificatioAxioms` consistency) | Consistency witness for A44 (+ the `TrichotomySigma` demote register) | Base (Classificatio) | ✅ `Models/ClassificatioWitness.lean` — extends `ConsecutioWitness`'s carrier `ConsecutioW` with A44, discharging **vacuously** (`Mode x` is `False` on `ConsecutioW`, exactly as A42's own discharge there). Also witnesses `TrichotomySigma ConsecutioW` (via `trichotomySigma_of_classificatio`), i.e. consistency of the A42-demote register Σ = {A38, A40, A41, A44}. |
+| DualAttribute (two-attribute God) | **The decisive witness of the Attributum layer** | Attributum (re-typed) | ✅ `Ethica/Attributum/Models/DualAttribute.lean` — fresh carrier `DualThing` (one substance) with `Attr := DualAttr` (`cogitatio`/`extensio`). Carries `AttrAxioms` (A10′/A12′/A14′/A15′) **and** `StatedAxioms` (Spinoza's own A1–A11, the register the published results run against). `dual_god_two_attributes` exhibits exactly what `god_no_two_attributes` forbids in Pars I; `dual_god_with_two_attributes` packages it with `IsGodAttr`. Depends on **no axioms** (`#print axioms`). The legacy `Thing`-typed channel is switched off and *proved* empty (`dual_A14_thingTyped_falsified`), which is why no `Pars1Axioms` instance exists here and the collapse theorem has nothing to apply to. |
+| InfiniteAttribute (Def. VI recovered) | GAP-8a's consistency half | Attributum (re-typed) | ✅ `Ethica/Attributum/Models/InfiniteAttribute.lean` — carrier `InfThing` (one substance) with `Attr := Nat`. `inf_def6_recovered : HasInfiniteAttrs deus` satisfies Def. VI's *infinitis attributis* clause with a God present — the exact configuration `def6_infinitis_attributis_unsatisfiable` rules out in Pars I. Contrast `Models/MultiAttribute.lean`, which gets infinitude on the full `Pars1Axioms` register only by being **godless**. Here: plurality *and* God, simultaneously. Depends on **no axioms**. |
 
 ---
 
