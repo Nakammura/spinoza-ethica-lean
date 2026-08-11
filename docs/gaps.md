@@ -1216,6 +1216,69 @@ Pars II consumes them. Cross-reference: GAP-8a.
 
 ---
 
+## GAP-26 — Prop. II.III's *in Deo* localisation
+
+**Location**: `Ethica/Pars2/Idea.lean`, A49
+(`ax_god_has_idea_of_all`) and `prop_2_3_ideaOmnium`.
+
+**Issue**: Prop. II.III asserts that in God there necessarily *is*
+an idea of his essence and of everything following from it — "*In
+**Deo** datur necessario idea*" — and the *demonstratio* closes with
+"*et (per propositionem 15 partis I) non nisi in Deo*". What is
+mechanised is only the existential clause (`∀ x, ∃ i, ideaOf i x`).
+The localisation of ideas *in God* is not stated.
+
+**Resolution path**: strengthen A49 to `∀ x, ∃ i, ideaOf i x ∧
+inheresIn i g`, which requires importing the Inherence layer
+(`InherenceWorld`/`InherenceAxioms`) into `Pars2World`. Deferred
+because that layer is a sibling branch of `CausalWorld` and pulling
+it in raises the same synthesization-order question the `outParam`
+solves for `CausalWorld` — worth doing once, when batch 1.3
+(`Pars2/Corpus.lean`) needs inherence anyway. `prop_15_allInGod`
+would then supply the localisation directly.
+
+**Status**: ⏳ open, deferred to batch 1.3.
+
+---
+
+## GAP-27 — Prop. II.VII's identity reading (*idem est*)
+
+**Location**: `Ethica/Pars2/Idea.lean`, `prop_2_7_ordoEtConnexio`.
+
+**Issue**: Prop. VII says the order and connection of ideas *is the
+same as* ("*idem est ac*") the order and connection of things. What
+is mechanised is the directional transfer — `Cause c e` yields
+`Cause ic ie` for the corresponding ideas — which is what the
+*demonstratio* ("*Patet ex axiomate 4 partis I*") actually
+establishes. Two things are not mechanised:
+
+(a) the **converse** direction (causal order among ideas transfers
+    back to things);
+(b) the **identity** claim proper. The scholium is emphatic and much
+    stronger than parallelism: "*modus extensionis et idea illius
+    modi una eademque est res sed duobus modis expressa*" — a mode
+    of extension and its idea are *one and the same thing* expressed
+    two ways, and "*substantia cogitans et substantia extensa una
+    eademque est substantia*".
+
+**Reading**: (b) is the *identity* interpretation of the parallelism
+(Della Rocca 1996 ch. 6, against the weaker
+correspondence/isomorphism readings). Adopting it commits the
+formalisation to cross-attribute identity of modes, which interacts
+directly with the *quatenus* machinery: the same mode is "under"
+two attributes at once.
+
+**Resolution path**: batch 1.2's `causeUnder : Thing → Thing → Attr
+→ Prop` gives the *quatenus* relativisation; the identity claim then
+needs a further commitment relating a mode's being-under-cogitatio
+to its being-under-extensio. Not attempted in batch 1.1.
+Cross-reference: GAP-22 (the same ternary-relativisation
+prerequisite, flagged there for Prop. I.XXII).
+
+**Status**: ⏳ open, deferred to batch 1.2.
+
+---
+
 ## Closure protocol
 
 Each gap closure must:

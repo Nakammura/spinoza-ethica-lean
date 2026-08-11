@@ -39,8 +39,11 @@ import Ethica.Attributum.Bridge
 import Ethica.Attributum.Models.DualAttribute
 import Ethica.Attributum.Models.InfiniteAttribute
 
+-- Pars II — De natura et origine mentis
+import Ethica.Pars2.Idea
+import Ethica.Pars2.Models.MensWitness
+
 -- Future Pars (stubs):
--- import Ethica.Pars2.Definitions   -- De natura et origine mentis
 -- import Ethica.Pars3.Definitions   -- De origine et natura affectuum
 -- import Ethica.Pars4.Definitions   -- De servitute humana
 -- import Ethica.Pars5.Definitions   -- De potentia intellectus

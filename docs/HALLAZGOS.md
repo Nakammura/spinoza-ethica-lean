@@ -262,6 +262,63 @@ Proposiciones I y II afirman que Pensamiento y Extensión son dos
 atributos distintos de Dios — literalmente lo que
 `dual_god_with_two_attributes` exhibe.
 
+## 10. Pars II arranca — y el paralelismo resulta ser una derivación genuina
+
+**Archivos**: `Ethica/Pars2/Idea.lean`, `Ethica/Pars2/Models/MensWitness.lean` ·
+**Teoremas**: `prop_2_1_2_deusHabetDuoAttributa`, `prop_2_7_ordoEtConnexio`,
+`pars2_opening_triple_inconsistent_in_pars1`, `mens_coexistence`
+
+Primer módulo fuera de Pars I: Proposiciones II.I, II.II, II.III y
+II.VII. Dos hallazgos.
+
+**(a) La conjunción de las Props. I y II es un teorema que Pars I
+refuta.** Ninguna de las dos por separado es notable; juntas afirman
+que Dios tiene dos atributos distintos, y
+`prop_2_1_2_deusHabetDuoAttributa` lo *deriva* de A46+A47+A48. Es el
+primer teorema del proyecto que el registro de Pars I **refuta
+activamente** (`god_no_two_attributes`). El contraste quedó
+mecanizado en el vocabulario de Pars I:
+`pars2_opening_triple_inconsistent_in_pars1` prueba que, con
+atributos tipados como cosas, Pensamiento y Extensión tendrían que
+ser *el mismo* atributo. Eso es exactamente en qué sentido la capa
+Attributum era un prerrequisito y no un refinamiento.
+
+**(b) El paralelismo es derivable, no un compromiso.** La Prop. VII
+—*ordo et connexio idearum idem est ac ordo et connexio rerum*, la
+tesis más famosa de la Ética— tiene una *demonstratio* de dos frases:
+"*Patet ex axiomate 4 partis I. Nam cujuscunque causati idea a
+cognitione causæ cujus est effectus, dependet.*" Resulta que eso es
+literalmente suficiente: A4ₛ da la dependencia de inteligibilidad
+entre cosas, y A50 —que es *la segunda frase de Spinoza*, promovida
+como puente de Sección II, no una reconstrucción nuestra— la traslada
+a dependencia causal entre ideas. `prop_2_7_ordoEtConnexio` es una
+derivación de dos pasos.
+
+Honestidad sobre el alcance: solo se mecaniza la dirección
+cosas→ideas. Ni la conversa ni la lectura de *identidad* del escolio
+("*modus extensionis et idea illius modi una eademque est res sed
+duobus modis expressa*") están cubiertas — GAP-27.
+
+**Bonus: se retiró el placeholder más viejo del proyecto.** El A6 de
+Spinoza (*Idea vera debet cum suo ideato convenire*) llevaba como
+`True` desde v1.0.0, anotado "idea/ideatum machinery is Pars II".
+A45 lo promueve a contenido sustantivo, en la lectura de
+*funcionalidad* (una idea determina su objeto), con la lectura fuerte
+de adecuación diferida al batch 1.4 y marcada como tal.
+
+**El testigo prueba la coexistencia.** `MensWitness` satisface el
+registro completo (A1–A15 + A4ₛ/A5ₛ + A10′–A15′ + A45–A50) en un solo
+portador, y en ese mismo mundo valen a la vez:
+
+- `mens_duo_attributa` — Dios tiene dos atributos tipo `Attr`;
+- `mens_pars1_collapse_holds` — ningún Dios tiene dos atributos tipo
+  `Thing` (vía `god_no_two_attributes`, porque `Pars1Axioms` vale de
+  verdad ahí).
+
+No hay tensión: el canal de atribución tipo `Thing` queda degenerado
+exactamente como fuerza el teorema de colapso, y la estructura que
+Pars II consume vive en `Attr`. Los dos canales conviven.
+
 ---
 
 ## Resumen numérico del estado (rama `pars1-extensions`)
@@ -281,6 +338,12 @@ atributos distintos de Dios — literalmente lo que
   del tipado, no de los axiomas).
 - **Capa nueva `Ethica/Attributum/`**: 5 módulos; GAP-25 y GAP-8a
   cerrados; Def. VI recuperada; Pars II desbloqueada.
+- **Pars II iniciada**: 4/49 proposiciones (I, II, III, VII) + el
+  resultado de dos atributos que su conjunción entrega. Axiomas
+  A45–A50; A6 de Spinoza promovido tras estar como `True` desde
+  v1.0.0. GAP-26 y GAP-27 abiertos con ruta.
+- **Total de la obra**: 33/259 proposiciones con contenido (29 de
+  Pars I + 4 de Pars II).
 - `lake build` limpio, **0 `sorry`**, **0 `axiom`**, ninguna
   declaración de v1.0.0 modificada. El gate de CI ahora verifica
   mecánicamente las dos últimas condiciones.

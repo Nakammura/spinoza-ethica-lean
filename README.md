@@ -75,6 +75,10 @@ Ethica/
     └── Models/
         ├── DualAttribute.lean            -- A God with TWO attributes (cogitatio, extensio)
         └── InfiniteAttribute.lean        -- A God with infinitely many attributes; Def. VI recovered
+└── Pars2/                                -- De natura et origine mentis
+    ├── Idea.lean                         -- Props I, II, III, VII; A45–A50 (Pars2Axioms)
+    └── Models/
+        └── MensWitness.lean              -- Consistency witness; the coexistence result
 texts/
 ├── ethica1_la.txt … ethica5_la.txt       -- Latin per Pars
 └── en_part1_elwes.txt … en_part5_elwes.txt   -- Elwes EN per Pars
@@ -232,6 +236,53 @@ open). Running the project's demote-experiment discipline on A42
 against this new axiom yields `A42_demote_via_trichotomy`: **A42 is
 an equal-strength decomposition** over Σ = {A38, A40, A41, A44} —
 see the demote-experiments table above.
+
+## Pars II — first batch
+
+`Ethica/Pars2/Idea.lean` opens the second Part with Props. I, II,
+III and VII. It is the first module outside Pars I, and it rests on
+the Attributum layer: Pars II's opening pair asserts that Thought
+and Extension are two **distinct** attributes of God, which
+`god_no_two_attributes` refutes in the Pars I register.
+`pars2_opening_triple_inconsistent_in_pars1` states that refutation
+in Pars I's own vocabulary — the precise sense in which the
+Attributum layer was a prerequisite and not a refinement.
+
+Two results are genuine derivations rather than commitments:
+
+- **God has at least two attributes**
+  (`prop_2_1_2_deusHabetDuoAttributa`), from A46 + A47 + A48. The
+  first theorem in the project that Pars I's register actively
+  refutes.
+- **The parallelism** (Prop. VII,
+  `prop_2_7_ordoEtConnexio`) — *ordo et connexio idearum idem est ac
+  ordo et connexio rerum* — derived from A4ₛ plus A50, mirroring
+  Spinoza's own one-line *demonstratio* ("*Patet ex axiomate 4
+  partis I*"). Only the directional transfer is claimed; the
+  scholium's identity reading is tracked as GAP-27.
+
+Props. I, II and III are 📜-pattern commitments (A46, A47, A49), each
+because the *demonstratio*'s load-bearing step is unavailable —
+Spinoza's existential premise is his own empirical Axiom II (*Homo
+cogitat*) for I–II, and Prop. I.35's *potentia* machinery for III.
+
+**A45 retires the oldest placeholder in the project**: Spinoza's A6
+(*Idea vera debet cum suo ideato convenire*) has been a `True`
+stub since v1.0.0, annotated "idea/ideatum machinery is Pars II".
+It is now substantive, on the functionality reading, with the
+stronger adequacy content honestly deferred to batch 1.4.
+
+`Models/MensWitness.lean` witnesses consistency of the whole
+register — A1–A15, A4ₛ/A5ₛ, A10′–A15′, A45–A50 on one carrier — and
+proves the **coexistence** result: in that single world God has two
+`Attr`-typed attributes *and* no God has two `Thing`-typed
+attributes. The two attribution channels live side by side, the
+`Thing`-typed one degenerate exactly as the collapse theorem forces.
+
+Deferred to batch 1.2: Props. V and VI, which need *quatenus* —
+attribute-relativised causation (`causeUnder : Thing → Thing → Attr
+→ Prop`), the same ternary-relativisation prerequisite GAP-22 tracks
+for Prop. I.XXII. Prop. IV waits on Prop. I.XXX.
 
 ## Build
 

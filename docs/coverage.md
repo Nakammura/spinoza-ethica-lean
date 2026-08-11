@@ -1,8 +1,11 @@
-# Coverage Map — Pars I
+# Coverage Map
 
-Status of every Pars I proposition, definition, and structural
-component in the Lean formalisation. Updated alongside any change
-that adds, removes, or shifts the status of an item.
+Status of every proposition, definition, and structural component in
+the Lean formalisation. Updated alongside any change that adds,
+removes, or shifts the status of an item.
+
+Pars I occupies the bulk of this document; **Pars II begins at the
+`# Pars II` heading near the end**. Parts III–V are not started.
 
 Status legend:
 - ✅ **mechanised** — proved in Lean with no `sorry`.
@@ -354,3 +357,64 @@ formalisations of Pars I — base FOL, modal S5, categorical / topos.
 | Base FOL    | 🟡     | `Ethica/Pars1/*` (this work) |
 | Modal S5    | 🟡     | `Ethica/Pars1/ModalForm.lean` — fully connected scaffold with all four demote attempts executed. Bridges A18/A19/A20/A21, candidates A16/A17 (Prop. I priority), Section III commitments A22 (PSR-substance), A23 (PSR-self-cause), A24 (PSR-essence-perception), A25/A26 (PSR-plenitude + god-uniqueness). **A18 load-bearing**: `substance_exists_at_every_world` proves `Substance s → ∀ w, existsAt s w` via A13 + A18. **A12 demote (Della Rocca route)**: `prop_5_demote_via_PSR_all_attributes` proves *partial* A12 (all-shared-attributes → identity) from A22; the full any-shared-attribute reading is **NOT** derivable — witnessed at kernel level by `A12CounterModel` and the `A12_falsified` theorem in `Models/Counterexamples.lean`. **A13 demote (modal translation)**: `prop_7_demote_via_PSR` delivers full A13 via A23 + A18 + A3-first-clause; equal-strength translation, not reduction. **A14 demote (essence-perception)**: `prop_A14_demote_via_PSR` delivers full A14 via A24 — trivial redescription modulo `Attribute` unfolding. The genuine universality clause that resists PSR demote is A15, not A14. **A15 demote (decomposition)**: `prop_A15_demote_via_decomposition` delivers A15 via A25 + A26 jointly; plenitude alone fails — witnessed by `A15CounterModel` and the `A15_falsified` theorem. **Demote taxonomy**: A12 (partial-only, irreducible), A13 (modal translation, equal strength), A14 (trivial redescription, equal strength), A15 (decomposition required, irreducible). The engineering separation forced by Lean's diamond inheritance — a typeclass-mechanism layering that treats attribute as a "basic and irreducible way of being" (Bennett 1984 §16, p. 61) — contrasts with the unified PSR-driven structure Della Rocca's reading would require. |
 | Categorical | ⏳     | `Ethica/Pars1/CategoryForm.lean` (not started) |
+
+---
+
+# Pars II — De natura et origine mentis
+
+49 propositions. **Batch 1.1 landed**: Props. I, II, III, VII, plus
+the two-attribute result their conjunction yields.
+
+Pars II could not be started before the Attributum layer: its
+opening pair asserts that Thought and Extension are two *distinct*
+attributes of God, which `god_no_two_attributes` refutes in the
+Pars I register. `pars2_opening_triple_inconsistent_in_pars1`
+(`Pars2/Idea.lean`) records that refutation in Pars I's own
+vocabulary.
+
+## Structure
+
+`Pars2World Thing Attr` extends `AttrWorld Thing Attr` **and**
+`CausalWorld Thing`, adding `ideaOf : Thing → Thing → Prop` (Def.
+III) and the two distinguished attributes `cogitatio`, `extensio`.
+`Attr` is declared an `outParam`: since `CausalWorld` does not
+mention `Attr`, the generated `toCausalWorld` projection would
+otherwise leave it a metavariable and Lean could find no
+synthesization order — the same obstruction `ModalForm.lean`'s §B.1
+note describes, here resolved rather than avoided because Prop. VII
+needs `Cause` and `Attributum` in one statement.
+
+`Pars2Axioms` extends `CausalAxioms` (hence `Pars1Axioms` — Pars
+II's *demonstrationes* cite Props. I.10, I.14, I.15, I.16, I.25cor
+throughout) and `AttrAxioms`.
+
+## Propositions (I–XLIX)
+
+| Prop | Statement (abbrev.) | Status | Lean name / location |
+|------|---------------------|--------|----------------------|
+| I    | Thought is an attribute of God. | 📜 | `prop_2_1_cogitatioAttributumDei` (`Pars2/Idea.lean`) — direct invocation of **A46**. The *demonstratio*'s unavailable step is its existential premise (that singular thoughts exist), which Spinoza takes from Pars II's own Axiom II *Homo cogitat*, an empirical premise; committed directly instead. Bennett 1984 §36. |
+| II   | Extension is an attribute of God. | 📜 | `prop_2_2_extensioAttributumDei` — direct invocation of **A47**. Spinoza's whole *demonstratio* is "*eodem modo ac præcedentis*", so A47 stands or falls with A46. |
+| I+II | *(their conjunction)* God has ≥2 attributes. | ✅ | `prop_2_1_2_deusHabetDuoAttributa` — **genuine derivation** from A46 + A47 + A48, packaged through `hasAtLeastNAttrs`' `Fin 2` injection. The first theorem in the project that the Pars I register actively **refutes** (`god_no_two_attributes`). |
+| III  | In God there is necessarily an idea of his essence and of all that follows. | 📜 (partial) | `prop_2_3_ideaOmnium` — direct invocation of **A49**, existential clause only. The *demonstratio*'s middle step is Prop. I.35, itself ⏳ deferred (*potentia*). **Not mechanised**: the *in Deo* localisation — GAP-26. |
+| IV   | The idea of God is unique. | ⏳ | Depends on Prop. I.XXX, itself ⏳ deferred. Deferred past batch 1.2. |
+| V    | The formal being of ideas has God as cause only qua thinking thing. | ⏳ | Needs *quatenus* — attribute-relativised causation (`causeUnder : Thing → Thing → Attr → Prop`). Batch 1.2. Cross-ref GAP-22. |
+| VI   | Modes of any attribute have God as cause only under that attribute. | ⏳ | Same *quatenus* prerequisite as Prop. V. Batch 1.2. |
+| VII  | **The order and connection of ideas is the same as the order and connection of things.** | ✅ (with qualifier) | `prop_2_7_ordoEtConnexio` + corollary `prop_2_7_cor_ideaePariter` — **genuine derivation** mirroring Spinoza's own one-line *demonstratio* ("*Patet ex axiomate 4 partis I*"): A4ₛ gives intelligibility-dependence among things, **A50** carries it to causal dependence among ideas. **Qualifier**: the directional transfer only. The converse, and the scholium's identity reading ("*una eademque res sed duobus modis expressa*"), are not mechanised — GAP-27. |
+| VIII–XLIX | — | ⏳ | Not started. Batches 1.2–1.4. |
+
+## Axioms (Pars II, A45–A50)
+
+| Axiom | Section | Content | Note |
+|-------|---------|---------|------|
+| A45 | II | An idea has at most one object | **Promotion of Spinoza's own A6**, carried as a `True` placeholder since v1.0.0 — the oldest placeholder in the project, now retired. Read as *functionality*; the adequacy content awaits batch 1.4. |
+| A46 | III | *Cogitatio* is an attribute of God | 📜 Prop. II.I |
+| A47 | III | *Extensio* is an attribute of God | 📜 Prop. II.II |
+| A48 | III | The two are distinct | Never stated by Spinoza; presupposed throughout. **Inconsistent with Pars I's register** — the reason the Attributum layer exists. |
+| A49 | III | Everything has an idea | 📜 Prop. II.III (existential clause) |
+| A50 | II | Idea order tracks intelligibility | Bridge; Spinoza asserts precisely this sentence in Prop. VII's *demonstratio*, so it is a promotion, not a reconstruction. It is what makes Prop. VII a derivation rather than a commitment. |
+
+## Models
+
+| Model | Role | Status |
+|-------|------|--------|
+| MensWitness | Consistency witness for A1–A15 + A4ₛ/A5ₛ + A10′–A15′ + A45–A50 on one carrier | ✅ `Ethica/Pars2/Models/MensWitness.lean` — carrier `MensThing` (one substance) with `MensAttr` = {`cogitatio`, `extensio`}. **Its point is that it holds both verdicts at once**: `mens_duo_attributa` (God has two `Attr`-typed attributes) *and* `mens_pars1_collapse_holds` (no God has two `Thing`-typed attributes, via `god_no_two_attributes` — `Pars1Axioms` genuinely holds here). `mens_coexistence` packages the pair. The `Thing`-typed channel is degenerate exactly as `god_is_own_only_attribute` forces; the load-bearing structure lives in `Attr`. |

@@ -1893,6 +1893,167 @@ Pars I register.
 
 ---
 
+---
+
+# Pars II auxiliary axioms (A45–A50)
+
+Introduced by `Ethica/Pars2/Idea.lean` (batch 1.1: Props. II.I,
+II.II, II.III, II.VII). All live in `Pars2Axioms`, which extends
+`CausalAxioms` (hence `Pars1Axioms`) and `AttrAxioms`.
+
+Consistency witness for all six: `Ethica/Pars2/Models/MensWitness.lean`.
+
+---
+
+## A45 — An idea has at most one object (Section II — promotion of Spinoza's A6)
+
+**Lean signature**:
+```lean
+ax6_idea_unique_ideatum :
+  ∀ i x y : Thing, ideaOf i x → ideaOf i y → x = y
+```
+
+**Why we add it**: Pars I carried Spinoza's own A6 (*Idea vera debet
+cum suo ideato convenire*) as a `True` placeholder annotated
+"idea/ideatum machinery is Pars II" (`Axioms.lean`). This is that
+promotion — **the oldest placeholder in the project, now retired**.
+
+**Commentary**: "*convenire*" is read here as **functionality** — an
+idea determines its object uniquely. That is the weakest content the
+word can carry and all batch 1.1 consumes. The stronger
+correspondence content (an adequate idea has all the intrinsic
+denominations of a true idea, Def. II.IV *idea adæquata*) needs the
+adequacy machinery of batch 1.4 and is **not** claimed here. Flagged
+in the field docstring as a reading, not a rendering.
+
+**Used by**: nothing yet in batch 1.1 (committed as the A6 promotion
+proper; batch 1.2's Prop. IV work is its first consumer).
+
+---
+
+## A46 — *Cogitatio* is an attribute of God (Section III, 📜 Prop. II.I)
+
+**Lean signature**:
+```lean
+ax_cogitatio_attributum :
+  ∀ g : Thing, IsGodAttr g → Attributum (cogitatio Thing) g
+```
+
+**Why we add it**: Spinoza's *demonstratio* runs from singular
+thoughts being modes expressing God's nature (Prop. I.25cor) through
+Def. I.5 to Def. I.6. The step unavailable to us is the first
+premise's **existential import** — that there *are* singular
+thoughts. Spinoza supplies it from Pars II's own Axiom II (*Homo
+cogitat*), an avowedly empirical premise; the scholium offers an
+independent route through conceiving an infinite thinking being.
+Rather than import an empirical axiom or reconstruct the scholium,
+we commit the conclusion directly — the 📜-pattern of
+A13/A27/A35/A40/A41.
+
+**Commentary**: Bennett 1984 §36 discusses the peculiar status of
+Pars II's opening propositions at length.
+
+**Used by**: `prop_2_1_cogitatioAttributumDei`,
+`prop_2_1_2_deusHabetDuoAttributa`.
+
+---
+
+## A47 — *Extensio* is an attribute of God (Section III, 📜 Prop. II.II)
+
+**Lean signature**:
+```lean
+ax_extensio_attributum :
+  ∀ g : Thing, IsGodAttr g → Attributum (extensio Thing) g
+```
+
+**Why we add it**: Spinoza's entire *demonstratio* is "*Hujus eodem
+modo procedit ac demonstratio præcedentis propositionis*", so this
+axiom stands or falls exactly with A46.
+
+**Used by**: `prop_2_2_extensioAttributumDei`,
+`prop_2_1_2_deusHabetDuoAttributa`.
+
+---
+
+## A48 — Thought and extension are distinct (Section III)
+
+**Lean signature**:
+```lean
+ax_cogitatio_ne_extensio : (cogitatio Thing : Attr) ≠ extensio Thing
+```
+
+**Why we add it**: Spinoza never states this as a proposition; it is
+presupposed by the whole architecture of Pars II — by the
+parallelism (Prop. VII), vacuous if the two orders were one, and by
+Prop. VI's insistence that modes of one attribute have God as cause
+*only* under that attribute.
+
+**Commentary**: **this axiom is why the Attributum layer had to be
+built.** Under Pars I's typing, A46 + A47 + A48 are jointly
+inconsistent with the existence of a God — proved in Pars I's own
+vocabulary by `pars2_opening_triple_inconsistent_in_pars1`
+(`Pars2/Idea.lean`), which routes through
+`god_is_own_only_attribute`. The inconsistency is a defect of the
+Prop. X scholium reading, not of Spinoza's commitments. See GAP-25.
+
+**Used by**: `prop_2_1_2_deusHabetDuoAttributa` (the injectivity
+half).
+
+---
+
+## A49 — Everything has an idea (Section III, 📜 Prop. II.III)
+
+**Lean signature**:
+```lean
+ax_god_has_idea_of_all : ∀ x : Thing, ∃ i : Thing, ideaOf i x
+```
+
+**Why we add it**: Spinoza's *demonstratio* chains Prop. II.I +
+Prop. I.16 (God can form the idea), Prop. I.35 (whatever is in God's
+power necessarily is), and Prop. I.15 (only in God). The
+load-bearing middle step, **Prop. I.35, is ⏳ deferred** in this
+formalisation — it needs the *potentia* machinery, along with
+Prop. I.34. So the conclusion is committed directly rather than
+derived through unavailable machinery, the discipline A42's
+docstring applies to Prop. XXVIII.
+
+**Used by**: `prop_2_3_ideaOmnium`, `prop_2_7_cor_ideaePariter`.
+
+**Open**: the *in Deo* localisation ("*non nisi in Deo*") is not
+claimed — GAP-26.
+
+---
+
+## A50 — The idea order tracks intelligibility (Section II — bridge)
+
+**Lean signature**:
+```lean
+ax_idea_tracks_intelligibility :
+  ∀ e c : Thing, intelligibleThrough e c →
+    ∀ ie ic : Thing, ideaOf ie e → ideaOf ic c → Cause ic ie
+```
+
+**Why we add it**: Prop. VII's *demonstratio* is two sentences —
+"*Patet ex axiomate 4 partis I. Nam cujuscunque causati idea a
+cognitione causæ cujus est effectus, dependet.*" A4ₛ
+(`ax4_effectIntelligibleThroughCause`) delivers the first;
+this axiom is the second, carrying intelligibility-dependence among
+*things* to causal dependence among their *ideas*.
+
+**Commentary**: classified **Section II** rather than III
+deliberately — Spinoza asserts precisely this sentence as the
+content of his demonstration, so it is a promotion of stated
+material, not a reconstruction of a missing step. It is what makes
+Prop. VII a genuine derivation here rather than a 📜 commitment.
+
+**Used by**: `prop_2_7_ordoEtConnexio` (hence
+`prop_2_7_cor_ideaePariter`).
+
+**Open**: the converse direction and the identity reading of "*idem
+est*" — GAP-27.
+
+---
+
 ## Note on the extension classes
 
 The Attributum layer re-types the `Pars1Axioms` attribute axioms
