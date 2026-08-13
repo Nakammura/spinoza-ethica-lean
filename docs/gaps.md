@@ -950,8 +950,36 @@ form onto the binary `followsFrom`. The same ternary relation is
 the prerequisite for Prop. XXIII's trichotomy (GAP-23) and for a
 form-faithful Prop. XXVIII; introduce it once, for all three.
 
-**Status**: ⏳ open — deferred until a consumer requires the
-ternary form.
+**Update (batch 1.2 — partially answered, in the sibling layer)**:
+the consumer arrived. `Ethica/Pars2/Quatenus.lean` introduces
+`causeUnder : Thing → Thing → Attr → Prop` and `modeUnder : Thing →
+Attr → Prop`, which give the *quatenus* relativisation the shape
+this gap asked for — attribute-relativised **causation**, on the
+re-typed `Attr` universe the Attributum layer supplies.
+
+That does **not** close GAP-22, for two reasons, both worth being
+explicit about:
+
+1. It relativises `Cause`, not `followsFrom`. Prop. I.XXII's
+   statement is about consecution.
+2. Prop. I.XXII's relativisation is to *an attribute as modified by
+   a modification* — a three-place structure whose third slot is a
+   **modification**, not an attribute. `causeUnder` has an attribute
+   in its third slot. The two are different ternary relations;
+   `causeUnder` is the one Pars II needs, `followsFromQua` is still
+   the one Prop. I.XXII needs.
+
+What has changed is that the missing ingredient is now identified
+precisely: a typed `Attr` universe existed nowhere when A41 was
+written, which is *why* the flattening looked unavoidable. With the
+Attributum layer in place, a form-faithful `followsFromQua` is
+writable. Rewriting A41 would, however, edit `Ethica/Pars1/`, which
+the v1.0.0 freeze forbids — so the honest home for it is a re-typed
+consecution layer alongside `Quatenus.lean`, not an in-place fix.
+
+**Status**: ⏳ open — the ternary *shape* now exists
+(`Quatenus.lean`); a form-faithful `followsFromQua` for Prop. I.XXII
+awaits a re-typed consecution layer (must not modify `Pars1/`).
 
 ---
 
@@ -1237,7 +1265,34 @@ solves for `CausalWorld` — worth doing once, when batch 1.3
 (`Pars2/Corpus.lean`) needs inherence anyway. `prop_15_allInGod`
 would then supply the localisation directly.
 
-**Status**: ⏳ open, deferred to batch 1.3.
+**Update (batch 1.2 — ✅ closed, and closed *better* than the
+resolution path proposed).** `Pars2World` was re-based from
+`CausalWorld` onto `ConsecutioWorld` (which subsumes
+`InherenceWorld`), and `Pars2Axioms` from `CausalAxioms` onto
+`ConsecutioAxioms`. The predicted synthesization-order problem did
+not materialise: the `outParam` on `Attr` already handles it.
+
+Crucially, A49 was **not** strengthened. The localisation is a
+**derivation**:
+
+```lean
+theorem prop_2_3_ideaInDeo (g : Thing) (hgod : IsGod g) (x : Thing) :
+    ∃ i : Thing, ideaOf i x ∧ (i = g ∨ InherenceWorld.inheresIn i g) := by
+  obtain ⟨i, hi⟩ := prop_2_3_ideaOmnium (Attr := Attr) x
+  exact ⟨i, hi, prop_15_allInGod g hgod i⟩
+```
+
+That is Spinoza's own route — his *demonstratio* closes "*et (per
+propositionem 15 partis I) non nisi in Deo*", and Prop. I.XV was
+already mechanised. So the gap cost **zero** new axioms: it was a
+missing import, not a missing commitment.
+
+The residual `i = g` disjunct is Prop. I.XV's own shape
+(`prop_15_allInGod : ∀ x, x = g ∨ inheresIn x g`), not a weakening
+introduced here.
+
+**Status**: ✅ closed (batch 1.2, `Ethica/Pars2/Idea.lean`,
+`prop_2_3_ideaInDeo`).
 
 ---
 
@@ -1275,7 +1330,89 @@ to its being-under-extensio. Not attempted in batch 1.1.
 Cross-reference: GAP-22 (the same ternary-relativisation
 prerequisite, flagged there for Prop. I.XXII).
 
-**Status**: ⏳ open, deferred to batch 1.2.
+**Update (batch 1.2)**: the gap **splits**, and its two halves now
+have different statuses.
+
+### GAP-27a — the converse direction — ✅ closed
+
+A55 (`ax_idea_order_reflects`, `Ethica/Pars2/Quatenus.lean`) carries
+the causal order among ideas back to things. With A50 it yields
+
+```lean
+theorem prop_2_7_ordoEtConnexio_iff (c e ic ie : Thing)
+    (hic : ideaOf ic c) (hie : ideaOf ie e) :
+    CausalWorld.Cause c e ↔ CausalWorld.Cause ic ie
+```
+
+A55 is classified **Section II**: Spinoza's connective is "*idem est
+ac*", an identity, and an identity is symmetric — asserting only one
+direction reads the "*idem est*" as an inequality. Taking the second
+direction is reading the sentence, not repairing it.
+
+Witnessed non-vacuously in `Models/MensWitness.lean`: that model's
+`Cause` is *not* constant (`mens_cause_irreflexive_deus`), so the
+biconditional there is a claim with content rather than a
+`True ↔ True`.
+
+### GAP-27b — the identity claim proper — ⏳ open
+
+Item (b) above is untouched. The biconditional is a statement about
+two *orders* coinciding; the scholium's claim is that a mode of
+extension and its idea are one and the same *thing*. Nothing in
+`QuatenusWorld` identifies a `Thing` under one attribute with a
+`Thing` under another — indeed `modeUnder` as axiomatised (A51)
+pushes the *other* way, since a mode involves the concept of exactly
+one attribute.
+
+**Resolution path (27b)**: a cross-attribute identity relation, or a
+mode-under-attribute *quotient*, so that "the same mode" can be
+indexed by two attributes without A51's exclusion clause turning
+that into a contradiction. This is a genuinely new commitment and
+almost certainly Section III. Prop. II.VI's corollary's comparative
+half ("*eodem modo eademque necessitate*") needs it too, and so does
+Prop. II.XXI's scholium (*mens et corpus unum et idem individuum*),
+which is where batch 1.3 will meet it head-on.
+
+**Status**: 27a ✅ closed (batch 1.2, A55); 27b ⏳ open, deferred to
+batch 1.3.
+
+---
+
+## GAP-28 — Prop. II.V's *hoc est* gloss (ideas are not caused by their ideata)
+
+**Location**: `Ethica/Pars2/Quatenus.lean`,
+`prop_2_5_ideaeSubCogitatione`.
+
+**Issue**: Prop. II.V's statement is followed by a gloss that is not
+a restatement of it: "*hoc est … non ab ipsis ideatis sive rebus
+perceptis*" — the formal being of ideas has God for cause qua
+thinking thing, *and not their own ideata*. What is mechanised is
+the attribute clause (cause under `cogitatio`, not under any other
+attribute). The *ideatum* clause is a different claim: it denies
+that the object of an idea is the efficient cause of that idea.
+
+The two do not follow from one another here. The attribute clause
+rules out `causeUnder g i b` for `b ≠ cogitatio`; the ideatum clause
+would have to rule out `Cause x i` where `ideaOf i x` — and `x` may
+perfectly well be a mode of thought itself (an *idea ideae*), in
+which case the attribute clause says nothing at all against it.
+
+**Reading**: this is Spinoza's anti-representationalist point — an
+idea's causal ancestry runs inside the attribute of thought, never
+across from its object. Bennett 1984 §37 reads it as the load-bearing
+half of the parallelism doctrine, precisely the part that keeps
+parallelism from collapsing into causal interaction.
+
+**Resolution path**: an axiom of the form `ideaOf i x → ¬ Cause x i`
+would be too strong (it would also deny the *idea ideae* its
+legitimate causal relation to the idea below it whenever that idea
+happens to be the ideatum). The right shape is presumably
+attribute-relative: no `causeUnder` relation crosses from a mode's
+own attribute to the attribute of thought except along the idea
+ladder. That needs the batch 1.3 individuation machinery to state
+precisely.
+
+**Status**: ⏳ open, deferred to batch 1.3.
 
 ---
 

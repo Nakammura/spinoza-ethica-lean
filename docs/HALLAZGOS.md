@@ -294,10 +294,11 @@ como puente de Sección II, no una reconstrucción nuestra— la traslada
 a dependencia causal entre ideas. `prop_2_7_ordoEtConnexio` es una
 derivación de dos pasos.
 
-Honestidad sobre el alcance: solo se mecaniza la dirección
-cosas→ideas. Ni la conversa ni la lectura de *identidad* del escolio
-("*modus extensionis et idea illius modi una eademque est res sed
-duobus modis expressa*") están cubiertas — GAP-27.
+Honestidad sobre el alcance: en el batch 1.1 solo se mecanizó la
+dirección cosas→ideas. La conversa se cerró en el batch 1.2 (A55,
+hallazgo 11); la lectura de *identidad* del escolio ("*modus
+extensionis et idea illius modi una eademque est res sed duobus
+modis expressa*") sigue abierta — GAP-27b.
 
 **Bonus: se retiró el placeholder más viejo del proyecto.** El A6 de
 Spinoza (*Idea vera debet cum suo ideato convenire*) llevaba como
@@ -321,6 +322,78 @@ Pars II consume vive en `Attr`. Los dos canales conviven.
 
 ---
 
+## 11. ⭐ El *quatenus* no cuesta metafísica — y el infinito de las ideas es una necesidad estructural
+
+**Archivos**: `Ethica/Pars2/Quatenus.lean`,
+`Ethica/Pars2/Models/MensWitness.lean` ·
+**Teoremas**: `prop_2_6_modiSubSuoAttributo`,
+`prop_2_5_ideaeSubCogitatione`, `prop_2_7_ordoEtConnexio_iff`,
+`prop_2_3_ideaInDeo`, `mens_prop_6`, `mens_cause_irreflexive_deus`
+
+Tres hallazgos, y el tercero fue una sorpresa.
+
+**(a) Cinco axiomas nuevos, cero compromisos de Sección III.** La
+capa *quatenus* introduce las primeras relaciones **relativizadas a
+atributo** del proyecto (`modeUnder`, `causeUnder`,
+`involvesConceptOf`) y con ellas las Props. II.V y II.VI. Los cinco
+axiomas que necesita —A51–A55— son **todos de Sección II**: cada uno
+es una frase que Spinoza escribe en la *demonstratio* correspondiente.
+No hay ni un solo axioma con patrón 📜 en este tramo.
+
+Es un resultado con contenido, no un detalle contable. La pregunta
+que guía el proyecto es cuántos compromisos no declarados necesita
+realmente la *Ética*; la respuesta aquí es **ninguno**. Las dos
+cláusulas de la Prop. VI se *derivan*: la positiva desde
+`prop_16_cor1_godEfficientCause` (ya mecanizada en Pars I) refinada
+por A53, y la de exclusión desde la contradicción entre el segundo
+conyunto de A51 y A52. La Prop. V es la Prop. VI especializada a
+`a := cogitatio` vía A54 — la propia segunda *demonstratio* de
+Spinoza. La maquinaria del *quatenus* es cara en **primitivos** y
+gratis en **metafísica**.
+
+**(b) Un hueco que resultó ser un `import` faltante.** GAP-26 (la
+localización *in Deo* de la Prop. II.III) estaba anotado como
+pendiente de un axioma más fuerte. No hacía falta: bastó re-basar
+`Pars2World`/`Pars2Axioms` de `CausalWorld`/`CausalAxioms` a
+`ConsecutioWorld`/`ConsecutioAxioms` para que `prop_15_allInGod`
+quedara disponible, y `prop_2_3_ideaInDeo` deriva la localización de
+ahí — que es la ruta del propio Spinoza ("*per propositionem 15
+partis I*"). **Coste: cero axiomas nuevos.** Vale la pena registrar
+el patrón: un hueco documentado como deuda metafísica era deuda de
+arquitectura.
+
+**(c) Las ideas de Spinoza tienen que ser infinitas — y el kernel lo
+demuestra.** Al reconstruir el testigo apareció algo que no se leyó
+del texto sino de la imposibilidad de construir el modelo: **A45
+(cada idea tiene un único ideatum), A49 (todo tiene idea) y A54 (las
+ideas son modos del pensamiento) son conjuntamente insatisfacibles en
+cualquier portador finito.** A49 obliga a que cada cosa —incluida
+cada idea— tenga su idea; A45 impide reciclarlas; A54 las saca del
+único lugar donde el modelo podría cerrarse (la sustancia). El
+portador tuvo que pasar de un elemento a
+
+```lean
+inductive MensThing | deus | idea : MensThing → MensThing
+```
+
+es decir, Dios más la *idea ideae in infinitum* del escolio de la
+Prop. II.XXI. El regreso infinito de ideas que Spinoza afirma en ese
+escolio **no es un adorno doctrinal: es lo que mantiene consistente
+su propio registro**. Es la primera vez en el proyecto que una tesis
+sustantiva de la *Ética* se recupera como condición de satisfacibilidad
+en vez de como teorema.
+
+Beneficio colateral: en ese portador las Props. V y VI valen de un
+modo *real* (todo `idea x` es un `Mode` genuino), y su cláusula de
+exclusión rechaza `extensio` sobre una relación que de hecho vale
+bajo `cogitatio` — no sobre una relación vacía.
+`mens_cause_irreflexive_deus` certifica además que `Cause` no es la
+relación constante, así que el bicondicional del paralelismo
+(`prop_2_7_ordoEtConnexio_iff`, GAP-27a cerrado por A55) tampoco es
+trivialmente verdadero ahí.
+
+---
+
 ## Resumen numérico del estado (rama `pars1-extensions`)
 
 - **Pars I**: 29/36 proposiciones con contenido mecanizado
@@ -329,21 +402,25 @@ Pars II consume vive en `Attr`. Los dos canales conviven.
 - **Axiomas auxiliares nuevos**: A27–A44 (18), de los cuales 5 de
   Sección III genuinos (A27, A32, A35, A40, A41, A44 — con A42
   descompuesto en A44) y el resto puentes/promociones.
-- **Modelos nuevos**: 11 (4 testigos de consistencia, 3 contramodelos
-  de irreducibilidad, 1 bench multiatributo, 1 testigo global, y 2 de
-  la capa Attributum).
+- **Modelos nuevos**: 12 (4 testigos de consistencia, 3 contramodelos
+  de irreducibilidad, 1 bench multiatributo, 1 testigo global, 2 de
+  la capa Attributum y 1 de Pars II — `MensWitness`, reconstruido en
+  el batch 1.2 sobre portador infinito).
 - **Teoremas de imposibilidad**: 2 (no-derivabilidad de la existencia
   de Dios; incompatibilidad Dios ∧ pluralidad de atributos **en el
   registro de Pars I** — el hallazgo 9 muestra que la segunda depende
   del tipado, no de los axiomas).
 - **Capa nueva `Ethica/Attributum/`**: 5 módulos; GAP-25 y GAP-8a
   cerrados; Def. VI recuperada; Pars II desbloqueada.
-- **Pars II iniciada**: 4/49 proposiciones (I, II, III, VII) + el
-  resultado de dos atributos que su conjunción entrega. Axiomas
-  A45–A50; A6 de Spinoza promovido tras estar como `True` desde
-  v1.0.0. GAP-26 y GAP-27 abiertos con ruta.
-- **Total de la obra**: 33/259 proposiciones con contenido (29 de
-  Pars I + 4 de Pars II).
+- **Pars II en marcha**: 6/49 proposiciones (I, II, III, V, VI, VII)
+  más el corolario de la VI y el resultado de dos atributos que la
+  conjunción I+II entrega. Axiomas A45–A55; A6 de Spinoza promovido
+  tras estar como `True` desde v1.0.0. **A51–A55 son todos de
+  Sección II**: el batch 1.2 no añadió ningún compromiso metafísico
+  sustantivo. GAP-26 y GAP-27a cerrados; GAP-27b y GAP-28 abiertos
+  con ruta.
+- **Total de la obra**: 35/259 proposiciones con contenido (29 de
+  Pars I + 6 de Pars II).
 - `lake build` limpio, **0 `sorry`**, **0 `axiom`**, ninguna
   declaración de v1.0.0 modificada. El gate de CI ahora verifica
   mecánicamente las dos últimas condiciones.

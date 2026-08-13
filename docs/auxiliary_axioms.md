@@ -1899,7 +1899,15 @@ Pars I register.
 
 Introduced by `Ethica/Pars2/Idea.lean` (batch 1.1: Props. II.I,
 II.II, II.III, II.VII). All live in `Pars2Axioms`, which extends
-`CausalAxioms` (hence `Pars1Axioms`) and `AttrAxioms`.
+`ConsecutioAxioms` (hence `InherenceAxioms`, `CausalAxioms`,
+`Pars1Axioms`) and `AttrAxioms`.
+
+> **Base-class change, batch 1.2.** `Pars2Axioms` originally extended
+> `CausalAxioms`. It was re-based onto `ConsecutioAxioms` so that
+> Props. I.XV (`prop_15_allInGod`) and I.XVI cor. I
+> (`prop_16_cor1_godEfficientCause`) are available to Pars II. That
+> single change turned GAP-26 and Prop. II.VI's positive clause from
+> pending axioms into derivations. No A45–A50 signature changed.
 
 Consistency witness for all six: `Ethica/Pars2/Models/MensWitness.lean`.
 
@@ -1926,8 +1934,12 @@ denominations of a true idea, Def. II.IV *idea adæquata*) needs the
 adequacy machinery of batch 1.4 and is **not** claimed here. Flagged
 in the field docstring as a reading, not a rendering.
 
-**Used by**: nothing yet in batch 1.1 (committed as the A6 promotion
-proper; batch 1.2's Prop. IV work is its first consumer).
+**Used by**: nothing yet — committed as the A6 promotion proper.
+Batch 1.2 did **not** consume it either (Props. V–VI turn on
+`modeUnder`/`causeUnder`, not on ideatum uniqueness). Its first real
+consumer will be the adequacy machinery of batch 1.4; recorded here
+rather than quietly deferred, since an unused axiom is a claim the
+project is carrying without earning.
 
 ---
 
@@ -2017,10 +2029,15 @@ Prop. I.34. So the conclusion is committed directly rather than
 derived through unavailable machinery, the discipline A42's
 docstring applies to Prop. XXVIII.
 
-**Used by**: `prop_2_3_ideaOmnium`, `prop_2_7_cor_ideaePariter`.
+**Used by**: `prop_2_3_ideaOmnium`, `prop_2_3_ideaInDeo`,
+`prop_2_7_cor_ideaePariter`.
 
-**Open**: the *in Deo* localisation ("*non nisi in Deo*") is not
-claimed — GAP-26.
+**Open**: ~~the *in Deo* localisation ("*non nisi in Deo*") is not
+claimed — GAP-26.~~ **Closed in batch 1.2 without strengthening this
+axiom**: re-basing `Pars2Axioms` onto `ConsecutioAxioms` made
+`prop_15_allInGod` available, and `prop_2_3_ideaInDeo` derives the
+localisation from it — which is Spinoza's own route ("*per
+propositionem 15 partis I*"). A49's signature is unchanged.
 
 ---
 
@@ -2047,10 +2064,184 @@ material, not a reconstruction of a missing step. It is what makes
 Prop. VII a genuine derivation here rather than a 📜 commitment.
 
 **Used by**: `prop_2_7_ordoEtConnexio` (hence
-`prop_2_7_cor_ideaePariter`).
+`prop_2_7_cor_ideaePariter` and, with A55, the biconditional
+`prop_2_7_ordoEtConnexio_iff`).
 
-**Open**: the converse direction and the identity reading of "*idem
-est*" — GAP-27.
+**Open**: ~~the converse direction~~ (closed in batch 1.2 by A55) and
+the identity reading of "*idem est*" — GAP-27b.
+
+---
+
+# *Quatenus*-layer auxiliary axioms (A51–A55)
+
+Introduced by `Ethica/Pars2/Quatenus.lean` (batch 1.2: Props. II.V,
+II.VI, and the biconditional form of Prop. II.VII). All live in
+`QuatenusAxioms`, which extends `Pars2Axioms`.
+
+**All five are Section II.** That is the headline fact about this
+batch: the *quatenus* machinery is expensive in **primitives**
+(three new relations, the first attribute-relativised ones in the
+project) and costs **nothing in Section III commitments**. Every one
+of A51–A55 is a sentence Spinoza writes in the relevant
+*demonstratio*, promoted to usable content. No 📜-pattern axiom
+appears in this batch — Props. V and VI are genuine derivations, not
+adopted conclusions.
+
+Consistency witness for all five:
+`Ethica/Pars2/Models/MensWitness.lean`, which discharges A51–A54
+**non-vacuously** (its `modeUnder` / `causeUnder` /
+`involvesConceptOf` relations genuinely refuse `extensio`, so the
+exclusion clauses hold substantively rather than by an empty
+relation) and A55 on real structure (its `Cause` is not constant —
+see `mens_cause_irreflexive_deus`).
+
+---
+
+## A51 — Modes involve the concept of their own attribute only (Section II)
+
+**Lean signature**:
+```lean
+ax_modeUnder_conceptum :
+  ∀ (x : Thing) (a : Attr), modeUnder x a →
+    involvesConceptOf x a ∧ ∀ b : Attr, b ≠ a → ¬ involvesConceptOf x b
+```
+
+**Why we add it**: Prop. VI's *demonstratio*, second sentence, is
+exactly this: "*Quare uniuscujusque attributi modi conceptum sui
+attributi, non autem alterius involvunt*." The two clauses are one
+Latin sentence and are kept as one conjunctive field. The first
+clause extends Prop. I.10 (each attribute is conceived through
+itself) to modes; the second is the exclusion that gives Props. V
+and VI their entire force.
+
+**Commentary**: Bennett 1984 §17 identifies this as the strongest
+form of Spinoza's attribute-separation doctrine — the point at which
+attributes cease to be mere aspects and become explanatorily sealed
+compartments. Della Rocca 1996 ch. 1 calls it "conceptual barrier"
+and treats it as the premise the parallelism has to work around.
+Neither reads it as needing separate argument: Spinoza asserts it as
+a corollary of Prop. I.10, and so do we.
+
+**Used by**: `prop_2_6_modiSubSuoAttributo` (exclusion clause),
+hence `prop_2_6_cor_nonPerCogitationem`,
+`prop_2_5_ideaeSubCogitatione`, `prop_2_5_cor_nonSubExtensione`.
+
+---
+
+## A52 — Causation under an attribute requires that attribute's concept (Section II — Ax. I.4 relativised)
+
+**Lean signature**:
+```lean
+ax_causeUnder_involvesConcept :
+  ∀ (c e : Thing) (a : Attr), causeUnder c e a → involvesConceptOf e a
+```
+
+**Why we add it**: both *demonstrationes* close "*per axioma 4
+partis I*" — knowledge of an effect involves knowledge of its cause.
+A4ₛ (`ax4_effectIntelligibleThroughCause`, `Causation.lean`) states
+that for the binary `Cause`/`intelligibleThrough` pair. This is the
+attribute-relativised form the *quatenus* clause needs, and it is
+the direction Spinoza actually uses: from cause-under to
+concept-involvement, so that the **absence** of the concept (A51's
+second clause) rules the causal claim out.
+
+**Commentary**: the relativisation is not a strengthening of A4ₛ —
+it is A4ₛ read with the third argument slot the *quatenus*
+construction supplies. Reading it the other way (concept-involvement
+implies cause-under) would be a substantive and false addition; the
+field states only the direction the demonstrations use.
+
+**Used by**: `prop_2_6_modiSubSuoAttributo` (exclusion clause).
+
+---
+
+## A53 — God's causation of a mode is causation under that mode's attribute (Section II)
+
+**Lean signature**:
+```lean
+ax_cause_refines_to_attribute :
+  ∀ (g x : Thing) (a : Attr),
+    CausalWorld.Cause g x → modeUnder x a → causeUnder g x a
+```
+
+**Why we add it**: Prop. I.XXV's corollary describes particular
+things as "*Dei attributorum affectiones sive modi quibus Dei
+attributa certo et determinato modo exprimuntur*" — a mode expresses
+a **definite** attribute. Combined with
+`prop_16_cor1_godEfficientCause` (Prop. I.XVI cor. I, already
+mechanised: God is efficient cause of every mode), this refines the
+bare causal claim into the *quatenus* form.
+
+**Commentary**: this axiom adds **relativisation, not causation**.
+The causal fact it consumes is a Pars I theorem, not a new
+commitment; what A53 supplies is the claim that God's causing of a
+mode happens *under* the attribute the mode belongs to rather than
+under some other or under none. Curley 1969 ch. 2 treats exactly
+this as what "*certo et determinato modo*" is doing in the Prop.
+XXV corollary. This is why Prop. II.VI's positive clause is a
+derivation here rather than a 📜 commitment.
+
+**Used by**: `prop_2_6_modiSubSuoAttributo` (positive clause).
+
+---
+
+## A54 — Ideas are modes of thought (Section II — Prop. V's *demonstratio*)
+
+**Lean signature**:
+```lean
+ax_idea_modeUnder_cogitatio :
+  ∀ i x : Thing, ideaOf i x → modeUnder i (cogitatio Thing)
+```
+
+**Why we add it**: Prop. V's first *demonstratio* opens "*Esse
+formale idearum modus est cogitandi (ut per se notum)*" — that the
+formal being of an idea is a mode of thinking is, Spinoza says,
+self-evident. We record it as the bridge it is rather than leave it
+tacit.
+
+**Commentary**: "*ut per se notum*" is precisely the marker this
+project treats as a promotion candidate — a step Spinoza declines to
+argue for. It is Section II rather than III because he *states* it;
+the classification tracks whether the sentence is in the text, not
+whether it is argued. This axiom is what turns Prop. VI into Prop.
+V: the latter is the former specialised to `a := cogitatio`.
+
+**Used by**: `prop_2_5_ideaeSubCogitatione`, hence
+`prop_2_5_cor_nonSubExtensione`.
+
+---
+
+## A55 — The idea order reflects back to things (Section II — Prop. VII's "*idem est*")
+
+**Lean signature**:
+```lean
+ax_idea_order_reflects :
+  ∀ ic ie : Thing, CausalWorld.Cause ic ie →
+    ∀ c e : Thing, ideaOf ic c → ideaOf ie e → CausalWorld.Cause c e
+```
+
+**Why we add it**: A50 carries the causal order from things to
+ideas, which is the direction Prop. VII's *demonstratio* establishes
+(via Ax. I.4). But Spinoza's **statement** is an identity — "*ordo
+et connexio idearum idem est ac ordo et connexio rerum*" — and an
+identity is symmetric. A55 is the other direction; with A50 it
+delivers `prop_2_7_ordoEtConnexio_iff`.
+
+**Commentary**: classified Section II on the ground that asserting
+only one direction *misreads* the connective. "*Idem est ac*" is not
+"*sequitur ex*"; a formalisation that renders it as a one-way
+implication has weakened the sentence, not been cautious about it.
+Della Rocca 1996 ch. 6 makes the symmetry central to the
+parallelism doctrine.
+
+**Open**: this closes GAP-27a only. The scholium's stronger claim —
+that a mode of extension and its idea are "*una eademque res sed
+duobus modis expressa*", one and the same *thing* rather than two
+things in matching orders — needs cross-attribute identity of modes
+and remains **GAP-27b**. A55 is about two *orders* coinciding; the
+scholium is about two *things* being one.
+
+**Used by**: `prop_2_7_ordoEtConnexio_iff`.
 
 ---
 

@@ -36,21 +36,34 @@
   batch 1.4 supplies).
 
   **Structural note (the `outParam`)**. `Pars2World` extends both
-  `AttrWorld Thing Attr` and `CausalWorld Thing`. Since `CausalWorld`
-  does not mention `Attr`, the generated `toCausalWorld` projection
-  leaves `Attr` a metavariable and Lean cannot find a synthesization
-  order — exactly the failure `ModalForm.lean`'s §B.1 note describes
-  for the modal layer, which chose to keep the classes separate.
-  Here the two really must be combined (Prop. VII needs `Cause` and
-  `Attributum` in one statement), so `Attr` is declared an
-  `outParam`: a world determines its own attribute universe, which is
-  both true and what makes instance resolution go through.
+  `AttrWorld Thing Attr` and `ConsecutioWorld Thing` (which carries
+  `CausalWorld` and `InherenceWorld` beneath it). Since
+  `ConsecutioWorld` does not mention `Attr`, the generated
+  `toConsecutioWorld` projection leaves `Attr` a metavariable and
+  Lean cannot find a synthesization order — exactly the failure
+  `ModalForm.lean`'s §B.1 note describes for the modal layer, which
+  chose to keep the classes separate. Here the two really must be
+  combined (Prop. VII needs `Cause` and `Attributum` in one
+  statement), so `Attr` is declared an `outParam`: a world determines
+  its own attribute universe, which is both true and what makes
+  instance resolution go through.
+
+  **Why the whole consecution chain and not just `CausalWorld`**:
+  batch 1.2 needs `prop_16_cor1_godEfficientCause` (God is the
+  efficient cause of every mode) to derive Prop. VI's positive half
+  rather than commit it, and `prop_15_allInGod` to derive Prop.
+  III's *in Deo* localisation rather than leave it open. Both come
+  from the Inherence/Consecutio layers. Taking the richest available
+  Pars I world here converts two prospective Section III commitments
+  into theorems — which is the project's whole accounting question.
 -/
 import Ethica.Pars1.Definitions
 import Ethica.Pars1.Axioms
 import Ethica.Pars1.Causation
 import Ethica.Pars1.Propositions
 import Ethica.Pars1.Realitas
+import Ethica.Pars1.Inherence
+import Ethica.Pars1.Consecutio
 import Ethica.Attributum.Core
 import Ethica.Attributum.Axioms
 
@@ -85,7 +98,7 @@ universe u v
     `god_is_own_only_attribute` would have identified both with
     God. -/
 class Pars2World (Thing : Type u) (Attr : outParam (Type v))
-    extends AttrWorld Thing Attr, CausalWorld Thing where
+    extends AttrWorld Thing Attr, ConsecutioWorld Thing where
   /-- `ideaOf i x` : `i` is the idea of `x` (Def. III). -/
   ideaOf : Thing → Thing → Prop
   /-- *Cogitatio* — the attribute of thought (Prop. I). -/
@@ -114,7 +127,7 @@ open Pars2World AttrStructure
     simultaneously. -/
 class Pars2Axioms (Thing : Type u) (Attr : outParam (Type v))
     [Pars2World Thing Attr]
-    extends CausalAxioms Thing, AttrAxioms Thing Attr : Prop where
+    extends ConsecutioAxioms Thing, AttrAxioms Thing Attr : Prop where
   /-- A45 (Section II — substantive promotion of Spinoza's **A6**):
       an idea has at most one object.
 
@@ -197,9 +210,12 @@ class Pars2Axioms (Thing : Type u) (Attr : outParam (Type v))
       machinery — the same discipline A42's docstring applies to
       Prop. XXVIII.
 
-      **What is not claimed**: the *in Deo* localisation ("*non nisi
-      in Deo*"). Stating it needs `inheresIn`, i.e. the Inherence
-      layer, which this batch does not import. Tracked as GAP-26. -/
+      **The *in Deo* localisation is not part of this axiom** — it is
+      *derived*, in `prop_2_3_ideaInDeo` below, from
+      `prop_15_allInGod`. That is why `Pars2World` extends the whole
+      consecution chain rather than just `CausalWorld`: the
+      localisation Spinoza gets from Prop. I.15 we get from Prop.
+      I.15 too, mechanised. Closes GAP-26. -/
   ax_god_has_idea_of_all :
     ∀ x : Thing, ∃ i : Thing, ideaOf i x
 
@@ -305,14 +321,33 @@ theorem prop_2_1_2_deusHabetDuoAttributa (g : Thing)
           essence, but also of all things which necessarily follow
           from his essence."
 
-  **What is mechanised**: the existential clause — everything has an
-  idea. **Not mechanised**: the *in Deo* localisation, which needs
-  the Inherence layer (GAP-26). -/
+  **What is mechanised**: both clauses. The existential clause is
+  A49 (📜); the *in Deo* localisation — "*et non nisi in Deo*", which
+  Spinoza gets from Prop. I.15 — is **derived** here from
+  `prop_15_allInGod`, mechanised in `Ethica/Pars1/Inherence.lean`.
+  Closes GAP-26. -/
 
 /-- Prop. II.III: every thing has an idea. Direct invocation of
     A49. -/
 theorem prop_2_3_ideaOmnium (x : Thing) : ∃ i : Thing, ideaOf i x :=
   Pars2Axioms.ax_god_has_idea_of_all x
+
+/-- Prop. II.III, full form: every thing has an idea, and that idea
+    is **in God** — either God itself or inhering in God.
+
+    Genuine derivation of the localisation clause: A49 supplies the
+    idea, and `prop_15_allInGod` (Prop. I.15, *Quicquid est, in Deo
+    est*) places it, exactly as Spinoza's *demonstratio* does
+    ("*et (per propositionem 15 partis I) non nisi in Deo*").
+
+    The `IsGod g` hypothesis is Pars I's predicate, not `IsGodAttr`:
+    `prop_15_allInGod` is a Pars I theorem and consumes the Pars I
+    reading. A world can carry both, as
+    `Models/MensWitness.lean` does. Closes GAP-26. -/
+theorem prop_2_3_ideaInDeo (g : Thing) (hgod : IsGod g) (x : Thing) :
+    ∃ i : Thing, ideaOf i x ∧ (i = g ∨ InherenceWorld.inheresIn i g) := by
+  obtain ⟨i, hi⟩ := prop_2_3_ideaOmnium (Attr := Attr) x
+  exact ⟨i, hi, prop_15_allInGod g hgod i⟩
 
 /-! ## Propositio VII — *the parallelism*
 

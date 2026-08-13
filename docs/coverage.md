@@ -362,8 +362,10 @@ formalisations of Pars I — base FOL, modal S5, categorical / topos.
 
 # Pars II — De natura et origine mentis
 
-49 propositions. **Batch 1.1 landed**: Props. I, II, III, VII, plus
-the two-attribute result their conjunction yields.
+49 propositions. **Batches 1.1 and 1.2 landed**: Props. I, II, III
+(now including its *in Deo* clause), V, VI with its corollary, and
+VII in biconditional form — plus the two-attribute result the
+opening pair's conjunction yields.
 
 Pars II could not be started before the Attributum layer: its
 opening pair asserts that Thought and Extension are two *distinct*
@@ -375,18 +377,34 @@ vocabulary.
 ## Structure
 
 `Pars2World Thing Attr` extends `AttrWorld Thing Attr` **and**
-`CausalWorld Thing`, adding `ideaOf : Thing → Thing → Prop` (Def.
+`ConsecutioWorld Thing`, adding `ideaOf : Thing → Thing → Prop` (Def.
 III) and the two distinguished attributes `cogitatio`, `extensio`.
-`Attr` is declared an `outParam`: since `CausalWorld` does not
-mention `Attr`, the generated `toCausalWorld` projection would
-otherwise leave it a metavariable and Lean could find no
-synthesization order — the same obstruction `ModalForm.lean`'s §B.1
-note describes, here resolved rather than avoided because Prop. VII
-needs `Cause` and `Attributum` in one statement.
+`Attr` is declared an `outParam`: since `ConsecutioWorld` does not
+mention `Attr`, the generated projections would otherwise leave it a
+metavariable and Lean could find no synthesization order — the same
+obstruction `ModalForm.lean`'s §B.1 note describes, here resolved
+rather than avoided because Prop. VII needs `Cause` and `Attributum`
+in one statement.
 
-`Pars2Axioms` extends `CausalAxioms` (hence `Pars1Axioms` — Pars
-II's *demonstrationes* cite Props. I.10, I.14, I.15, I.16, I.25cor
-throughout) and `AttrAxioms`.
+`Pars2Axioms` extends `ConsecutioAxioms` (hence `InherenceAxioms`,
+`CausalAxioms`, `Pars1Axioms` — Pars II's *demonstrationes* cite
+Props. I.10, I.14, I.15, I.16, I.25cor throughout) and `AttrAxioms`.
+
+> **Batch 1.2 re-based the class from `CausalAxioms` to
+> `ConsecutioAxioms`.** This was not bookkeeping. It made
+> `prop_15_allInGod` and `prop_16_cor1_godEfficientCause` available,
+> which turned GAP-26 and Prop. VI's positive clause from *pending
+> axioms* into *derivations*. No existing signature changed and
+> nothing under `Ethica/Pars1/` was touched.
+
+`QuatenusWorld Thing Attr` (batch 1.2) extends `Pars2World`, adding
+the project's first **attribute-relativised** primitives:
+`modeUnder : Thing → Attr → Prop`, `causeUnder : Thing → Thing →
+Attr → Prop`, `involvesConceptOf : Thing → Attr → Prop`. This is the
+ternary shape GAP-22 flagged as missing when A41 had to flatten
+Prop. I.XXII — supplied here for causation, though GAP-22's own
+target (consecution, relativised to *attribute-as-modified*) remains
+open. `QuatenusAxioms` extends `Pars2Axioms` with A51–A55.
 
 ## Propositions (I–XLIX)
 
@@ -395,26 +413,41 @@ throughout) and `AttrAxioms`.
 | I    | Thought is an attribute of God. | 📜 | `prop_2_1_cogitatioAttributumDei` (`Pars2/Idea.lean`) — direct invocation of **A46**. The *demonstratio*'s unavailable step is its existential premise (that singular thoughts exist), which Spinoza takes from Pars II's own Axiom II *Homo cogitat*, an empirical premise; committed directly instead. Bennett 1984 §36. |
 | II   | Extension is an attribute of God. | 📜 | `prop_2_2_extensioAttributumDei` — direct invocation of **A47**. Spinoza's whole *demonstratio* is "*eodem modo ac præcedentis*", so A47 stands or falls with A46. |
 | I+II | *(their conjunction)* God has ≥2 attributes. | ✅ | `prop_2_1_2_deusHabetDuoAttributa` — **genuine derivation** from A46 + A47 + A48, packaged through `hasAtLeastNAttrs`' `Fin 2` injection. The first theorem in the project that the Pars I register actively **refutes** (`god_no_two_attributes`). |
-| III  | In God there is necessarily an idea of his essence and of all that follows. | 📜 (partial) | `prop_2_3_ideaOmnium` — direct invocation of **A49**, existential clause only. The *demonstratio*'s middle step is Prop. I.35, itself ⏳ deferred (*potentia*). **Not mechanised**: the *in Deo* localisation — GAP-26. |
+| III  | In God there is necessarily an idea of his essence and of all that follows. | ✅ (with qualifier) | `prop_2_3_ideaOmnium` (existential clause — direct invocation of **A49**) + `prop_2_3_ideaInDeo` (the *in Deo* localisation, **batch 1.2**). The localisation is a **genuine derivation** from `prop_15_allInGod`, which is Spinoza's own route ("*per propositionem 15 partis I*") — it cost no new axiom, only the `ConsecutioAxioms` re-base. **GAP-26 closed.** **Qualifier**: the *demonstratio*'s middle step is Prop. I.35, itself ⏳ deferred (*potentia*), so the existential half remains 📜 via A49. |
 | IV   | The idea of God is unique. | ⏳ | Depends on Prop. I.XXX, itself ⏳ deferred. Deferred past batch 1.2. |
-| V    | The formal being of ideas has God as cause only qua thinking thing. | ⏳ | Needs *quatenus* — attribute-relativised causation (`causeUnder : Thing → Thing → Attr → Prop`). Batch 1.2. Cross-ref GAP-22. |
-| VI   | Modes of any attribute have God as cause only under that attribute. | ⏳ | Same *quatenus* prerequisite as Prop. V. Batch 1.2. |
-| VII  | **The order and connection of ideas is the same as the order and connection of things.** | ✅ (with qualifier) | `prop_2_7_ordoEtConnexio` + corollary `prop_2_7_cor_ideaePariter` — **genuine derivation** mirroring Spinoza's own one-line *demonstratio* ("*Patet ex axiomate 4 partis I*"): A4ₛ gives intelligibility-dependence among things, **A50** carries it to causal dependence among ideas. **Qualifier**: the directional transfer only. The converse, and the scholium's identity reading ("*una eademque res sed duobus modis expressa*"), are not mechanised — GAP-27. |
-| VIII–XLIX | — | ⏳ | Not started. Batches 1.2–1.4. |
+| V    | The formal being of ideas has God as cause only qua thinking thing. | ✅ (with qualifier) | `prop_2_5_ideaeSubCogitatione` + `prop_2_5_cor_nonSubExtensione` (`Pars2/Quatenus.lean`) — **derived**, as a specialisation of Prop. VI to `a := cogitatio` via **A54**, mirroring Spinoza's own second *demonstratio*. **Not mechanised**: the *hoc est* gloss (ideas are not caused by their own *ideata*) — that is a claim about the ideatum, not about the attribute — **GAP-28**. |
+| VI   | Modes of any attribute have God as cause only under that attribute. | ✅ | `prop_2_6_modiSubSuoAttributo` — **both clauses derived, no Section III commitment**. Positive clause: `prop_16_cor1_godEfficientCause` (Prop. I.XVI cor. I) supplies the causal fact, **A53** relativises it. Exclusion clause: **A51**'s second conjunct denies the mode any other attribute's concept, **A52** says causation-under would require exactly that concept; the contradiction is the proof. |
+| VI cor. | What is not a mode of thought is not caused by God qua thinking thing. | ✅ (partial) | `prop_2_6_cor_nonPerCogitationem` — the negative half, a direct specialisation of Prop. VI's exclusion clause. **Not mechanised**: the comparative half ("*eodem modo eademque necessitate*"), which needs the identity reading — GAP-27b. |
+| VII  | **The order and connection of ideas is the same as the order and connection of things.** | ✅ (with qualifier) | `prop_2_7_ordoEtConnexio` + corollary `prop_2_7_cor_ideaePariter` (batch 1.1) + `prop_2_7_ordoEtConnexio_iff` (**batch 1.2**). The one-way transfer mirrors Spinoza's one-line *demonstratio* ("*Patet ex axiomate 4 partis I*"): A4ₛ gives intelligibility-dependence among things, **A50** carries it to causal dependence among ideas. **A55** supplies the converse, on the ground that "*idem est ac*" is an identity and identities are symmetric — **GAP-27a closed**. **Qualifier**: the scholium's identity reading ("*una eademque res sed duobus modis expressa*") is still not mechanised — **GAP-27b**. |
+| VIII–XLIX | — | ⏳ | Not started. Batches 1.3–1.4. |
 
-## Axioms (Pars II, A45–A50)
+## Axioms (Pars II, A45–A55)
 
 | Axiom | Section | Content | Note |
 |-------|---------|---------|------|
-| A45 | II | An idea has at most one object | **Promotion of Spinoza's own A6**, carried as a `True` placeholder since v1.0.0 — the oldest placeholder in the project, now retired. Read as *functionality*; the adequacy content awaits batch 1.4. |
+| A45 | II | An idea has at most one object | **Promotion of Spinoza's own A6**, carried as a `True` placeholder since v1.0.0 — the oldest placeholder in the project, now retired. Read as *functionality*; the adequacy content awaits batch 1.4. **Still unconsumed** as of batch 1.2 — recorded rather than hidden. |
 | A46 | III | *Cogitatio* is an attribute of God | 📜 Prop. II.I |
 | A47 | III | *Extensio* is an attribute of God | 📜 Prop. II.II |
 | A48 | III | The two are distinct | Never stated by Spinoza; presupposed throughout. **Inconsistent with Pars I's register** — the reason the Attributum layer exists. |
 | A49 | III | Everything has an idea | 📜 Prop. II.III (existential clause) |
 | A50 | II | Idea order tracks intelligibility | Bridge; Spinoza asserts precisely this sentence in Prop. VII's *demonstratio*, so it is a promotion, not a reconstruction. It is what makes Prop. VII a derivation rather than a commitment. |
+| A51 | II | Modes involve their own attribute's concept and no other | Prop. VI's *demonstratio*, second sentence, verbatim. Bennett's "attribute separation" in its strongest form; the exclusion clause is what gives Props. V and VI their force. |
+| A52 | II | Causation under an attribute requires that attribute's concept | Ax. I.4 relativised — the direction both *demonstrationes* actually use ("*per axioma 4 partis I*"). |
+| A53 | II | God's causing of a mode is causing under that mode's attribute | Prop. I.XXV cor.'s "*certo et determinato modo*", relativising a causal fact that is **already a Pars I theorem**. Adds relativisation, not causation. |
+| A54 | II | Ideas are modes of thought | Prop. V's *demonstratio*, "*ut per se notum*" — the marker this project treats as a promotion candidate. Turns Prop. VI into Prop. V. |
+| A55 | II | The idea order reflects back to things | Prop. VII's "*idem est ac*" is an identity, and identities are symmetric. Closes **GAP-27a**. |
+
+> **Batch 1.2 added five axioms and not one Section III commitment.**
+> That is unusual here and worth stating plainly: the *quatenus*
+> machinery is expensive in **primitives** (three new relations) and
+> free in **metaphysics**. Every one of A51–A55 is a sentence Spinoza
+> writes in the relevant *demonstratio*. No 📜-pattern axiom appears
+> in this batch, and Props. V and VI are derivations rather than
+> adopted conclusions.
 
 ## Models
 
 | Model | Role | Status |
 |-------|------|--------|
-| MensWitness | Consistency witness for A1–A15 + A4ₛ/A5ₛ + A10′–A15′ + A45–A50 on one carrier | ✅ `Ethica/Pars2/Models/MensWitness.lean` — carrier `MensThing` (one substance) with `MensAttr` = {`cogitatio`, `extensio`}. **Its point is that it holds both verdicts at once**: `mens_duo_attributa` (God has two `Attr`-typed attributes) *and* `mens_pars1_collapse_holds` (no God has two `Thing`-typed attributes, via `god_no_two_attributes` — `Pars1Axioms` genuinely holds here). `mens_coexistence` packages the pair. The `Thing`-typed channel is degenerate exactly as `god_is_own_only_attribute` forces; the load-bearing structure lives in `Attr`. |
+| MensWitness | Consistency witness for A1–A15 + A4ₛ/A5ₛ + A33–A43 + A10′–A15′ + A45–A50 + A51–A55 on one carrier | ✅ `Ethica/Pars2/Models/MensWitness.lean` — carrier `MensThing` = `deus \| idea : MensThing → MensThing` (God plus the *idea ideae in infinitum*), `MensAttr` = {`cogitatio`, `extensio`}. **Three things it establishes.** (1) *Both attribute verdicts at once*: `mens_duo_attributa` (God has two `Attr`-typed attributes) *and* `mens_pars1_collapse_holds` (no God has two `Thing`-typed attributes, via `god_no_two_attributes` — `Pars1Axioms` genuinely holds here); `mens_coexistence` packages the pair. (2) *Props. V and VI hold of a real mode*: every `idea x` is a `Mode`, so `mens_prop_6` and `mens_prop_5_non_extensione` are not vacuous — the exclusion clause refuses `extensio` on a relation that demonstrably holds under `cogitatio`. (3) *The parallelism is not trivial*: `mens_cause_irreflexive_deus` shows `Cause` is not the constant-`True` relation, so `mens_prop_7_iff` has content. |
+| — *(carrier note)* | Why the carrier is infinite | The one-element carrier of batch 1.1 no longer suffices: **A45 + A49 + A54 are jointly unsatisfiable on any finite carrier** (every idea has an idea, ideas are modes, modes are not the unique substance). Spinoza's own infinite regress of ideas is what makes the register consistent — a structural fact discovered by trying to build the witness, not read off the text. |

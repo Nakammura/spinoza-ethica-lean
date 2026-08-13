@@ -77,8 +77,9 @@ Ethica/
         └── InfiniteAttribute.lean        -- A God with infinitely many attributes; Def. VI recovered
 └── Pars2/                                -- De natura et origine mentis
     ├── Idea.lean                         -- Props I, II, III, VII; A45–A50 (Pars2Axioms)
+    ├── Quatenus.lean                     -- Props V, VI, VII-iff; A51–A55 (QuatenusAxioms)
     └── Models/
-        └── MensWitness.lean              -- Consistency witness; the coexistence result
+        └── MensWitness.lean              -- Consistency witness; coexistence + real modes
 texts/
 ├── ethica1_la.txt … ethica5_la.txt       -- Latin per Pars
 └── en_part1_elwes.txt … en_part5_elwes.txt   -- Elwes EN per Pars
@@ -273,16 +274,65 @@ It is now substantive, on the functionality reading, with the
 stronger adequacy content honestly deferred to batch 1.4.
 
 `Models/MensWitness.lean` witnesses consistency of the whole
-register — A1–A15, A4ₛ/A5ₛ, A10′–A15′, A45–A50 on one carrier — and
-proves the **coexistence** result: in that single world God has two
-`Attr`-typed attributes *and* no God has two `Thing`-typed
-attributes. The two attribution channels live side by side, the
-`Thing`-typed one degenerate exactly as the collapse theorem forces.
+register on one carrier and proves the **coexistence** result: in
+that single world God has two `Attr`-typed attributes *and* no God
+has two `Thing`-typed attributes. The two attribution channels live
+side by side, the `Thing`-typed one degenerate exactly as the
+collapse theorem forces.
 
-Deferred to batch 1.2: Props. V and VI, which need *quatenus* —
-attribute-relativised causation (`causeUnder : Thing → Thing → Attr
-→ Prop`), the same ternary-relativisation prerequisite GAP-22 tracks
-for Prop. I.XXII. Prop. IV waits on Prop. I.XXX.
+## Pars II — the *quatenus* layer (batch 1.2)
+
+`Ethica/Pars2/Quatenus.lean` adds Props. V and VI, Prop. VI's
+corollary, and the biconditional form of Prop. VII. It introduces
+the project's first **attribute-relativised** primitives —
+`modeUnder x a`, `causeUnder c e a`, `involvesConceptOf x a` — which
+carry Spinoza's "*quatenus*": God causes a mode *insofar as* he is
+considered under one attribute and *not* under another.
+
+**Five new axioms, all Section II, no Section III commitment.** That
+is the headline. Every one of A51–A55 is a sentence Spinoza writes
+in the relevant *demonstratio*; none is a reconstruction of a
+missing step, and no 📜-pattern axiom appears in this batch. The
+*quatenus* machinery turns out to be expensive in primitives and
+free in metaphysics — a fact worth having, given that the project's
+guiding question is how many undeclared commitments the *Ethics*
+actually needs.
+
+Both clauses of **Prop. VI are derived**: the positive one from
+`prop_16_cor1_godEfficientCause` (already mechanised in Pars I)
+refined by A53; the exclusion one from A51's second conjunct
+contradicting A52. **Prop. V** is then Prop. VI specialised to
+`a := cogitatio` via A54 — Spinoza's own second *demonstratio*.
+
+The batch also closes two gaps by **re-basing** `Pars2World` /
+`Pars2Axioms` from `CausalWorld` / `CausalAxioms` onto
+`ConsecutioWorld` / `ConsecutioAxioms`:
+
+- **GAP-26** (Prop. III's *in Deo* localisation) — closed with
+  **zero new axioms**. `prop_15_allInGod` became available, and
+  `prop_2_3_ideaInDeo` derives the localisation from it, which is
+  Spinoza's own route ("*per propositionem 15 partis I*"). The gap
+  was a missing import, not a missing commitment.
+- **GAP-27a** (Prop. VII's converse direction) — closed by A55, on
+  the ground that "*idem est ac*" is an identity and identities are
+  symmetric. GAP-27b, the scholium's claim that a mode and its idea
+  are one and the same *thing*, remains open.
+
+`Models/MensWitness.lean` was rebuilt for this batch on an
+**infinite carrier** — `deus | idea : MensThing → MensThing`, God
+plus the *idea ideae in infinitum*. This is forced, not decorative:
+A45 (an idea has a unique ideatum), A49 (everything has an idea) and
+A54 (ideas are modes of thought) are **jointly unsatisfiable on any
+finite carrier**. Spinoza's own infinite regress of ideas is what
+keeps the register consistent — a structural fact that surfaced from
+trying to build the model, not from reading the text. The payoff is
+that Props. V and VI now hold of a *real* mode, and their exclusion
+clauses refuse `extensio` on a relation that demonstrably holds
+under `cogitatio`.
+
+Still deferred: Prop. IV (waits on Prop. I.XXX), GAP-27b and GAP-28
+(Prop. V's *hoc est* gloss — ideas are not caused by their own
+*ideata*), both to batch 1.3.
 
 ## Build
 
