@@ -204,6 +204,13 @@ que el paper original encontró en el registro v1.0.0: las cláusulas de
 *universalidad/exhaustividad* son los compromisos duros; las cadenas
 causales se reducen a ellas.
 
+> **Corrección posterior (batch 1.3).** El resultado de demote sigue
+> en pie tal como está enunciado, pero el hallazgo 12 muestra que la
+> hipótesis de A42 es **insatisfacible** en todo mundo `Pars1Axioms`:
+> lo que se descompuso era un axioma que no podía dispararse. La
+> forma utilizable de la Prop. XXVIII es A59, sobre `ResSingularis`
+> (`Ethica/Pars2/Parallelismus.lean`).
+
 ## 9. ⭐ El colapso era un artefacto del tipado — y la Def. VI se recupera
 
 **Archivos**: `Ethica/Attributum/` (capa nueva, rama paralela) ·
@@ -392,6 +399,108 @@ relación constante, así que el bicondicional del paralelismo
 (`prop_2_7_ordoEtConnexio_iff`, GAP-27a cerrado por A55) tampoco es
 trivialmente verdadero ahí.
 
+## 12. ⭐ La Prop. XXVIII de Pars I estaba mecanizada — y era vacía
+
+**Archivos**: `Ethica/Pars2/Parallelismus.lean`,
+`Ethica/Pars2/Models/MensWitness.lean` ·
+**Teoremas**: `pars1_prop_28_vacuous_for_modes`,
+`finitumInSuoGenere_implies_substance`, `prop_2_9_ideaSingularisAbAliaIdea`,
+`prop_2_7_cor_ordoObjectivus`, `mens_prop_9`
+
+Tres hallazgos encadenados, y el primero es incómodo.
+
+**(a) El axioma "columna vertebral" nunca se dispara.** El GAP-2 se
+cerró por la ruta (b): en vez de postular un axioma que conectara
+`Attribute` con `sameNature`, se **definió** `sameNature x y ≝ ∃ a,
+Attribute a x ∧ Attribute a y` (lectura de Della Rocca). Fue un buen
+movimiento para la Prop. II, cuyo tema son las sustancias. Pero
+`Attribute a s` arrastra `Substance s`, y la Def. II se construye
+sobre `sameNature`:
+
+```lean
+finitumInSuoGenere x ≝ ∃ y, x ≠ y ∧ sameNature x y ∧ limitedBy x y
+```
+
+De ahí sale, sin usar ningún axioma, que **`finitumInSuoGenere x`
+implica `Substance x`**. Y como sustancias y modos son disjuntos
+(`prop_1_substanceDisjointFromModes`), **ningún modo es nunca finito
+en su género**:
+
+```lean
+theorem pars1_prop_28_vacuous_for_modes :
+    ¬ ∃ x : Thing, Mode x ∧ finitumInSuoGenere x
+```
+
+La víctima es **A42**, cuyo propio docstring lo anuncia como "*the
+backbone of finite-mode causation that Pars II–V consume
+throughout*". Su hipótesis es insatisfacible en **todo** mundo
+`Pars1Axioms`: la Prop. I.XXVIII está mecanizada y no entrega nada.
+El hallazgo 8 sigue siendo correcto —A42 se descompone en A44— pero
+ahora sabemos que se descomponía un axioma que no se podía usar.
+
+Lo notable es que el proyecto lo había anticipado y lo dejó por
+escrito en `Definitions.lean` en la misma frase en que definía
+`sameNature` ("*a separate `hasAttribute` relation will be added at
+the modal layer*"), y el caveat del GAP-2 lo registró como promesa.
+El coste se cobró aquí, tres batches después, cuando la Prop. II.IX
+—cuya *demonstratio* cita la Prop. I.28 por su nombre— no pudo
+derivarse de ella.
+
+**(b) La reparación no cuesta ni un primitivo.** La capa *quatenus*
+del batch 1.2 ya había pagado lo que hacía falta: `modeUnder x a`
+dice de qué atributo es modo una cosa. Con eso, tres definiciones:
+
+```lean
+sameNatureUnder x y        ≝ ∃ a : Attr, modeUnder x a ∧ modeUnder y a
+finitumInSuoGenereModal x  ≝ ∃ y, x ≠ y ∧ sameNatureUnder x y ∧ limitedBy x y
+ResSingularis x            ≝ Mode x ∧ finitumInSuoGenereModal x
+```
+
+`ResSingularis` es la Def. VII de Pars II (*res singulares*), y **A59**
+es el contenido de A42 sobre ella. Nada de `Ethica/Pars1/` se toca:
+v1.0.0 sigue congelado y el teorema de vacuidad queda *al lado* de
+A42 en vez de sustituirlo — la misma disciplina que la reparación del
+GAP-25.
+
+Con eso, la **Prop. II.IX se deriva entera**, siguiendo la
+*demonstratio* paso por paso: A59 da otra causa singular al objeto,
+A49 le da idea a esa causa, A58 mantiene la idea dentro de lo
+singular, la Prop. VII transfiere el hecho causal y A45 separa las
+dos ideas. El corolario de la Prop. VII sale gratis del todo (A38 +
+A49 + Prop. VII). Y es el **primer consumidor de A45**, que los
+batches 1.1 y 1.2 llevaban sin usar y así lo declaraban.
+
+**(c) El *in infinitum* de la Prop. IX es bilateral, y el modelo lo
+obliga.** Segundo caso —tras el hallazgo 11(c)— en que una tesis
+sustantiva aparece como condición de satisfacibilidad. El portador
+del testigo necesitó un tercer constructor, `res : Int →
+MensThing`, y el tipo del índice **está forzado por dos exigencias
+que tiran en direcciones opuestas**: A59 pide que toda cosa singular
+tenga una *causa* singular, A43 pide que toda cosa tenga un *efecto*.
+El orden causal sobre las cosas singulares no puede tener ni primer
+ni último elemento. `Nat` no sirve; `Int` sí.
+
+Es decir: el "*et sic in infinitum*" de la Prop. IX no es un regreso
+en una sola dirección, sino una condición de dos lados que el
+registro impone al modelo, no al revés.
+
+Beneficios colaterales del portador nuevo: hay modos de **extensión**
+(los `res n`), así que la cláusula de exclusión de la Prop. VI vale
+de modo no vacuo en **ambas** direcciones (`mens_prop_6_extensio`,
+`mens_prop_6_cor_res` — el batch 1.2 solo podía exhibir el rechazo de
+`extensio`); y `durat` parte el portador en dos, de modo que la
+Prop. VIII se *pone a prueba* (`res (-1)` no dura, `res 0` sí) en vez
+de pasar por hipótesis vacía.
+
+**Un límite que el modelo delata.** En ese portador la relación causal
+más barata hace verdadero `Cause (idea x) x` — la idea de una cosa
+causando la cosa. Nada del registro lo prohíbe, porque nada conecta
+el orden causal con el orden de ideación más allá del paralelismo
+mismo. Eso es exactamente lo que fijaría el GAP-28 (la glosa *hoc
+est* de la Prop. II.V), y es una segunda motivación para él,
+independiente del texto: el registro está genuinamente
+subdeterminado ahí, y un modelo lo aprovecha.
+
 ---
 
 ## Resumen numérico del estado (rama `pars1-extensions`)
@@ -405,22 +514,27 @@ trivialmente verdadero ahí.
 - **Modelos nuevos**: 12 (4 testigos de consistencia, 3 contramodelos
   de irreducibilidad, 1 bench multiatributo, 1 testigo global, 2 de
   la capa Attributum y 1 de Pars II — `MensWitness`, reconstruido en
-  el batch 1.2 sobre portador infinito).
+  el batch 1.2 sobre portador infinito y ampliado en el 1.3 con el
+  stock singular indexado por `Int`).
 - **Teoremas de imposibilidad**: 2 (no-derivabilidad de la existencia
   de Dios; incompatibilidad Dios ∧ pluralidad de atributos **en el
   registro de Pars I** — el hallazgo 9 muestra que la segunda depende
   del tipado, no de los axiomas).
 - **Capa nueva `Ethica/Attributum/`**: 5 módulos; GAP-25 y GAP-8a
   cerrados; Def. VI recuperada; Pars II desbloqueada.
-- **Pars II en marcha**: 6/49 proposiciones (I, II, III, V, VI, VII)
-  más el corolario de la VI y el resultado de dos atributos que la
-  conjunción I+II entrega. Axiomas A45–A55; A6 de Spinoza promovido
-  tras estar como `True` desde v1.0.0. **A51–A55 son todos de
-  Sección II**: el batch 1.2 no añadió ningún compromiso metafísico
-  sustantivo. GAP-26 y GAP-27a cerrados; GAP-27b y GAP-28 abiertos
-  con ruta.
-- **Total de la obra**: 35/259 proposiciones con contenido (29 de
-  Pars I + 6 de Pars II).
+- **Pars II en marcha**: 8/49 proposiciones (I, II, III, V, VI, VII,
+  VIII, IX) más los corolarios de la VI, la VII, la VIII y la IX, y
+  el resultado de dos atributos que la conjunción I+II entrega.
+  Axiomas A45–A59; A6 de Spinoza promovido tras estar como `True`
+  desde v1.0.0. **A51–A55 son todos de Sección II** (el batch 1.2 no
+  añadió ningún compromiso metafísico sustantivo) y de A56–A59 solo
+  A59 es de Sección III — y no es contenido nuevo, sino A42 sobre un
+  predicado que sí se satisface. GAP-26 y GAP-27a cerrados; el caveat
+  del GAP-2 cumplido; GAP-27b, GAP-28 y el nuevo GAP-29 abiertos con
+  ruta.
+- **Total de la obra**: 37/259 proposiciones con contenido (29 de
+  Pars I + 8 de Pars II) — con la salvedad, ahora demostrada, de que
+  una de las 29 de Pars I (la XXVIII) es vacua en su propio registro.
 - `lake build` limpio, **0 `sorry`**, **0 `axiom`**, ninguna
   declaración de v1.0.0 modificada. El gate de CI ahora verifica
   mecánicamente las dos últimas condiciones.

@@ -1199,13 +1199,36 @@ is itself uncommitted machinery — **GAP-23**), so rather than fake
 a derivation through an unavailable trichotomy, we commit to the
 destination directly.
 
-**Commentary**: This is the **backbone of finite-mode causation**
-that Pars II–V consume throughout — the positive counterpart of
-the A5ₛ substance-restriction (review §3.1) that protected
-finite-mode causation from collapse. The honest-minimal-form
-argument: committing the conclusion visibly is cheaper and more
-honest than committing the trichotomy plus the horn-exclusion
-premises it would take to derive it.
+**Commentary**: This was intended as the **backbone of finite-mode
+causation** that Pars II–V consume throughout — the positive
+counterpart of the A5ₛ substance-restriction (review §3.1) that
+protected finite-mode causation from collapse. The
+honest-minimal-form argument: committing the conclusion visibly is
+cheaper and more honest than committing the trichotomy plus the
+horn-exclusion premises it would take to derive it.
+
+> **⚠ Vacuity correction (batch 1.3).** The backbone claim does not
+> hold, and the reason is structural rather than model-specific.
+> `finitumInSuoGenere x` unfolds through `sameNature x y`, which
+> GAP-2 path (b) defined as `∃ a, Attribute a x ∧ Attribute a y` —
+> and `Attribute a s` carries `Substance s`. So
+> `finitumInSuoGenere x` **entails `Substance x`**, and substances
+> are disjoint from modes (`prop_1_substanceDisjointFromModes`).
+> A42's hypothesis is therefore unsatisfiable in **every**
+> `Pars1Axioms` world:
+>
+> ```lean
+> theorem pars1_prop_28_vacuous_for_modes :
+>     ¬ ∃ x : Thing, Mode x ∧ finitumInSuoGenere x
+> ```
+>
+> (`Ethica/Pars2/Parallelismus.lean`; the model-side face is
+> `mens_not_finite`.) A42 is committed and never fires; Prop.
+> XXVIII is mechanised but delivers nothing downstream. The working
+> replacement is **A59** (`ax_singulare_causatum`), which states the
+> same content on `ResSingularis` — Pars II Def. VII rebuilt on
+> `modeUnder`. A42 is left unedited because `Ethica/Pars1/` is
+> frozen at v1.0.0; see A59's entry and GAP-2's batch-1.3 update.
 
 **Used by**: `prop_28_finiteModeCausedByFiniteMode` (direct),
 `prop_28_cor_noFirstFiniteCause` (derived), both
@@ -1934,12 +1957,19 @@ denominations of a true idea, Def. II.IV *idea adæquata*) needs the
 adequacy machinery of batch 1.4 and is **not** claimed here. Flagged
 in the field docstring as a reading, not a rendering.
 
-**Used by**: nothing yet — committed as the A6 promotion proper.
-Batch 1.2 did **not** consume it either (Props. V–VI turn on
-`modeUnder`/`causeUnder`, not on ideatum uniqueness). Its first real
-consumer will be the adequacy machinery of batch 1.4; recorded here
-rather than quietly deferred, since an unused axiom is a claim the
-project is carrying without earning.
+**Used by**: `prop_2_9_ideaSingularisAbAliaIdea`
+(`Pars2/Parallelismus.lean`) — **first consumer, batch 1.3**. It is
+the step that makes Prop. IX's two ideas distinct: `y ≠ x` among the
+things forces `j ≠ i` among their ideas precisely because an idea
+has at most one object. Without A45 the regress could revisit the
+same idea and "*et sic in infinitum*" would not follow.
+
+Recorded for the history: batches 1.1 and 1.2 both left A45
+**unconsumed** (Props. V–VI turn on `modeUnder`/`causeUnder`, not on
+ideatum uniqueness), and this entry said so, on the ground that an
+unused axiom is a claim the project carries without earning. It is
+earned now. The stronger correspondence reading remains for the
+adequacy machinery of batch 1.5.
 
 ---
 
@@ -2242,6 +2272,225 @@ and remains **GAP-27b**. A55 is about two *orders* coinciding; the
 scholium is about two *things* being one.
 
 **Used by**: `prop_2_7_ordoEtConnexio_iff`.
+
+---
+
+# *Esse objectivum*-layer auxiliary axioms (A56–A59)
+
+Introduced by `Ethica/Pars2/Parallelismus.lean` (batch 1.3: Prop.
+II.VII cor., Props. II.VIII and II.IX with their corollaries). All
+live in `ParallelismusAxioms`, which extends `QuatenusAxioms`.
+
+**Three Section II, one Section III.** The Section III one is A59,
+and it is not new content: it is A42's commitment (Prop. I.XXVIII)
+restated on a predicate that can actually be satisfied. So the
+batch's net new metaphysics is zero, and its net new *usable*
+metaphysics is a proposition Pars I had already paid for and could
+not draw on.
+
+**The definitions this layer rests on are not axioms.** `Parallelismus.lean`
+also supplies
+
+```lean
+sameNatureUnder x y        ≝ ∃ a : Attr, modeUnder x a ∧ modeUnder y a
+finitumInSuoGenereModal x  ≝ ∃ y, x ≠ y ∧ sameNatureUnder x y ∧ limitedBy x y
+ResSingularis x            ≝ Mode x ∧ finitumInSuoGenereModal x
+```
+
+which is Pars II Def. VII, and the `hasAttribute` relation
+`Definitions.lean` promised "*at the modal layer*". It closes the
+GAP-2 caveat at the cost of exposing that **A42 never fires** — see
+`pars1_prop_28_vacuous_for_modes` and A59 below.
+
+Consistency witness for all four:
+`Ethica/Pars2/Models/MensWitness.lean`, whose carrier gained a third
+constructor (`res : Int → MensThing`) for this batch. A56 is
+discharged **non-vacuously** (`durat` splits the carrier:
+`mens_durat_splits`), A57 by the recursive clause of `mensDurat`,
+A58 by `mens_singularis_of_index`, and A59 by `mens_pred_cause` —
+which is why the index type has to be `Int`: on `Nat` the causal
+chain would bottom out and A59 would be **false** in the model.
+
+---
+
+## A56 — Prop. VIII's containment biconditional (Section II, 📜 Prop. II.VIII)
+
+**Lean signature**:
+```lean
+ax_prop8_esseObjectivum :
+  ∀ (x i ig g : Thing), ResSingularis (Attr := Attr) x → ¬ durat x →
+    ideaOf i x → IsGod g → ideaOf ig g →
+      (comprehensaIn i ig ↔ ∃ a : Attr, essentiaFormalisIn x a)
+```
+
+**Why we add it**: Prop. VIII reads "*Ideæ rerum singularium sive
+modorum non existentium ita debent comprehendi in Dei infinita idea
+ac rerum singularium sive modorum essentiæ formales in Dei
+attributis continentur*", and its entire *demonstratio* is "*Hæc
+propositio patet ex præcedenti sed intelligitur clarius ex
+præcedenti scholio*". Spinoza offers it as a **restatement** of Prop.
+VII in the register of containment, not as a new commitment — hence
+Section II rather than the 📜-pattern's usual Section III, even
+though the axiom carries the proposition's content.
+
+The "*ita … ac*" is a comparison of manner. What the corollary
+actually draws on, and what this field states, is that the two
+containments hold **together**: for a singular thing that does not
+endure, its idea is comprehended in God's infinite idea iff its
+formal essence is contained in some attribute.
+
+Note that God's infinite idea is **not** a new primitive. It is the
+idea of God, which A49 already guarantees exists; the `IsGod g` and
+`ideaOf ig g` hypotheses pick it out. That is a small piece of
+economy worth naming: Prop. VIII looks like it needs a distinguished
+object and does not.
+
+**Commentary**: Curley 1969 ch. 2 reads Prop. VIII as the point where
+Spinoza's *esse objectivum* stops being a scholastic borrowing and
+starts doing work — non-existent things have ideas, so the attribute
+of thought is not indexed to actuality. Bennett 1984 §37 is harsher,
+calling the rectangles-in-a-circle scholium "an analogy that
+explains an obscurity by a clarity that does not resemble it"; on
+his reading the manner-comparison is precisely the part that should
+not be formalised, which is convenient, since it is the part we do
+not formalise.
+
+**Open**: the manner-comparison itself. Capturing "*in the same way
+as*" would need a sameness-of-manner relation ranging over the two
+containment predicates. Not committed; not tracked as a separate gap
+because no downstream proposition consumes it.
+
+**Used by**: `prop_2_8_ideaeRerumNonExistentium`.
+
+---
+
+## A57 — An idea endures iff its object endures (Section II — Prop. VIII cor.)
+
+**Lean signature**:
+```lean
+ax_idea_durat_iff :
+  ∀ i x : Thing, ideaOf i x → (durat i ↔ durat x)
+```
+
+**Why we add it**: Prop. VIII's corollary states both halves.
+Negatively: "*quamdiu res singulares non existunt nisi quatenus in
+Dei attributis comprehenduntur, earum esse objectivum sive ideæ non
+existunt nisi quatenus infinita Dei idea existit*". Positively:
+"*ubi res singulares dicuntur existere … earum ideæ etiam
+existentiam per quam durare dicuntur, involvent*". A biconditional
+is the compact form of the pair, and Spinoza asserts each half in
+turn.
+
+**Commentary**: this is the corollary that keeps the parallelism
+from being a claim about eternal structure only. Della Rocca 1996
+ch. 6 notes that without it, Prop. VII would be compatible with an
+idea-order that never changes while the thing-order does — which
+would make the *idem est* an equivocation.
+
+Note what A57 does **not** say: nothing here makes `durat`
+interesting on its own. A model may leave it empty, or universal,
+and satisfy A57 either way. The consistency witness deliberately
+makes it split the carrier so Prop. VIII is tested on both sides.
+
+**Used by**: `prop_2_8_cor_esseObjectivum`,
+`prop_2_8_cor_nonExistente`.
+
+---
+
+## A58 — The idea of a singular thing is itself singular (Section II — Prop. IX's *demonstratio*)
+
+**Lean signature**:
+```lean
+ax_idea_singularis :
+  ∀ i x : Thing, ideaOf i x → ResSingularis (Attr := Attr) x →
+    ResSingularis (Attr := Attr) i
+```
+
+**Why we add it**: Prop. IX's *demonstratio* opens "*Idea rei
+singularis actu existentis modus singularis cogitandi est et a
+reliquis distinctus (per corollarium et scholium propositionis 8
+hujus)*". The modehood and the attribute are already available — A54
+makes every idea a mode of thought. What this field adds is the
+**finitude**: that the idea is limited by other ideas, hence a *res
+singularis*.
+
+The addition is load-bearing rather than decorative. Without it the
+regress of Prop. IX could not stay inside the class of singular
+things, and A59 could not be reapplied at the next rung — which is
+to say the "*et sic in infinitum*" would stop after one step.
+
+**Commentary**: Spinoza's citation is to Prop. VIII's corollary and
+scholium, i.e. to the rectangles: what distinguishes the ideas of
+the two existing rectangles E and D from the ideas of all the rest
+is that they involve those rectangles' existence. That is an
+argument for distinctness, which is the "*a reliquis distinctus*"
+half; the finitude half he takes as read. We record the whole
+sentence as one bridge rather than pretend the second half was
+argued.
+
+**Used by**: `prop_2_9_deusQuatenusCogitans` (supplies the `Mode i`
+Prop. V needs), `prop_2_9_ideaSingularisAbAliaIdea`.
+
+---
+
+## A59 — Every singular thing is caused by another singular thing (Section III, 📜 Prop. I.XXVIII at the modal layer)
+
+**Lean signature**:
+```lean
+ax_singulare_causatum :
+  ∀ x : Thing, ResSingularis (Attr := Attr) x →
+    ∃ y : Thing, ResSingularis (Attr := Attr) y ∧ y ≠ x ∧
+      CausalWorld.Cause y x
+```
+
+**Why we add it**: **this is A42 repaired, not A42 duplicated.**
+
+A42 (`ax_finiteMode_causedByFiniteMode`, `Consecutio.lean`) states
+exactly this claim using Pars I's `finitumInSuoGenere`. That
+predicate unfolds through `sameNature`, which GAP-2 path (b) defined
+as `∃ a, Attribute a x ∧ Attribute a y` — and `Attribute a s`
+carries `Substance s`. So `finitumInSuoGenere x` **entails**
+`Substance x`, and substances are provably disjoint from modes.
+A42's hypothesis `Mode x ∧ finitumInSuoGenere x` is therefore
+unsatisfiable in **every** `Pars1Axioms` world:
+
+```lean
+theorem pars1_prop_28_vacuous_for_modes :
+    ¬ ∃ x : Thing, Mode x ∧ finitumInSuoGenere x
+```
+
+A42's own docstring calls it "the backbone of finite-mode causation
+that Pars II–V consume throughout". It is not usable as such: it is
+committed and never fires. A59 is the same commitment on
+`ResSingularis`, which modes can satisfy.
+
+Everything A42's entry says about the *demonstratio* applies
+verbatim, and is not repeated here: Spinoza chains Props. XXI and
+XXII with Prop. XXIII's trichotomy (now A44), and the direct
+commitment to the conclusion is the honest minimal form.
+
+**Why not simply strengthen A42?** Because `Ethica/Pars1/` is frozen
+at v1.0.0 — the published irreducibility results (arXiv:2605.02331)
+are anchored to that register, and editing `Definitions.lean`'s
+`sameNature` would move all thirteen Pars I models and both demote
+results. The repair goes in the parallel branch, exactly as GAP-25's
+did. The frozen A42 stays where it is, with a vacuity theorem beside
+it rather than a silent correction.
+
+**Commentary**: the vacuity is not a defect of Spinoza's Def. II. It
+is a consequence of resolving GAP-2 by *defining* sameness of nature
+through `Attribute` — a good move for Prop. II, whose subject really
+is substances, and one whose cost `Definitions.lean` flagged in the
+same breath ("*For inter-mode or mode-vs-substance 'same kind'
+comparisons … a separate `hasAttribute` relation will be added at
+the modal layer*"). This is that layer, and this is that cost.
+
+Bennett 1984 §21's objection to Prop. XXVIII — that the infinite
+regress of finite causes is asserted rather than argued — stands
+undisturbed, and is why A59 is Section III rather than II.
+
+**Used by**: `prop_2_9_ideaSingularisAbAliaIdea`, hence
+`prop_2_9_cor_nullaPrimaIdea`.
 
 ---
 

@@ -81,6 +81,52 @@ For mode-vs-mode "same kind" comparisons (Def. II's bodily
 examples), a separate `hasAttribute : Thing → Thing → Prop` will be
 added at the modal layer to recover the general form.
 
+**Update (batch 1.3) — the promise kept, and what it cost.**
+`Ethica/Pars2/Parallelismus.lean` supplies the missing relation. It
+is not a new primitive: batch 1.2's `modeUnder : Thing → Attr →
+Prop` already says which attribute a mode is a mode *of*, so
+
+```lean
+sameNatureUnder x y        ≝ ∃ a : Attr, modeUnder x a ∧ modeUnder y a
+finitumInSuoGenereModal x  ≝ ∃ y, x ≠ y ∧ sameNatureUnder x y ∧ limitedBy x y
+ResSingularis x            ≝ Mode x ∧ finitumInSuoGenereModal x
+```
+
+— three definitions, no primitives, no axioms. `ResSingularis` is
+Pars II Def. VII (*res singulares*), and it is what Props. VIII and
+IX quantify over.
+
+The cost the caveat foresaw fell due, and it is larger than
+"comparisons are unavailable". Since `finitumInSuoGenere x` unfolds
+to a `sameNature`, and `sameNature` carries `Substance`, Pars I's
+finitude predicate **entails substancehood**:
+
+```lean
+theorem finitumInSuoGenere_implies_substance (x : Thing)
+    (h : finitumInSuoGenere x) : Substance x
+```
+
+and substances are disjoint from modes
+(`prop_1_substanceDisjointFromModes`). Therefore **no mode is ever
+finite-after-its-kind**, in any `Pars1Axioms` world:
+
+```lean
+theorem pars1_prop_28_vacuous_for_modes :
+    ¬ ∃ x : Thing, Mode x ∧ finitumInSuoGenere x
+```
+
+The casualty is **A42**, whose own docstring calls it "the backbone
+of finite-mode causation that Pars II–V consume throughout": its
+hypothesis is unsatisfiable, so Prop. I.XXVIII is mechanised but
+never fires, and Prop. II.IX — whose *demonstratio* cites Prop. I.28
+by name — could not have been derived from it. **A59**
+(`ax_singulare_causatum`) is A42's content restated on
+`ResSingularis`, and Prop. II.IX is derived from that.
+
+A42 is not edited: `Ethica/Pars1/` is frozen at v1.0.0 and the
+published irreducibility results are anchored to that register. The
+repair goes in the parallel branch, exactly as GAP-25's did.
+
 ---
 
 ## GAP-3 — *Causation* predicate
@@ -1412,7 +1458,67 @@ own attribute to the attribute of thought except along the idea
 ladder. That needs the batch 1.3 individuation machinery to state
 precisely.
 
-**Status**: ⏳ open, deferred to batch 1.3.
+**Status**: ⏳ open.
+
+**Update (batch 1.3)** — *a second, independent motivation, from the
+witness rather than the text*. `Models/MensWitness.lean` now has to
+supply an infinite descending causal chain among singular things
+(A59) as well as an effect for everything (A43), which forces the
+index of `res` to be `Int` and the causal order to run *down* it.
+The cheapest such order makes `Cause (idea x) x` come out **true** —
+the idea of a thing causing the thing.
+
+Nothing in the register rules that out. The parallelism (A50/A55)
+relates `Cause c e` to `Cause (idea c) (idea e)`; it says nothing
+about how `Cause` and `ideaOf` are oriented *relative to each
+other*. GAP-28's axiom is exactly what would settle that, so the
+gap is not a stylistic omission — the register is genuinely
+under-determined here, and a model exploits it. The individuation
+machinery the resolution path calls for now belongs to batch 1.4
+(Props. XIV–XXXI), not 1.3.
+
+---
+
+## GAP-29 — *Quatenus … affectus*: God relativised to an individual mode
+
+**Location**: `Ethica/Pars2/Parallelismus.lean`,
+`prop_2_9_ideaSingularisAbAliaIdea` and
+`prop_2_9_cor_cognitioInDeo`.
+
+**Issue**: Prop. II.IX's statement is "*Deum pro causa habet non
+quatenus infinitus est sed quatenus **alia rei singularis actu
+existentis idea affectus** consideratur*", and its corollary is
+"*ejus datur in Deo cognitio quatenus tantum **ejusdem objecti ideam
+habet***". Both relativise God to a **particular mode** — to *this*
+idea — where the *quatenus* layer's `causeUnder : Thing → Thing →
+Attr → Prop` relativises God only to an **attribute**.
+
+What is mechanised is the extension of the locution: God causes the
+idea under thought alone (Prop. V), and another singular idea causes
+it (A59 + A49 + Prop. VII). That is what the *demonstratio* actually
+consumes, and Prop. IX and its corollary go through on it. What is
+not mechanised is the locution itself, so nothing in the
+formalisation distinguishes "God *qua* affected by idea `j` causes
+`i`" from the conjunction of those two facts.
+
+**Reading**: Curley 1969 ch. 2 treats the *quatenus* idiom as
+uniformly reducible to a conjunction of this kind; Della Rocca 1996
+ch. 6 argues it is not, because the *quatenus* clause is what carries
+explanatory priority and a conjunction has none. On Curley's reading
+this gap is closed already and the note is bookkeeping; on Della
+Rocca's it is real. The formalisation deliberately takes no side —
+it records the weaker content and marks the difference.
+
+**Resolution path**: a fourth relativisation primitive,
+`causeQuaAffected : Thing → Thing → Thing → Prop` ("`g`, in so far as
+affected by `m`, causes `e`"), with bridges to `causeUnder` and to
+`Cause`. Note this is the *same shape* GAP-22 wants for consecution
+(`followsFrom` relativised to attribute-as-modified) — Prop. I.XXII's
+"*ex aliquo Dei attributo quatenus modificatum*" is relativisation to
+a mode, not to an attribute. The two gaps should be closed together
+or not at all.
+
+**Status**: ⏳ open. Cross-references GAP-22.
 
 ---
 

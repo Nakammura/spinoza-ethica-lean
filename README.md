@@ -78,8 +78,9 @@ Ethica/
 └── Pars2/                                -- De natura et origine mentis
     ├── Idea.lean                         -- Props I, II, III, VII; A45–A50 (Pars2Axioms)
     ├── Quatenus.lean                     -- Props V, VI, VII-iff; A51–A55 (QuatenusAxioms)
+    ├── Parallelismus.lean                -- Props VII-cor, VIII, IX; A56–A59; ResSingularis; A42-vacuity
     └── Models/
-        └── MensWitness.lean              -- Consistency witness; coexistence + real modes
+        └── MensWitness.lean              -- Consistency witness; coexistence + real modes + Int-indexed regress
 texts/
 ├── ethica1_la.txt … ethica5_la.txt       -- Latin per Pars
 └── en_part1_elwes.txt … en_part5_elwes.txt   -- Elwes EN per Pars
@@ -332,7 +333,85 @@ under `cogitatio`.
 
 Still deferred: Prop. IV (waits on Prop. I.XXX), GAP-27b and GAP-28
 (Prop. V's *hoc est* gloss — ideas are not caused by their own
-*ideata*), both to batch 1.3.
+*ideata*).
+
+## Pars II — the *esse objectivum* layer (batch 1.3)
+
+`Ethica/Pars2/Parallelismus.lean` adds Prop. VII's corollary, Props.
+VIII and IX, and their corollaries. Four new axioms, **three of them
+Section II**; the one Section III axiom is not new content, for the
+reason below.
+
+**The blocker this batch had to clear first.** Pars I's Def. II is
+
+```lean
+finitumInSuoGenere x ≝ ∃ y, x ≠ y ∧ sameNature x y ∧ limitedBy x y
+```
+
+and `sameNature` is, following GAP-2's resolution path (b),
+`∃ a, Attribute a x ∧ Attribute a y` — where `Attribute a s` carries
+`Substance s`. So **Pars I's finitude predicate entails
+substancehood**, and substances are provably disjoint from modes.
+No mode is ever finite-after-its-kind:
+
+```lean
+theorem pars1_prop_28_vacuous_for_modes :
+    ¬ ∃ x : Thing, Mode x ∧ finitumInSuoGenere x
+```
+
+The casualty is **A42**, whose own docstring calls it "the backbone
+of finite-mode causation that Pars II–V consume throughout". Its
+hypothesis is unsatisfiable in every `Pars1Axioms` world, so Prop.
+I.XXVIII is mechanised and never fires — and Prop. II.IX, whose
+*demonstratio* cites Prop. I.28 by name, could not have been derived
+from it. `Definitions.lean` foresaw the problem in the same breath as
+the definition ("*a separate `hasAttribute` relation will be added at
+the modal layer*") and GAP-2's caveat recorded the promise.
+
+**The repair costs no primitive.** Batch 1.2's `modeUnder x a`
+already says which attribute a mode is a mode *of*, so three
+definitions suffice:
+
+```lean
+sameNatureUnder x y        ≝ ∃ a : Attr, modeUnder x a ∧ modeUnder y a
+finitumInSuoGenereModal x  ≝ ∃ y, x ≠ y ∧ sameNatureUnder x y ∧ limitedBy x y
+ResSingularis x            ≝ Mode x ∧ finitumInSuoGenereModal x
+```
+
+`ResSingularis` is Pars II Def. VII, and **A59** is A42's content on
+it. Nothing under `Ethica/Pars1/` is edited — v1.0.0 stays frozen and
+the vacuity theorem sits beside A42 rather than replacing it, exactly
+as GAP-25's repair went in a parallel branch.
+
+With that in place, **Prop. IX is a full derivation following
+Spinoza's *demonstratio* step for step**: A59 gives the object
+another singular cause, A49 gives that cause an idea, A58 keeps the
+idea singular, Prop. VII transfers the causal fact, and A45 forces
+the two ideas apart. **Prop. VII's corollary** costs nothing at all —
+A38, A49 and Prop. VII suffice. This is also A45's **first
+consumer**: batches 1.1 and 1.2 carried it unused, and the README
+said so.
+
+`Models/MensWitness.lean` gained a third constructor,
+`res : Int → MensThing`. The index type is forced, and by two
+requirements pulling in opposite directions: A59 wants every singular
+thing to have a singular *cause*, A43 wants every thing to have an
+*effect*, so the causal order needs **neither a first nor a last
+element**. `Nat` fails; `Int` works. Prop. IX's "*et sic in
+infinitum*" is thus a two-sided requirement rather than a
+one-directional regress — the second time in this Part that a
+Spinozist thesis has turned up as a satisfiability condition.
+
+Splitting `res` off from `idea` also gives the witness modes of
+*extension*, so Prop. VI's exclusion clause is now non-vacuous in
+**both** directions (`mens_prop_6_extensio`, `mens_prop_6_cor_res`),
+and a `durat` predicate that genuinely splits the carrier, so Prop.
+VIII is tested on both sides rather than waved through.
+
+New gap: **GAP-29** — the *quatenus … affectus* locution relativises
+God to an *individual mode*, where `causeUnder` relativises only to
+an attribute. Same shape as GAP-22's outstanding target; the two
+should be closed together.
 
 ## Build
 

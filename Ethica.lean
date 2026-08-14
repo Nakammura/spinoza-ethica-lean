@@ -42,6 +42,7 @@ import Ethica.Attributum.Models.InfiniteAttribute
 -- Pars II — De natura et origine mentis
 import Ethica.Pars2.Idea
 import Ethica.Pars2.Quatenus
+import Ethica.Pars2.Parallelismus
 import Ethica.Pars2.Models.MensWitness
 
 -- Future Pars (stubs):
