@@ -1,8 +1,11 @@
-# Coverage Map — Pars I
+# Coverage Map
 
-Status of every Pars I proposition, definition, and structural
-component in the Lean formalisation. Updated alongside any change
-that adds, removes, or shifts the status of an item.
+Status of every proposition, definition, and structural component in
+the Lean formalisation. Updated alongside any change that adds,
+removes, or shifts the status of an item.
+
+Pars I occupies the bulk of this document; **Pars II begins at the
+`# Pars II` heading near the end**. Parts III–V are not started.
 
 Status legend:
 - ✅ **mechanised** — proved in Lean with no `sorry`.
@@ -23,7 +26,7 @@ Status legend:
 | III | *Substantia*                | ✅     | `Substance`. |
 | IV  | *Attributum*                | ✅     | `Attribute`. |
 | V   | *Modus*                     | ✅     | `Mode`. |
-| VI  | *Deus*                      | 🟡     | `IsGod` requires ≥1 attribute (third conjunct, **now redundant under A14** but retained for textual fidelity to Spinoza); (a) full *infinitis attributis* cardinality — GAP-8a; (b) universality over substance attributes — GAP-8b ✅ (closed by A15 promotion). |
+| VI  | *Deus*                      | 🟡 (Pars I) / ✅ (Attributum) | `IsGod` requires ≥1 attribute (third conjunct, **now redundant under A14** but retained for textual fidelity to Spinoza); (a) *infinitis attributis* cardinality — GAP-8a: **STATEABLE** via `hasAtLeastNAttributes`/`HasInfiniteAttributes` (`Realitas.lean`) but **PROVED UNSATISFIABLE** alongside any God in the Pars I register (`def6_infinitis_attributis_unsatisfiable` — the attribute-collapse discovery); consistent only in godless worlds (`Models/MultiAttribute.lean`). **Resolved in the Attributum layer**: `IsGodAttr` (`Ethica/Attributum/Core.lean`) is the same definition with attributes typed in `Attr`, and `Models/InfiniteAttribute.lean`'s `inf_def6_recovered` satisfies the *infinitis attributis* clause outright — GAP-8a ✅, GAP-25 ✅. The Pars I row stays 🟡 because Pars I is frozen. (b) universality over substance attributes — GAP-8b ✅ (closed by A15 promotion). |
 | VII | *Liberum / Coactum*         | 🟡     | `Free`/`Constrained` thin aliases; second clause ("ad agendum determinatur") needs Pars II — GAP-9. |
 | VIII| *Aeternitas*                | ✅     | `Eternal` (primitive at this layer; modal reconstruction planned). |
 
@@ -66,43 +69,49 @@ Pars I has 36 propositions. Status of each:
 | VI   | One substance cannot be produced by another.                    | ✅     | `prop_6_substanceNotProducedByAnother` (in `Causation.lean`-section of `Propositions.lean`) via Prop. III contrapositive + A12. |
 | VII  | Existence belongs to the nature of substance.                   | ✅     | `prop_7_existenceBelongsToSubstance` — direct application of A13. Corollaries: `prop_7_natureRequiresExistence` (via A11, **first load-bearing use of A11**), `prop_7_substanceIsCausaSui`. |
 | VIII | Every substance is necessarily infinite.                        | 🟡     | `prop_8_substanceIsNotFinite` — proves the contrapositive content (no substance is finite-after-its-kind) via A12 + Def. II. The "absolutely infinite" reading (Def. VI) requires GAP-8a (cardinality). |
-| IX   | More reality ⇒ more attributes.                                 | 🚫     | Needs reality-measure / counting framework. |
+| IX   | More reality ⇒ more attributes.                                 | ✅ (with qualifier) | `prop_9_moreRealityMoreAttributes` (`Realitas.lean`) — genuine derivation, **no new axiom**: reality-dominance (`hasMoreRealityThan`, the Della Rocca *constitutive* reading — reality *is* attribute-dominance, not a further measured quantity) transfers any attribute count via `hasAtLeastNAttributes`. Corollary `prop_9_cor_godMaximalReality` (direct A15): God has more reality than any substance. **Qualifier**: the quantitative "measure of reality" reading is not introduced — only the qualitative dominance relation Spinoza's one-line *demonstratio* ("*patet ex definitione 4*") actually needs. **Resolved**: the old blocker ("needs reality-measure/counting framework") is dissolved by `hasAtLeastNAttributes`/`HasInfiniteAttributes`, GAP-8a's counting apparatus. |
 | X    | Each attribute of a substance is per se conceived.              | ✅     | `prop_10_attributePerSe`. |
-| XI   | God necessarily exists.                                         | ⏳     | The big payoff. **Critical path is longer than initially estimated.** Bennett 1984 §18 catalogues four reading paths through Spinoza's *demonstrationes* (causa-sui direct; reductio via PSR; power-based; *a posteriori* in the scholium); each requires at least one substantive Section III commitment **beyond** A12 + A13 + GAP-8a. Candidates: a "consistent essence ⇒ instantiation" axiom (Della Rocca / modal ontological-argument flavour), or its PSR-flavoured equivalent. Bennett line holds these commitments are not derivable within Spinoza's stated axioms. Closing **GAP-8a (cardinality)** alone is **not sufficient**; additional Section III commitment(s) are required for at least one of the four reading paths. |
-| XII  | No attribute can be conceived such that substance is divisible. | ⏳     | Depends on Prop. X. |
-| XIII | Absolutely infinite substance is indivisible.                   | ⏳     | Depends on Prop. XII. |
+| XI   | God necessarily exists.                                         | 📜     | `prop_11_godNecessarilyExists` + corollary `prop_11_godIsCausaSui` (`Theologia.lean`) — direct invocation of A27 (`ax_god_exists`, Section III: "Deus datur"), converted to `involvesExistence`/`natureRequiresExistence` via A13 + A11. **Resolved**: supersedes the earlier "critical path is longer than initially estimated" note — Bennett 1984 §18's four reading paths each needed a commitment beyond A12+A13+GAP-8a; A27 is the minimal direct form of that commitment, adopted visibly rather than derived. **Kernel-level irreducibility**: `Models/NoGod.lean` witnesses A27 (hence Prop. XI) is **not derivable even from the full `Pars1Axioms` register** (A1–A15, all Section III commitments included) — a strictly stronger baseline than the A12/A15 counter-models in `Counterexamples.lean`, which run against `StatedAxioms` only. Extends the project's irreducibility methodology beyond the stated-axioms baseline. |
+| XII  | No attribute can be conceived such that substance is divisible. | ✅ (with qualifier) | `prop_12_substanceIndivisible` (`Mereology.lean`) mechanises Props. XII/XIII's shared **ontological core**: no substance has a proper part. Chain: A32 (`ax_substancePart_sameNatureSubstance`, Section III, horn (i) of Spinoza's dilemma) gives a proper part that is itself a substance of the same nature and distinct from the whole; A12 collapses the shared attribute to identity, contradicting distinctness. **Qualifier**: the statement's own epistemic wrapper ("*vere concipi*" — no attribute can be *truly conceived* from which divisibility follows) is not mechanised — no "truly conceiving" operator exists at this layer (GAP-16, Pars II). Horn (ii) of the dilemma is also not formalised — needs destruction/persistence machinery (GAP-20); A32 commits to load-bearing horn (i) only. |
+| XIII | Absolutely infinite substance is indivisible.                   | ✅ (with qualifier) | `prop_13_absolutelyInfiniteSubstanceIndivisible` + corollary `prop_13_cor_noSubstanceDivisible` (`Mereology.lean`) — direct specialisation of Prop. XII's ontological core to `IsGod g` (via `hgod.1 : Substance g`). Same qualifier as Prop. XII: epistemic wrapper and horn (ii) not mechanised (GAP-16, GAP-20). |
 | XIV  | Besides God, no substance can be given or conceived.            | 📜     | `prop_14_onlyGodIsSubstance` mechanised in short form via A12 + A14 + A15 (Section III commitments) — **closing GAP-8b + GAP-13** in the process. 3-line proof, `sorry`-free. The 📜 marker is retained because the proof rests on three Section III axioms (V, VI, X are still the only theorems mechanised in the substantive sense). `Models/TwoSubstance.lean` **falsifies A15** and is therefore a Bennett-line non-Spinoza bench — it cannot carry a `Pars1Axioms` instance, which is the correct migration outcome. |
-| XV   | Whatever is, is in God; nothing without God can be conceived.   | ⏳     | Depends on Prop. XIV + Defs. III, V. |
-| XVI  | From divine nature, infinite things in infinite ways follow.    | ⏳     | Depends on Prop. XI + Def. VI. |
-| XVII | God acts from the laws of his own nature alone.                 | ⏳     | Depends on Prop. XI + Def. VII. |
-| XVIII| God is the immanent, not transitive, cause of all things.       | ⏳     | Depends on Prop. XV + Prop. XVI. |
-| XIX  | God / all attributes of God are eternal.                        | ⏳     | Depends on Def. VIII + Prop. XI. |
-| XX   | God's existence and essence are one and the same.               | ⏳     | Depends on Prop. XIX + Def. VI. |
-| XXI  | All that follows from absolute nature of any attribute is infinite & eternal. | ⏳ | Depends on Prop. XI + XVI. |
-| XXII | What follows from a modified attribute is also infinite & eternal. | ⏳ | Depends on Prop. XXI. |
-| XXIII| Every necessarily-existing infinite mode follows from God's attribute. | ⏳ | Depends on Prop. XXI + XXII. |
-| XXIV | Essence of things produced by God does not involve existence.   | ⏳     | Depends on Def. I + Prop. XV. |
-| XXV  | God is the efficient cause not only of existence but of essence of things. | ⏳ | Depends on Prop. XV + XXIV. |
-| XXVI | Things determined to act are determined by God.                 | ⏳     | Depends on Prop. XXV. |
-| XXVII| Things determined by God cannot render themselves undetermined. | ⏳     | Depends on Prop. XXVI. |
-| XXVIII| Every singular thing's existence and action is determined by another finite cause, ad infinitum. | ⏳ | **Crucial for finite mode causation; this is what review §3.1 protects.** |
-| XXIX | Nothing in nature is contingent; all is determined by divine necessity. | ⏳ | Depends on Prop. XXV–XXVIII. |
+| XV   | Whatever is, is in God; nothing without God can be conceived.   | ✅ (with qualifier) | `prop_15_allInGod` (`Inherence.lean`) mechanises the **ontological clause**: every thing is either God or in God. Chain: `prop_4_partition` splits substance/mode; substance case via `prop_14_onlyGodIsSubstance`; mode case via A33 (`ax_mode_inheres_in_substance`, Section II, Def. V promotion) giving a substance `s` with `inheresIn x s`, then `prop_14_onlyGodIsSubstance` forces `s = g`. **Qualifier**: the statement's second, epistemic clause ("*nec concipi potest sine Deo*") is not mechanised — awaits Pars II conception machinery (GAP-17). |
+| XVI  | From divine nature, infinite things in infinite ways follow.    | 🟡     | `prop_16_modesFollowFromGod` (`Consecutio.lean`) mechanises the **qualitative clause**: every mode follows from the necessity of the divine nature, via `prop_15_allInGod` + A37 (`ax_inherence_consecution`, Section II, the Della Rocca unified-dependence reading). Corollary I `prop_16_cor1_godEfficientCause` derives God's efficient causation of every mode via A38. **Not mechanised**: the "*infinita infinitis modis*" **cardinality** clause — same counting-framework prerequisite as GAP-8a (cross-referenced there, not duplicated). |
+| XVII | God acts from the laws of his own nature alone.                 | 🟡     | `prop_17_godIsFree` (`Theologia.lean`) mechanises Corollary II's **existence-clause** reading only: God is *causa sui* (Prop. VII via `hgod.1`) and unconstrained (A31, `ax_substance_not_constrained`, Section II); A30 (`ax_causaSui_unconstrained_free`, Section I, Def. VII bridge) composes these into `freelyExistent g` (i.e. `Free g`). **Not mechanised**: the action-clause ("*ad agendum a se solo determinatur*") and Prop. XVII's own main clause (acting solely by the laws of its own nature) — same GAP-9 family as `Free`/`Constrained`'s definition (see GAP-18). |
+| XVIII| God is the immanent, not transitive, cause of all things.       | ✅ (with qualifier) | `prop_18_godImmanentCause` (`Inherence.lean`): for every mode `x`, `Cause g x ∧ inheresIn x g` — "immanent" captured as the conjunction (a transitive cause's effects would lie outside it). Chain: `prop_15_allInGod` plus `prop_1_substanceDisjointFromModes` rule out `x = g`; the remaining `inheresIn x g` converts via A34 (`ax_inherence_causation`, Section II, the Curley 1969 "in = caused-by" reading) to `Cause g x`. Depends on Prop. XV's mechanised ontological clause, **not** the Prop. XVI consecution relation (now mechanised in `Consecutio.lean` — GAP-19 closed; `prop_16_cor1_godEfficientCause` gives an alternative consecution-routed derivation of the causal conjunct). |
+| XIX  | God / all attributes of God are eternal.                        | ✅     | `prop_19_godIsEternal` (God's case) + `prop_19_attributesAreEternal` (attributes' case), `Theologia.lean`. God's case: A13 gives `involvesExistence g`, A11 converts to `natureRequiresExistence g`, A28 (`ax_natureRequiresExistence_eternal`, Section I, Def. VIII bridge) converts to `Eternal g`. Attributes' case: A29 (`ax_attribute_involvesExistence`, Section II) gives `involvesExistence a` from `Attribute a g`, then the same A11 + A28 chain delivers `Eternal a`. |
+| XX   | God's existence and essence are one and the same.               | 🟡     | `prop_20_partial_attributesExpressBoth` (`Consecutio.lean`) mechanises the **conjunctive content** the *demonstratio* actually assembles: every attribute of God expresses both His essence (`Attribute`, Def. IV) and His necessary existence (A29). **Not mechanised**: the full "*unum et idem sunt*" **identity claim** — needs essence-as-object machinery (GAP-24). |
+| XXI  | All that follows from absolute nature of any attribute is infinite & eternal. | 📜 | `prop_21_absoluteFollowersEternalInfinite` (`Consecutio.lean`) — direct invocation of A40 (📜-pattern, same as A13/A27/A35: Prop. XXI's content adopted directly, since the *demonstratio*'s durational reductio needs machinery this base layer lacks). **Honest caveat**: A40 conflates essence-grounded eternity (Def. VIII) with infinite modes' cause-derived sempiternity — GAP-21. |
+| XXII | What follows from a modified attribute is also infinite & eternal. | 📜 | `prop_22_infiniteModeTransfer` (`Consecutio.lean`) — direct invocation of A41 (📜-pattern). Spinoza's statement is genuinely **ternary** ("*ex aliquo Dei attributo quatenus modificatum*"); A41 flattens it to a binary `followsFrom` transfer — GAP-22. |
+| XXIII| Every necessarily-existing infinite mode follows from God's attribute. | 📜-partial | `prop_23_partial_classification` (`Classificatio.lean`) — direct invocation of **A44** (`ax_consecution_trichotomy`, Section III): every mode follows absolutely from an attribute of God, from an eternal-infinite mode, or from another finite mode. **Closes the premise half of GAP-23** — the exhaustiveness Prop. XXVIII's *demonstratio* consumed silently (and A42's docstring flagged) is now a visible commitment. **Honest gap**: Spinoza's own conclusion additionally EXCLUDES the finite branch for necessarily-infinite modes (a disjunction of exactly two horns, not the full trichotomy); that exclusion needs a **finite-source transfer principle** ("what follows from a finite mode is itself finite") not committed anywhere in this formalisation. Residual half tracked in GAP-23 (cross-ref GAP-22's ternary-relation prerequisite). |
+| XXIV | Essence of things produced by God does not involve existence.   | 📜     | `prop_24_producedEssenceNotInvolveExistence` + corollary fragment `prop_24_cor_modeNotCausaSui` (`Inherence.lean`) — direct invocation of A35 (`ax_mode_not_involvesExistence`, Section III). Honest record: A35 *is* Prop. XXIV's content adopted as an axiom directly, the same 📜-pattern as A13/Prop. VII — Spinoza's one-line *demonstratio* ("*Patet ex definitione 1*") needs a converse link ("produced by another ⇒ not *causa sui*") no prior axiom delivers. The corollary's further claim (God as cause of *perseverance* in existence) needs temporal/durational machinery, not mechanised. |
+| XXV  | God is the efficient cause not only of existence but of essence of things. | 🟡 | **Corollary mechanised** as `prop_25_cor_everythingGodOrMode` (`Consecutio.lean`): every particular thing is either God or a mode, via `prop_4_partition` + `prop_14_onlyGodIsSubstance` — Spinoza himself proves the corollary from Prop. XV + Def. V directly, independently of the proposition's harder claim. **Not mechanised**: Prop. XXV proper — God as cause of the **essence** of things — needs essence-as-object machinery (GAP-24, shared with Prop. XX's identity claim). |
+| XXVI | Things determined to act are determined by God.                 | 🟡     | `prop_26_modesDeterminedByGod` (`Inherence.lean`, thin/partial form): every mode is `Constrained` (A36, `ax_mode_constrained`, Section II, Def. VII's second-clause existence-side reading) **and** caused by God (via `prop_18_godImmanentCause`'s causal clause). **Not mechanised**: the "*ad aliquid operandum*" self-determination clause (the statement's second half, and the whole of Prop. XXVII) — Pars II action machinery, same GAP-9 family as Prop. XVII (see GAP-18). |
+| XXVII| Things determined by God cannot render themselves undetermined. | ⏳     | Depends on Prop. XXVI (now partial, see above); full closure needs Pars II's action machinery. |
+| XXVIII| Every singular thing's existence and action is determined by another finite cause, ad infinitum. | 📜 | `prop_28_finiteModeCausedByFiniteMode` (`Consecutio.lean`) — direct invocation of A42 (📜-pattern, single-step form); the "*et sic in infinitum*" iteration is the **derived** corollary `prop_28_cor_noFirstFiniteCause` (no first finite mode — a genuine small proof from A42). **This is the finite-mode-causation backbone Pars II–V consume** — what review §3.1's A5ₛ substance-restriction protected now has its positive counterpart committed. Spinoza's own *demonstratio* routes through Prop. XXIII's trichotomy; that trichotomy is now mechanised as A44 (`Classificatio.lean`), and A42 commits the conclusion directly rather than deriving through it. **Demote update**: `Classificatio.lean`'s `A42_demote_via_trichotomy` shows A42 is in fact an **equal-strength decomposition** over Σ = {A38, A40, A41, A44} — once A44 is granted, A42 is redundant with the rest of `ConsecutioAxioms`. See `auxiliary_axioms.md` A42/A44 entries and README's demote table. **Vacuity finding (batch 1.3)**: A42's hypothesis `Mode x ∧ finitumInSuoGenere x` is **unsatisfiable in every `Pars1Axioms` world** — `finitumInSuoGenere` unfolds through `sameNature`, which carries `Substance`, and substances are disjoint from modes. `Ethica.Pars2.pars1_prop_28_vacuous_for_modes` proves it. So this row is mechanised but never fires; the usable form is **A59** on `ResSingularis` (`Pars2/Parallelismus.lean`). |
+| XXIX | Nothing in nature is contingent; all is determined by divine necessity. | ✅ (with qualifier) | `prop_29_nothingContingent` (`Inherence.lean`): `causaSui x ∨ Constrained x` for every `x`, via `prop_4_partition` (substance case: A13 directly; mode case: A36). The disjunctive, non-modal reading of "nothing is contingent" that exhausts the alternatives Spinoza's proof trades on. **Qualifier**: the "*ex necessitate divinae naturae*" strengthening (determination specifically *by God*) is available by conjoining `prop_26_modesDeterminedByGod` given an `IsGod` witness, but not folded into the statement so it holds for any `Thing`. |
 | XXX  | An actually existing intellect comprehends God's attributes and his affections. | ⏳ | Depends on A6 + Pars II prerequisites. |
 | XXXI | The actually existing intellect is a mode of thinking.          | ⏳     | Pars II territory. |
 | XXXII| Will is not a free cause but a necessary one.                   | ⏳     | Pars II territory. |
-| XXXIII| Things could not have been produced in any other way or order. | ⏳     | Depends on Prop. XVI + XXVI–XXIX. |
-| XXXIV | God's power = God's essence.                                   | ⏳     | Depends on Prop. XI + XX. |
-| XXXV | What we conceive to be in God's power necessarily exists.       | ⏳     | Depends on Prop. XXXIV. |
-| XXXVI| Nothing exists from whose nature an effect does not follow.     | ⏳     | Depends on Prop. XXIX + XXV. |
+| XXXIII| Things could not have been produced in any other way or order. | ⏳     | Depends on Prop. XVI + XXVI–XXIX; also needs the modal layer's necessity machinery (`ModalForm.lean`). |
+| XXXIV | God's power = God's essence.                                   | ⏳     | Depends on Prop. XI (now mechanised) + XX; needs power machinery not yet formalised. |
+| XXXV | What we conceive to be in God's power necessarily exists.       | ⏳     | Depends on Prop. XXXIV; needs power machinery not yet formalised. |
+| XXXVI| Nothing exists from whose nature an effect does not follow.     | ✅ (with qualifier) | `prop_36_nothingWithoutEffect` (`Consecutio.lean`) — a **genuine (small) derivation**: A43 (`ax_omnia_effectum`, the consecution content) supplies `∃ e, followsFrom e x`, and A38 *derives* the causal form `∃ e, Cause x e` from it. The earlier "candidate for a direct Section III commitment" note is resolved exactly as predicted — but the causal conclusion is derived, not separately committed. **Qualifier**: Spinoza's own route through Prop. XXV cor. + Prop. XXXIV's *potentia* machinery is not mechanised (Props. XXXIV/XXXV deferred); A43 commits the consecution conclusion directly. |
 
 **Tally** (the "fully mechanised" count excludes theorems that are
 direct invocations of a Section III commitment axiom; it reflects
-the post-GAP-10 closure and the Prop. IV expansion):
+the post-GAP-10 closure, the Prop. IV expansion, the
+Theologia/Mereology/Inherence extension session — A27–A36 — the
+Consecutio extension — A37–A43 — and the Realitas/Classificatio
+extension — the counting framework, the attribute-collapse
+theorem, and A44):
 
-- ✅ **4 mechanised in the substantive sense** (with one qualifier
-  on Prop. IV — see row note: both-modes case is structurally
-  captured but information-free internally; mixed-category cases
-  exceed Spinoza's textual scope) —
+- ✅ **6 mechanised in the substantive sense, full statement** (with
+  one qualifier on Prop. IV — see row note: both-modes case is
+  structurally captured but information-free internally;
+  mixed-category cases exceed Spinoza's textual scope — and one on
+  Prop. XXXVI, whose consecution premise is itself a Section III
+  commitment) —
   - **II** (`prop_2_distinctSubstancesShareNothing` Della-Rocca
     form + `prop_2_via_def3` Spinoza-textual form, both 1–3 lines);
   - **IV** (`prop_4_partition` + `prop_4_distinguishedByAttributesOrCategory`,
@@ -110,16 +119,57 @@ the post-GAP-10 closure and the Prop. IV expansion):
     distinguishability dichotomy — qualifier above);
   - **VI** (`prop_6_substanceNotProducedByAnother`, 5-line proof
     chaining Prop. III contrapositive + sameNature unfolding +
-    A12); and
+    A12);
   - **X** (`prop_10_attributePerSe`, one-line invocation of A10, a
-    Section I *definitional bridge*).
-- 📜 **2 mechanised by direct invocation of a Section III
-  commitment axiom** —
-  - **V** (`prop_5_uniqueSubstancePerAttribute` = direct A12); and
-  - **VII** (`prop_7_existenceBelongsToSubstance` = direct A13).
-  Honest record: A12 *is* essentially Prop. V's content adopted as
-  an axiom, and A13 *is* essentially Prop. VII's content adopted
-  as an axiom (see `auxiliary_axioms.md` §III). The "proofs" are
+    Section I *definitional bridge*);
+  - **XIX** (`prop_19_godIsEternal` + `prop_19_attributesAreEternal`,
+    both clauses of the statement — God and all his attributes —
+    covered via A13/A29 + A11 + A28 chains); and
+  - **XXXVI** (`prop_36_nothingWithoutEffect`, a genuine small
+    derivation: the causal form is *derived* via A38 from A43's
+    consecution content rather than separately committed —
+    qualifier above: A43 itself is a 📜-pattern commitment).
+- ✅ **6 mechanised with a qualifier, via a real derivation chaining
+  multiple items** (statement's full textual scope not entirely
+  captured — see each row note for the specific fragment left
+  open) —
+  - **IX** (`prop_9_moreRealityMoreAttributes` + corollary
+    `prop_9_cor_godMaximalReality`, `Realitas.lean`, **no new
+    axiom**; qualifier: constitutive/qualitative reading of
+    "reality", not a quantitative measure);
+  - **XII/XIII** (`prop_12_substanceIndivisible` +
+    `prop_13_absolutelyInfiniteSubstanceIndivisible`, via A32 + A12;
+    epistemic wrapper and horn (ii) not mechanised);
+  - **XV** (`prop_15_allInGod`, via A33 + `prop_14_onlyGodIsSubstance`
+    + `prop_4_partition`; epistemic second clause not mechanised);
+  - **XVIII** (`prop_18_godImmanentCause`, via `prop_15_allInGod` +
+    A34); and
+  - **XXIX** (`prop_29_nothingContingent`, via `prop_4_partition` +
+    A13 + A36; the "*by God specifically*" strengthening left
+    unfolded).
+- 📜 **8 mechanised by direct invocation of a single Section III
+  commitment axiom** (one — XXIII — only partially, see its own
+  entry) —
+  - **V** (`prop_5_uniqueSubstancePerAttribute` = direct A12);
+  - **VII** (`prop_7_existenceBelongsToSubstance` = direct A13);
+  - **XI** (`prop_11_godNecessarilyExists` = direct A27, "Deus
+    datur");
+  - **XXIV** (`prop_24_producedEssenceNotInvolveExistence` = direct
+    A35);
+  - **XXI** (`prop_21_absoluteFollowersEternalInfinite` = direct
+    A40);
+  - **XXII** (`prop_22_infiniteModeTransfer` = direct A41);
+  - **XXIII** (`prop_23_partial_classification` = direct A44 —
+    📜-**partial**: the trichotomy clause only, not the
+    necessarily-infinite exclusion; see row note); and
+  - **XXVIII** (`prop_28_finiteModeCausedByFiniteMode` = direct
+    A42, plus the *derived* corollary
+    `prop_28_cor_noFirstFiniteCause`; A42 itself is now an
+    equal-strength decomposition over Σ = {A38, A40, A41, A44} —
+    see `Classificatio.lean`'s `A42_demote_via_trichotomy`).
+  Honest record: each of A12, A13, A27, A35, A40, A41, A42, A44 *is*
+  essentially the corresponding proposition's content adopted as
+  an axiom (see `auxiliary_axioms.md` §III). The "proofs" are
   one-liners by design.
 - 📜 **+ 1 mechanised by chaining three Section III commitment
   axioms** — **XIV** (`prop_14_onlyGodIsSubstance` consumes
@@ -128,15 +178,39 @@ the post-GAP-10 closure and the Prop. IV expansion):
   proof body). Sorry-free; A14 / A15 are now `Pars1Axioms` fields
   (post-§F.α promotion) but remain Section III metaphysical
   commitments per `auxiliary_axioms.md`.
-- 🟡 **3 partial** — I (disjointness only — GAP-6 / Prop. I
+- 🟡 **8 partial** — I (disjointness only — GAP-6 / Prop. I
   priority requires `conceptualDep` at modal layer), III
   (substance-restricted — general form awaits modal layer's
   `hasAttribute`), VIII (not-finite form only; absolutely-infinite
-  reading awaits GAP-8a / cardinality).
-- ⏳/🚫 **26 deferred or blocked**.
+  reading awaits GAP-8a / cardinality), XVII (existence-clause
+  reading of Cor. II only; action-clause awaits Pars II — GAP-18),
+  XXVI (thin form — determination + causation by God only;
+  self-determination clause awaits Pars II — GAP-18), XVI
+  (qualitative clause only via A37; "*infinita infinitis modis*"
+  cardinality awaits GAP-8a's counting framework), XX (conjunctive
+  content only; "*unum et idem*" identity awaits GAP-24), XXV
+  (corollary only; essence-causation claim awaits GAP-24).
+- ⏳ **7 deferred** — XXVII, XXX–XXXII (Pars II
+  territory), XXXIII (modal layer), XXXIV–XXXV (*potentia*
+  machinery). (Neither IX nor XXIII remains in this bucket — see
+  "Resolved" below.)
 
-Prop. XI (announced first big payoff) needs more than GAP-8a
-closure: see Prop. XI row note above.
+**Resolved**: Prop. XI no longer needs GAP-8a closure — see the
+row note above. A27 supplies the missing commitment directly,
+independent of Def. VI's cardinality clause.
+
+**Resolved**: Prop. IX (🚫 → ✅-with-qualifier) — the "needs
+reality-measure/counting framework" blocker is dissolved by
+`Realitas.lean`'s `hasAtLeastNAttributes`/`HasInfiniteAttributes`,
+which finally give GAP-8a's counting apparatus (the qualitative,
+constitutive-reading half; see the Prop. IX row and the
+"Attribute-collapse result" subsection below).
+
+**Resolved (partial)**: Prop. XXIII (⏳ → 📜-partial) — the
+exhaustiveness/classification premise A42's docstring flagged is
+now committed visibly as A44 (`Classificatio.lean`), closing
+GAP-23's premise half. The necessarily-infinite exclusion residue
+remains open (cross-ref GAP-22).
 
 ### Section III axiom utilization
 
@@ -144,17 +218,108 @@ How load-bearing is each Section III commitment across the project?
 
 | Axiom | Used in (theorems / corollaries)                              | Cost-per-axiom note |
 |-------|---------------------------------------------------------------|---------------------|
-| A12   | `prop_4_distinguishedByAttributesOrCategory` (direct), `prop_5` (direct), `prop_6` (direct, combined with Prop. III contrapositive `cause_implies_sameNature`), `prop_8` (direct), `prop_14` (direct, combined with A14 + A15) | **Most load-bearing** — used directly in 5 propositions. |
-| A13   | `prop_7` + corollaries `prop_7_natureRequiresExistence`, `prop_7_substanceIsCausaSui` | Single proposition + 2 corollaries. |
+| A12   | `prop_4_distinguishedByAttributesOrCategory` (direct), `prop_5` (direct), `prop_6` (direct, combined with Prop. III contrapositive `cause_implies_sameNature`), `prop_8` (direct), `prop_12`/`prop_13` (direct, combined with A32 — `Mereology.lean`), `prop_14` (direct, combined with A14 + A15) | **Most load-bearing** — used directly in 7 propositions. |
+| A13   | `prop_7` + corollaries `prop_7_natureRequiresExistence`, `prop_7_substanceIsCausaSui`; also `prop_11` (direct, `Theologia.lean`), `prop_19_godIsEternal` (God's case, `Theologia.lean`), `prop_29_nothingContingent` (substance case, `Inherence.lean`) | Grew from single-proposition to a cross-cutting existence commitment: 1 proposition + 2 corollaries, plus 3 further propositions in this session's extension classes. |
 | A14   | `prop_14` only                                                | **Point-purpose** — committed for one theorem. |
 | A15   | `prop_14` only                                                | **Point-purpose** — committed for one theorem. |
+| A27   | `prop_11_godNecessarilyExists` (direct, `Theologia.lean`)     | **Point-purpose, but foundational** — single-proposition commitment carrying the entire "Deus datur" instantiation step. **Irreducibility witness**: `Models/NoGod.lean` — falsified while the full `Pars1Axioms` register (A1–A15) holds. |
+| A32   | `prop_12_substanceIndivisible`, `prop_13_absolutelyInfiniteSubstanceIndivisible` (direct, combined with A12, `Mereology.lean`) | Single axiom carries two propositions (plus the Prop. XIII corollary) via horn (i) of Prop. XII's dilemma. **Irreducibility witness**: `ModeParts` in `Models/CounterexamplesII.lean` — falsified while `Pars1Axioms` + `CausalAxioms` + `TheologiaAxioms` + `InherenceAxioms` all hold (the parts-as-modes reading, Letter 12 / Curley). |
+| A35   | `prop_24_producedEssenceNotInvolveExistence` (direct, `Inherence.lean`) | **Point-purpose** — same 📜-pattern as A13: Prop. XXIV's content adopted directly. **Irreducibility witness**: `NecessaryMode` in `Models/CounterexamplesII.lean` — falsified while `Pars1Axioms` + `CausalAxioms` + `TheologiaAxioms` + the other three `InherenceAxioms` fields (A33/A34/A36, standalone theorems) all hold; the necessarily-existing-mode profile only A35 rules out. |
+| A40   | `prop_21_absoluteFollowersEternalInfinite` (direct, `Consecutio.lean`) | **Point-purpose** — 📜-pattern: Prop. XXI's content adopted directly (durational-reductio machinery unavailable at this layer). Eternity/sempiternity conflation tracked as GAP-21. |
+| A41   | `prop_22_infiniteModeTransfer` (direct, `Consecutio.lean`)    | **Point-purpose** — 📜-pattern: Prop. XXII's content, ternary statement flattened to binary `followsFrom` (GAP-22). |
+| A42   | `prop_28_finiteModeCausedByFiniteMode` (direct) + derived corollary `prop_28_cor_noFirstFiniteCause` (`Consecutio.lean`) | 📜-pattern, advertised as **backbone-grade** for Pars II–V; also yields the "*et sic in infinitum*" corollary. Bypasses Prop. XXIII's trichotomy (GAP-23). **Corrected in batch 1.3**: the backbone claim does not hold. A42's hypothesis is unsatisfiable (`pars1_prop_28_vacuous_for_modes`), so the axiom is committed but never usable; **A59** is its working replacement. |
+| A43   | `prop_36_nothingWithoutEffect` (via A38, `Consecutio.lean`)   | **Point-purpose, with derivational payoff** — commits only the consecution content; the causal form of Prop. XXXVI is *derived* through A38 rather than separately committed. |
+| A44   | `prop_23_partial_classification` (direct, `Classificatio.lean`); also consumed by the A42 demote (`A42_demote_via_trichotomy`) | **Dual-purpose** — closes Prop. XXIII's premise half directly, and separately powers A42's equal-strength decomposition (Σ = {A38, A40, A41, A44}). |
 
-Bennett-line reading note: A12 earns its keep across the project,
-but A14 and A15 are committed for a single proposition each.
+Bennett-line reading note: A12 earns its keep across the project
+(now 7 propositions, up from 5 after the Mereology extension), but
+A14, A15, A27, A35, A40, A41, and A43 are each committed for
+essentially one proposition (A27, A35, A40, A41, A43 by design —
+see their 📜-pattern above); A42 is nominally single-proposition
+but is the backbone Pars II–V will consume, and is now itself
+demotable to A44 + already-committed axioms (see A44's row).
 Bennett-leaning readers can drop A14 + A15 to recover the partial
-state at the cost of losing Prop. XIV; A12 cannot be dropped
-without losing four propositions including Prop. V's
-mechanisation altogether.
+state at the cost of losing Prop. XIV; A12 cannot be dropped without
+losing Prop. V's mechanisation and everything built on it (VI, VIII,
+XII, XIII, XIV). **Irreducibility parity note**: all three Section
+III axioms of the Theologia/Mereology/Inherence extension (A27, A32,
+A35) now have kernel-level irreducibility witnesses (`NoGod`,
+`ModeParts`, `NecessaryMode`), each against a baseline register
+**stronger** than the paper's `StatedAxioms` — the previously
+flagged parity gap (A32/A35 lacking dedicated counter-models) is
+closed. A44 has no dedicated counter-model (its Section III status
+rests on demonstratio-gap grounds — Bennett 1984 §25); A12, A14, and
+A15 additionally interact with A8 and A10 to produce the
+attribute-collapse theorem — see the subsection immediately below.
+
+### Attribute-collapse result
+
+`Ethica/Pars1/Realitas.lean` proves that in any `Pars1Axioms` world
+containing a God, **every attribute of every substance equals that
+God** (`attribute_collapse`, derived from A8 + A10 + A12 + A14 + A15
+jointly — no new axiom). Specialised to God's own attributes
+(`god_is_own_only_attribute`), this rules out God having even two
+distinct attributes (`god_no_two_attributes`), which in turn makes
+Def. VI's *infinitis attributis* clause **unsatisfiable** for any
+God in the register (`def6_infinitis_attributis_unsatisfiable`) —
+not merely unformalised (the old GAP-8a framing) but actively
+inconsistent with the rest of Section III once cardinality is
+finally expressible.
+
+`Ethica/Pars1/Models/MultiAttribute.lean` shows the incompatibility
+is *sharp*, not an artifact of a weak counting framework: the
+**full** `Pars1Axioms` register tolerates a substance with
+infinitely many attributes (carrier `Nat`, `multiAttribute_infinitude`)
+precisely as long as the model is godless (`multiAttribute_hasNoGod`).
+Godless plurality is consistent; godful plurality is impossible.
+Escape routes are catalogued in `Realitas.lean`'s header and tracked
+as **GAP-25**.
+
+### Resolution: the Attributum layer
+
+**GAP-25 is closed** (Attributum session) by adopting escape route
+(iii) — type attributes off the `Thing` universe — as a **parallel
+branch**, `Ethica/Attributum/`. Nothing under `Ethica/Pars1/` is
+modified, so everything above remains exactly true of the Pars I
+register and the published results are untouched.
+
+`AttrWorld Thing Attr` (`Attributum/Core.lean`) extends
+`EthicaWorld Thing` — every Pars I primitive is reused verbatim —
+and routes attribution through `perceivedAsEssence : Thing → Attr →
+Prop`. Since `Attributum a s` has `a : Attr`, `Substance a` does not
+typecheck: **step 3 of the collapse chain is inexpressible, not
+merely false**. Prop. X survives via the attribute-side predicate
+`perSeConceivedAttr` (a field of `AttrStructure Attr`, a class that
+does not mention `Thing`); what is withdrawn is only A8's *bite on
+attributes*, which is exactly Bennett 1984 §16's position, enforced
+by typing rather than by an axiom restriction.
+
+The four attribute axioms are re-typed verbatim as A10′/A12′/A14′/
+A15′ (`Attributum/Axioms.lean`), keeping their Section
+classifications. Props. V, IX and X are re-derived in the new
+vocabulary.
+
+Results, all `sorry`-free and (for the two headline theorems)
+dependent on **no axioms whatever**:
+
+| Theorem | File | Content |
+|---|---|---|
+| `dual_god_with_two_attributes` | `Attributum/Models/DualAttribute.lean` | A God with two distinct attributes (`cogitatio`, `extensio`), in a world carrying `AttrAxioms` **and** `StatedAxioms` |
+| `inf_def6_recovered` | `Attributum/Models/InfiniteAttribute.lean` | A God with infinitely many attributes — Def. VI satisfied outright |
+| `legacy_god_no_two_attributes` | `Attributum/Bridge.lean` | The same sentence, refuted, once `Attr := Thing` |
+| `legacy_collapse` | `Attributum/Bridge.lean` | `attribute_collapse` transported along the legacy embedding |
+
+The last two are the diagnosis. `Bridge.lean`'s `legacyAttrWorld`
+instantiates `Attr := Thing`, and under it `Attributum`, `IsGodAttr`,
+`hasAtLeastNAttrs` and `HasInfiniteAttrs` are *definitionally* their
+Pars I counterparts (four `Iff.rfl` lemmas). So the *same* sentence,
+under the *same* axioms, is satisfiable when `Attr` is separate and
+refutable when `Attr := Thing`. **The collapse is an artefact of the
+Prop. X scholium's identification of attributes with things, not a
+consequence of Spinoza's substantive commitments.**
+
+This is also what unblocks Pars II, whose Props. I–II assert that
+Thought and Extension are two distinct attributes of God.
 
 ---
 
@@ -167,8 +332,18 @@ mechanisation altogether.
 | Multi-world A18 bridge-bite | A18 non-trivial bite witness | Modal | ✅ `Models/MultiWorld.lean` — `Thing := necessary \| contingent`, `World := w0 \| w1`. A18 fires non-vacuously on the `False ↔ False` branch. Does **not** exercise A19/A20/A21. |
 | A12 counter-model | Irreducibility witness (Bennett #1) | StatedAxioms + PSR | ✅ `Models/Counterexamples.lean` `A12CounterModel` — 4-element all-substance world; `StatedAxioms` + `PSRSubstance` satisfied, A12 falsified. Kernel-level hard fact. |
 | A15 counter-model | Irreducibility witness (Bennett #2) | StatedAxioms + plenitude | ✅ `Models/Counterexamples.lean` `A15CounterModel` — 3-element all-substance world; `StatedAxioms` + plenitude satisfied, A15 falsified. Kernel-level hard fact. |
-| Multi-attribute substance | Planned future bench | Base | ⏳ `MultiAttribute.lean` (not started). |
+| Multi-attribute substance | Delivered — godless plurality/infinitude witness, twinned with the attribute-collapse theorem | Base | ✅ `Models/MultiAttribute.lean` — carrier `Nat`; full `Pars1Axioms` instance. `multiAttribute_hasNoGod`: `absolutelyInfinite` uniformly `False`, so `IsGod` is unsatisfiable — this is load-bearing, not incidental. `multiAttribute_plurality` (≥2 attributes of `0`) and `multiAttribute_infinitude` (`HasInfiniteAttributes 0`) satisfy GAP-8a's cardinality desideratum on the **full** register, but only because no God exists in the model — `Realitas.lean`'s `attribute_collapse` forces exactly one attribute per substance whenever a God is present. Delivered with a twist relative to the v1.0.0 "planned future bench" listing: godless by necessity, not by oversight. |
 | Prop. III bite-test | Non-identity `Cause` exercising A4ₛ + A5ₛ contrapositively | Causal | ⏳ Not started; current TwoSubstance uses identity-restricted `Cause` so doesn't exercise A4ₛ+A5ₛ. |
+| NoGod (A27 irreducibility witness) | Kernel-level irreducibility witness (Bennett #3) | Full `Pars1Axioms` (A1–A15) | ✅ `Models/NoGod.lean` — one-element `NoGodThing` world satisfying the **full** `Pars1Axioms` register (A1–A15, including all four Section III commitments A12–A15) with `absolutelyInfinite _ := False`, so `IsGod` is unsatisfiable; `noGodWorld_hasNoGod` + `A27_falsified` + `A27_irreducibility_witness`. Strictly stronger baseline than `Counterexamples.lean`'s A12/A15 counter-models, which run against `StatedAxioms` only — the first irreducibility result witnessed against the complete committed register. |
+| GodWorld (`TheologiaAxioms` consistency) | Consistency witness for A27–A31 | Base (Theologia) | ✅ `Models/GodWorld.lean` — `TheologiaAxioms Unit` instance layered on `SingleSubstance`'s existing `Pars1Axioms Unit`; `godWorld_god_exists` plus sanity checks that Props. XI, XVII, XIX hold on `Unit`. |
+| MereologyWitness (`MereologyAxioms` consistency) | Consistency witness for A32 | Base (Mereology) | ✅ `Models/MereologyWitness.lean` — `Unit` with `properPart _ _ := False`; A32 discharges vacuously (no proper parts to falsify it against); sanity checks that Props. XII/XIII hold on `Unit`. |
+| InherenceWitness (`InherenceAxioms` consistency) | Consistency witness for A33–A36 | Base (Inherence) | ✅ `Models/InherenceWitness.lean` — `Unit` with `inheresIn _ _ := False`; A33/A35/A36 discharge vacuously since `Mode ()` is `False` on `Unit` (inherited from `SingleSubstance`'s `inAnother _ := False`), A34 discharges vacuously since `inheresIn` is uniformly `False`; sanity checks that Props. XV/XXIX hold on `Unit`. |
+| ModeParts (A32 irreducibility witness) | Kernel-level irreducibility witness (Bennett #4) | Full register minus Mereology | ✅ `Models/CounterexamplesII.lean` — two-element world (`whole`/`part`) embodying the **parts-as-modes** reading (Letter 12 to Meyer; Curley): a substance whose sole proper part is a mode. Satisfies `Pars1Axioms` + `CausalAxioms` + `TheologiaAxioms` + `InherenceAxioms` in full (four instances) while falsifying A32 (`A32_falsified`) — Prop. XII's horn (i) is a genuine interpretive choice, not forced by any other commitment, including causal/inherence machinery A32 was never tested against. |
+| NecessaryMode (A35 irreducibility witness) | Kernel-level irreducibility witness (Bennett #5) | Full register minus A35 | ✅ `Models/CounterexamplesII.lean` — two-element world (`g`/`m`) with a **necessarily-existing mode** (the infinite-mode profile with necessity lodged in the mode's own essence). Satisfies `Pars1Axioms` + `CausalAxioms` + `TheologiaAxioms` plus A33/A34/A36 as standalone theorems (`necessaryMode_satisfies_A33/34/36`) while falsifying A35 (`A35_falsified`) — only A35 (= Prop. XXIV) enforces the through-cause vs through-essence necessity distinction. |
+| ConsecutioWitness (`ConsecutioAxioms` + full-register consistency) | Joint-consistency witness for A1–A15 + A27–A43 | Base (all non-modal layers) | ✅ `Models/ConsecutioWitness.lean` — fresh one-element carrier `ConsecutioW` with a uniformly *positive* profile (`Cause`, `inheresIn`, `followsFrom`, `followsAbsolutely` all `True`), so A43 and the other consecution fields discharge **non-vacuously** (unlike the `Unit` witnesses' all-`False` relations). Carries instances for `Pars1Axioms` + `CausalAxioms` + `TheologiaAxioms` + `MereologyAxioms` + `InherenceAxioms` + `ConsecutioAxioms` — joint consistency of the entire extended register A1–A15 + A27–A43 on one carrier (modal A16–A26 excluded; separate `World`-indexed layer). **Largest single-model consistency proof in the project.** |
+| ClassificatioWitness (`ClassificatioAxioms` consistency) | Consistency witness for A44 (+ the `TrichotomySigma` demote register) | Base (Classificatio) | ✅ `Models/ClassificatioWitness.lean` — extends `ConsecutioWitness`'s carrier `ConsecutioW` with A44, discharging **vacuously** (`Mode x` is `False` on `ConsecutioW`, exactly as A42's own discharge there). Also witnesses `TrichotomySigma ConsecutioW` (via `trichotomySigma_of_classificatio`), i.e. consistency of the A42-demote register Σ = {A38, A40, A41, A44}. |
+| DualAttribute (two-attribute God) | **The decisive witness of the Attributum layer** | Attributum (re-typed) | ✅ `Ethica/Attributum/Models/DualAttribute.lean` — fresh carrier `DualThing` (one substance) with `Attr := DualAttr` (`cogitatio`/`extensio`). Carries `AttrAxioms` (A10′/A12′/A14′/A15′) **and** `StatedAxioms` (Spinoza's own A1–A11, the register the published results run against). `dual_god_two_attributes` exhibits exactly what `god_no_two_attributes` forbids in Pars I; `dual_god_with_two_attributes` packages it with `IsGodAttr`. Depends on **no axioms** (`#print axioms`). The legacy `Thing`-typed channel is switched off and *proved* empty (`dual_A14_thingTyped_falsified`), which is why no `Pars1Axioms` instance exists here and the collapse theorem has nothing to apply to. |
+| InfiniteAttribute (Def. VI recovered) | GAP-8a's consistency half | Attributum (re-typed) | ✅ `Ethica/Attributum/Models/InfiniteAttribute.lean` — carrier `InfThing` (one substance) with `Attr := Nat`. `inf_def6_recovered : HasInfiniteAttrs deus` satisfies Def. VI's *infinitis attributis* clause with a God present — the exact configuration `def6_infinitis_attributis_unsatisfiable` rules out in Pars I. Contrast `Models/MultiAttribute.lean`, which gets infinitude on the full `Pars1Axioms` register only by being **godless**. Here: plurality *and* God, simultaneously. Depends on **no axioms**. |
 
 ---
 
@@ -182,3 +357,249 @@ formalisations of Pars I — base FOL, modal S5, categorical / topos.
 | Base FOL    | 🟡     | `Ethica/Pars1/*` (this work) |
 | Modal S5    | 🟡     | `Ethica/Pars1/ModalForm.lean` — fully connected scaffold with all four demote attempts executed. Bridges A18/A19/A20/A21, candidates A16/A17 (Prop. I priority), Section III commitments A22 (PSR-substance), A23 (PSR-self-cause), A24 (PSR-essence-perception), A25/A26 (PSR-plenitude + god-uniqueness). **A18 load-bearing**: `substance_exists_at_every_world` proves `Substance s → ∀ w, existsAt s w` via A13 + A18. **A12 demote (Della Rocca route)**: `prop_5_demote_via_PSR_all_attributes` proves *partial* A12 (all-shared-attributes → identity) from A22; the full any-shared-attribute reading is **NOT** derivable — witnessed at kernel level by `A12CounterModel` and the `A12_falsified` theorem in `Models/Counterexamples.lean`. **A13 demote (modal translation)**: `prop_7_demote_via_PSR` delivers full A13 via A23 + A18 + A3-first-clause; equal-strength translation, not reduction. **A14 demote (essence-perception)**: `prop_A14_demote_via_PSR` delivers full A14 via A24 — trivial redescription modulo `Attribute` unfolding. The genuine universality clause that resists PSR demote is A15, not A14. **A15 demote (decomposition)**: `prop_A15_demote_via_decomposition` delivers A15 via A25 + A26 jointly; plenitude alone fails — witnessed by `A15CounterModel` and the `A15_falsified` theorem. **Demote taxonomy**: A12 (partial-only, irreducible), A13 (modal translation, equal strength), A14 (trivial redescription, equal strength), A15 (decomposition required, irreducible). The engineering separation forced by Lean's diamond inheritance — a typeclass-mechanism layering that treats attribute as a "basic and irreducible way of being" (Bennett 1984 §16, p. 61) — contrasts with the unified PSR-driven structure Della Rocca's reading would require. |
 | Categorical | ⏳     | `Ethica/Pars1/CategoryForm.lean` (not started) |
+
+---
+
+# Pars II — De natura et origine mentis
+
+49 propositions. **Batches 1.1 through 1.5 landed**: Props. I, II,
+III (now including its *in Deo* clause), V, VI, VII, VIII, IX, X–XIII
+and XIV–XVI, with nine corollaries between them — plus the
+two-attribute result the opening pair's conjunction yields.
+
+Pars II could not be started before the Attributum layer: its
+opening pair asserts that Thought and Extension are two *distinct*
+attributes of God, which `god_no_two_attributes` refutes in the
+Pars I register. `pars2_opening_triple_inconsistent_in_pars1`
+(`Pars2/Idea.lean`) records that refutation in Pars I's own
+vocabulary.
+
+## Structure
+
+`Pars2World Thing Attr` extends `AttrWorld Thing Attr` **and**
+`ConsecutioWorld Thing`, adding `ideaOf : Thing → Thing → Prop` (Def.
+III) and the two distinguished attributes `cogitatio`, `extensio`.
+`Attr` is declared an `outParam`: since `ConsecutioWorld` does not
+mention `Attr`, the generated projections would otherwise leave it a
+metavariable and Lean could find no synthesization order — the same
+obstruction `ModalForm.lean`'s §B.1 note describes, here resolved
+rather than avoided because Prop. VII needs `Cause` and `Attributum`
+in one statement.
+
+`Pars2Axioms` extends `ConsecutioAxioms` (hence `InherenceAxioms`,
+`CausalAxioms`, `Pars1Axioms` — Pars II's *demonstrationes* cite
+Props. I.10, I.14, I.15, I.16, I.25cor throughout) and `AttrAxioms`.
+
+> **Batch 1.2 re-based the class from `CausalAxioms` to
+> `ConsecutioAxioms`.** This was not bookkeeping. It made
+> `prop_15_allInGod` and `prop_16_cor1_godEfficientCause` available,
+> which turned GAP-26 and Prop. VI's positive clause from *pending
+> axioms* into *derivations*. No existing signature changed and
+> nothing under `Ethica/Pars1/` was touched.
+
+`QuatenusWorld Thing Attr` (batch 1.2) extends `Pars2World`, adding
+the project's first **attribute-relativised** primitives:
+`modeUnder : Thing → Attr → Prop`, `causeUnder : Thing → Thing →
+Attr → Prop`, `involvesConceptOf : Thing → Attr → Prop`. This is the
+ternary shape GAP-22 flagged as missing when A41 had to flatten
+Prop. I.XXII — supplied here for causation, though GAP-22's own
+target (consecution, relativised to *attribute-as-modified*) remains
+open. `QuatenusAxioms` extends `Pars2Axioms` with A51–A55.
+
+`ParallelismusWorld Thing Attr` (batch 1.3) extends `QuatenusWorld`
+with `durat : Thing → Prop` (Pars II Def. V, actual existence),
+`essentiaFormalisIn : Thing → Attr → Prop` and `comprehensaIn :
+Thing → Thing → Prop` (the two containment relations Prop. VIII
+compares). `ParallelismusAxioms` extends `QuatenusAxioms` with
+A56–A59.
+
+> **Batch 1.3 also repaired Def. II at the modal layer.**
+> `finitumInSuoGenere` (Pars I) routes through `sameNature`, which
+> GAP-2 path (b) defined via `Attribute` — and `Attribute a x`
+> carries `Substance x`. So Pars I's finitude predicate **entails
+> substancehood** and can never hold of a mode. `Definitions.lean`
+> flagged the cost in the same breath as the definition ("*a separate
+> `hasAttribute` relation will be added at the modal layer*") and
+> GAP-2's caveat recorded the promise. `Parallelismus.lean` keeps it,
+> using batch 1.2's `modeUnder`:
+>
+> ```lean
+> sameNatureUnder x y        ≝ ∃ a : Attr, modeUnder x a ∧ modeUnder y a
+> finitumInSuoGenereModal x  ≝ ∃ y, x ≠ y ∧ sameNatureUnder x y ∧ limitedBy x y
+> ResSingularis x            ≝ Mode x ∧ finitumInSuoGenereModal x
+> ```
+>
+> Three definitions, no new primitives, no new axioms. The casualty
+> the repair exposes is A42 — see the Pars I table above and
+> `pars1_prop_28_vacuous_for_modes`.
+
+`MensWorld Thing Attr` (batch 1.4) extends `ParallelismusWorld` with
+`Homo : Thing → Prop`, `mensHominis : Thing → Thing → Prop` and
+`affectio : Thing → Thing → Prop`. `MensAxioms` extends
+`ParallelismusAxioms` with A60–A67.
+
+Only three primitives, because three notions that looked like they
+needed one turned out to be definable from machinery earlier batches
+already paid for:
+
+```lean
+Corpus b                ≝ modeUnder b extensio           -- Pars II Def. I
+pertinetAdEssentiam m x ≝ (durat m ↔ durat x)            -- Pars II Def. II
+percipit m a            ≝ ∃ i, ideaOf i a ∧ comprehensaIn i m
+```
+
+The third is Spinoza's own gloss on Prop. XII ("*sive ejus rei
+dabitur in mente necessario idea*") and reuses batch 1.3's
+`comprehensaIn`. Note also that `mensHominis` is deliberately **not**
+defined as "the idea of the body": that identification is Prop.
+XIII's content, and defining it away would turn the proposition into
+a tautology.
+
+`CorpusWorld Thing Attr` (batch 1.5) extends `MensWorld` **and
+`MereologyWorld Thing`**, adding one primitive,
+`involvitNaturam : Thing → Thing → Prop`. `CorpusAxioms` extends
+`MensAxioms` with A68–A72.
+
+> **Taking `MereologyWorld` costs nothing, which is how GAP-30
+> closed.** `MereologyWorld` is a **data** class; `MereologyAxioms`
+> — which carries A32, a Section III commitment about the
+> indivisibility of substance — is a separate `Prop` class. Batch 1.4
+> had treated them as a package and deferred the *pars* clause of
+> Prop. XI's corollary on that basis. They are not a package:
+> `properPart` comes without A32, `prop_12_substanceIndivisible` stays
+> out of scope, and the `EthicaWorld` diamond resolves exactly as
+> `Pars2World`'s did (`Attr` is an `outParam`). Prop. XV's
+> `Divisible m` therefore raises no conflict — that predicate is Pars
+> I's own, and the mind is a mode.
+
+## Propositions (I–XLIX)
+
+| Prop | Statement (abbrev.) | Status | Lean name / location |
+|------|---------------------|--------|----------------------|
+| I    | Thought is an attribute of God. | 📜 | `prop_2_1_cogitatioAttributumDei` (`Pars2/Idea.lean`) — direct invocation of **A46**. The *demonstratio*'s unavailable step is its existential premise (that singular thoughts exist), which Spinoza takes from Pars II's own Axiom II *Homo cogitat*, an empirical premise; committed directly instead. Bennett 1984 §36. |
+| II   | Extension is an attribute of God. | 📜 | `prop_2_2_extensioAttributumDei` — direct invocation of **A47**. Spinoza's whole *demonstratio* is "*eodem modo ac præcedentis*", so A47 stands or falls with A46. |
+| I+II | *(their conjunction)* God has ≥2 attributes. | ✅ | `prop_2_1_2_deusHabetDuoAttributa` — **genuine derivation** from A46 + A47 + A48, packaged through `hasAtLeastNAttrs`' `Fin 2` injection. The first theorem in the project that the Pars I register actively **refutes** (`god_no_two_attributes`). |
+| III  | In God there is necessarily an idea of his essence and of all that follows. | ✅ (with qualifier) | `prop_2_3_ideaOmnium` (existential clause — direct invocation of **A49**) + `prop_2_3_ideaInDeo` (the *in Deo* localisation, **batch 1.2**). The localisation is a **genuine derivation** from `prop_15_allInGod`, which is Spinoza's own route ("*per propositionem 15 partis I*") — it cost no new axiom, only the `ConsecutioAxioms` re-base. **GAP-26 closed.** **Qualifier**: the *demonstratio*'s middle step is Prop. I.35, itself ⏳ deferred (*potentia*), so the existential half remains 📜 via A49. |
+| IV   | The idea of God is unique. | ⏳ | Depends on Prop. I.XXX, itself ⏳ deferred. Deferred past batch 1.2. |
+| V    | The formal being of ideas has God as cause only qua thinking thing. | ✅ (with qualifier) | `prop_2_5_ideaeSubCogitatione` + `prop_2_5_cor_nonSubExtensione` (`Pars2/Quatenus.lean`) — **derived**, as a specialisation of Prop. VI to `a := cogitatio` via **A54**, mirroring Spinoza's own second *demonstratio*. **Not mechanised**: the *hoc est* gloss (ideas are not caused by their own *ideata*) — that is a claim about the ideatum, not about the attribute — **GAP-28**. |
+| VI   | Modes of any attribute have God as cause only under that attribute. | ✅ | `prop_2_6_modiSubSuoAttributo` — **both clauses derived, no Section III commitment**. Positive clause: `prop_16_cor1_godEfficientCause` (Prop. I.XVI cor. I) supplies the causal fact, **A53** relativises it. Exclusion clause: **A51**'s second conjunct denies the mode any other attribute's concept, **A52** says causation-under would require exactly that concept; the contradiction is the proof. |
+| VI cor. | What is not a mode of thought is not caused by God qua thinking thing. | ✅ (partial) | `prop_2_6_cor_nonPerCogitationem` — the negative half, a direct specialisation of Prop. VI's exclusion clause. **Not mechanised**: the comparative half ("*eodem modo eademque necessitate*"), which needs the identity reading — GAP-27b. |
+| VII  | **The order and connection of ideas is the same as the order and connection of things.** | ✅ (with qualifier) | `prop_2_7_ordoEtConnexio` + corollary `prop_2_7_cor_ideaePariter` (batch 1.1) + `prop_2_7_ordoEtConnexio_iff` (**batch 1.2**). The one-way transfer mirrors Spinoza's one-line *demonstratio* ("*Patet ex axiomate 4 partis I*"): A4ₛ gives intelligibility-dependence among things, **A50** carries it to causal dependence among ideas. **A55** supplies the converse, on the ground that "*idem est ac*" is an identity and identities are symmetric — **GAP-27a closed**. **Qualifier**: the scholium's identity reading ("*una eademque res sed duobus modis expressa*") is still not mechanised — **GAP-27b**. |
+| VII cor. | God's power of thinking equals his power of acting; what follows formally from God follows objectively from God's idea. | ✅ (partial) | `prop_2_7_cor_ordoObjectivus` (`Pars2/Parallelismus.lean`) — the "*hoc est*" clause, **derived at zero axiom cost**: A38 turns consecution into causation, A49 supplies the two ideas, Prop. VII transfers the causal fact. **Not mechanised**: the *potentia* clause, which needs the power machinery that also blocks Props. I.XXXIV–XXXV (deferred to the Pars V batch). |
+| VIII | Ideas of non-existent singular things are comprehended in God's infinite idea as their formal essences are contained in God's attributes. | 📜 | `prop_2_8_ideaeRerumNonExistentium` — direct invocation of **A56**. Spinoza's whole *demonstratio* is "*patet ex præcedenti*", so the axiom is Section II, not III. God's infinite idea is **not** a new primitive: it is the idea of God, which A49 supplies. **Not mechanised**: the "*ita … ac*" as a comparison of *manner* (the rectangles-in-a-circle scholium), which would need a sameness-of-manner relation over the two containments. |
+| VIII cor. | An idea exists exactly when its object endures. | ✅ | `prop_2_8_cor_esseObjectivum` (+ `prop_2_8_cor_nonExistente`) — both halves of Spinoza's corollary as the two directions of **A57**. |
+| IX | The idea of an actually existing singular thing has God for cause not qua infinite but qua affected by another idea, and so on to infinity. | ✅ (with qualifier) | `prop_2_9_deusQuatenusCogitans` (first half — specialisation of Prop. V, `Mode i` from **A58**) + `prop_2_9_ideaSingularisAbAliaIdea` (second half). **The second half is a full derivation following the *demonstratio* step for step**: A59 gives the object another singular cause, A49 gives that cause an idea, A58 keeps it singular, Prop. VII transfers the causal fact, A45 forces the two ideas apart. **Qualifier**: the *quatenus … affectus* locution is rendered by its extension (God causes `i` under thought alone, and `j` causes `i`) — a primitive relativising God to an *individual mode* rather than to an attribute would be needed for the locution itself. **GAP-29.** |
+| IX (*sic in infinitum*) | — | ✅ | `prop_2_9_cor_nullaPrimaIdea` — no first singular idea. Same shape as `prop_28_cor_noFirstFiniteCause`, but with content: the class it refutes is genuinely inhabited (`mens_res_isSingularis` supplies witnesses at every index), where Pars I's is empty. |
+| IX cor. | Whatever happens in the object of an idea, the knowledge of it is in God. | ✅ (partial) | `prop_2_9_cor_cognitioInDeo` — the localisation is Prop. II.III's (hence Prop. I.XV's), the exclusion is Prop. V's. **Not mechanised**: "*quatenus tantum ejusdem objecti ideam habet*" — GAP-29, same cause as Prop. IX's qualifier. |
+| X    | The being of substance does not appertain to the essence of man. | ✅ (partial) | `prop_2_10_substantiaNonConstituitHominem` (`Pars2/Mens.lean`) — the *sive* clause (no man is a substance), **derived**: Prop. I.VII cor. (`prop_7_natureRequiresExistence`) says a substance's nature requires existence, Pars II Ax. I (**A60**) says a man's does not. **Not mechanised**: the *ad essentiam* form, which would need "*esse substantiæ*" as an object `pertinetAdEssentiam` could take. Spinoza offers both forms in the same sentence as equivalent. |
+| X cor. | A man's essence is constituted by modifications of God's attributes. | ✅ | `prop_2_10_cor_essentiaHominisModis` — **both clauses derived**, by Spinoza's own route: Prop. X plus `prop_25_cor_everythingGodOrMode` (Prop. I.XXV cor., already in Pars I) gives modehood; **A67**, the typing bridge, gives the attribute. |
+| XI   | The first element constituting the actual being of the human mind is the idea of a singular actually existing thing. | ✅ (with qualifier) | `prop_2_11_mensEstIdeaReiSingularis` — the actual-existence clause is a **derivation along Spinoza's own citation**: he gets "not the idea of a non-existent thing" from Prop. VIII cor., we get it from **A57**, which *is* Prop. VIII cor. **Qualifier**: the "*rei alicujus singularis*" clause is folded into **A63** rather than derived — Spinoza excludes the infinite case via Props. I.XXI–XXII plus Ax. I, in a vocabulary that does not connect to `ResSingularis`. |
+| XI cor. | The human mind is part of God's infinite intellect. | ✅ (batch 1.5) | `prop_2_11_cor_mensInDeo` (batch 1.4: mode of thought via **A58** + **A54**, in God via `prop_15_allInGod`, both derived) completed by `prop_2_11_cor_mensParsIntellectusDei` (`Pars2/Corpus.lean`), which adds the *pars* clause via **A72**. **GAP-30 closed** — the obstacle was misdiagnosed: `MereologyWorld` is a data class and `MereologyAxioms` a separate `Prop` class, so `properPart` comes without A32. Still deferred: the inadequacy clause of the corollary's second half, which needs Def. II.IV. |
+| XII  | Whatever happens in the object of the idea constituting the human mind must be perceived by it. | ✅ (partial) | `prop_2_12_quicquidInObjectoPercipitur` — **derived**: A49 gives the affection an idea, **A66** puts that idea inside the idea of the object, and `percipit` is *defined* as exactly that containment (Spinoza's own gloss, "*sive ejus rei dabitur in mente necessario idea*"). **Not mechanised**: the exclusion the *demonstratio* passes through (God has the knowledge *qua* constituting **this** mind) — GAP-29. |
+| XIII | The object of the idea constituting the human mind is the body, an actually existing mode of extension, and nothing else. | ✅ | `prop_2_13_objectumMentisEstCorpus` + `prop_2_13_objectumUnicum` — **all three clauses derived**. *corpus*: Ax. IV (**A64**) gives the mind an affection of an existing body, **A65** (Prop. IX cor.'s exclusion half) forces that body to be the mind's own object — Spinoza's reductio run forwards. *actu existens*: comes with it. ***et nihil aliud*: from A45 alone** — see the axiom table's note on Spinoza's Axioma V. |
+| XIII cor. | Man consists of mind and body, and the body exists as we feel it. | ✅ | `prop_2_13_cor_homoMenteEtCorpore`, assembled from A61, A63 and Prop. XIII. `prop_2_13_mensEstIdeaCorporisExistentis` packages Props. XI and XIII in the form Props. XIV onwards will consume. |
+| XIV  | The human mind is capable of perceiving a great number of things, in proportion as its body is. | ✅ (partial) | `prop_2_14_mensAptaAdPlurima` (`Pars2/Corpus.lean`) — the monotone half (the mind perceives *every* affection of its body), which is what the *demonstratio* establishes: Prop. XII quantified over affections. **Not mechanised**: the comparative "*eo aptior quo … pluribus modis*", which compares two counts — GAP-8a's cardinality family, same obstacle that dropped Ax. IV's "*multis modis*" and Postulate I's "*plurimis*". |
+| XV   | The idea constituting the human mind is not simple but compounded of many ideas. | ✅ (partial) | `prop_2_15_mensNonSimplex` — the *non simplex* clause, **derived in the steps Spinoza cites**: Prop. XIII gives the mind a body for object, **A70** (Postulatum I) gives that body a part, A49 gives the part an idea, **A71** makes it a part of the mind. Conclusion is `Divisible m` — Pars I's own `Mereology.lean` predicate, applied to a mode. **Not mechanised**: "*ex plurimis composita*" as a count. |
+| XVI  | The idea of any mode in which the body is affected by an external body involves the nature of both. | ✅ | `prop_2_16_ideaAffectionisUtramqueNaturam` — **derivation in exactly two steps, matching the *demonstratio*'s two citations**: **A68** is the physical digression's Axioma I (*Omnes modi quibus corpus aliquod ab alio afficitur corpore, ex natura corporis affecti et simul ex natura corporis afficientis sequuntur*), **A69** the transfer to ideas Spinoza licenses by Ax. I.4. First proposition in Pars II resting on the physical digression. |
+| XVI cor. I | The mind perceives the nature of many bodies together with its own. | ✅ (partial) | `prop_2_16_cor1_naturamAlienamUnaCumSua` — the "*una cum*" (simultaneity) content, from Prop. XIV + Prop. XVI. **Not mechanised**: "*plurimorum*" (counting). |
+| XVI cor. II | Our ideas of external bodies indicate our own body's constitution **more than** the external bodies' nature. | ⏳ | A **comparative** claim needing a degree-of-indication relation. Not a counting gap: it asks which of two natures an idea represents better. It is the epistemological seed of Props. XXIV–XXXI and is deferred to the adequacy layer, where the vocabulary will exist. Spinoza himself offers no *demonstratio* ("*quod in appendice partis primæ multis exemplis explicui*"). |
+| XVII–XLIX | — | ⏳ | Not started. Props. XVII–XIX (imagination and memory), XX–XXIII (the idea of the mind), XXIV–XXXI (inadequacy), XXXII–XLIX (the kinds of cognition). |
+
+## Definitions and Axiomata (Pars II)
+
+| | Latin | Status |
+|---|---|---|
+| Def. I | *Per corpus intelligo modum qui Dei essentiam quatenus ut res extensa consideratur … exprimit* | ✅ **definition, no primitive**: `Corpus b ≝ modeUnder b extensio` (`Pars2/Mens.lean`) |
+| Def. II | *Ad essentiam alicujus rei id pertinere dico quo dato res necessario ponitur…* | ✅ (first clause) **definition, no primitive**: `pertinetAdEssentiam m x ≝ (durat m ↔ durat x)`. The "*vel*" variant is about *conception*, not existence; not committed, nothing consumes it. |
+| Def. III | *Per ideam intelligo mentis conceptum…* | ✅ `ideaOf` (`Pars2World`, batch 1.1) |
+| Def. IV | *Per ideam adæquatam…* | ⏳ the cognition batch |
+| Def. V | *Duratio est indefinita existendi continuatio* | ✅ `durat` (`ParallelismusWorld`, batch 1.3) |
+| Def. VI | *Per realitatem et perfectionem idem intelligo* | ⏳ |
+| Def. VII | *Per res singulares intelligo res quæ finitæ sunt…* | ✅ **definition, no primitive**: `ResSingularis` (batch 1.3) |
+| Ax. I | *Hominis essentia non involvit necessariam existentiam* | ✅ **A60** |
+| Ax. II | *Homo cogitat* | ✅ **A61** |
+| Ax. III | *Modi cogitandi … idea natura prior est* | ✅ **A63** |
+| Ax. IV | *Nos corpus quoddam multis modis affici sentimus* | ✅ **A64** |
+| Ax. V | *Nullas res singulares præter corpora et cogitandi modos sentimus nec percipimus* | ❎ **not entered — redundant**. Its only job in Pars II is the "*et nihil aliud*" of Prop. XIII, which A45 delivers outright. See `prop_2_13_objectumUnicum`. |
+
+> Pars I's seven axiomata were entered from the start. Pars II's five
+> had never been entered at all, which is why Props. X–XIII could not
+> be attempted before batch 1.4. Four are now in the register; the
+> fifth turns out to be redundant given Spinoza's own Axioma VI on the
+> reading A45 gives it. That is a small result about the *Ethica*'s
+> internal economy, not a formalisation shortcut — the redundancy is
+> exhibited by a theorem, not asserted.
+
+## Axioms (Pars II, A45–A72)
+
+| Axiom | Section | Content | Note |
+|-------|---------|---------|------|
+| A45 | II | An idea has at most one object | **Promotion of Spinoza's own A6**, carried as a `True` placeholder since v1.0.0 — the oldest placeholder in the project, now retired. Read as *functionality*; the adequacy content awaits batch 1.4. **Still unconsumed** as of batch 1.2 — recorded rather than hidden. |
+| A46 | III | *Cogitatio* is an attribute of God | 📜 Prop. II.I |
+| A47 | III | *Extensio* is an attribute of God | 📜 Prop. II.II |
+| A48 | III | The two are distinct | Never stated by Spinoza; presupposed throughout. **Inconsistent with Pars I's register** — the reason the Attributum layer exists. |
+| A49 | III | Everything has an idea | 📜 Prop. II.III (existential clause) |
+| A50 | II | Idea order tracks intelligibility | Bridge; Spinoza asserts precisely this sentence in Prop. VII's *demonstratio*, so it is a promotion, not a reconstruction. It is what makes Prop. VII a derivation rather than a commitment. |
+| A51 | II | Modes involve their own attribute's concept and no other | Prop. VI's *demonstratio*, second sentence, verbatim. Bennett's "attribute separation" in its strongest form; the exclusion clause is what gives Props. V and VI their force. |
+| A52 | II | Causation under an attribute requires that attribute's concept | Ax. I.4 relativised — the direction both *demonstrationes* actually use ("*per axioma 4 partis I*"). |
+| A53 | II | God's causing of a mode is causing under that mode's attribute | Prop. I.XXV cor.'s "*certo et determinato modo*", relativising a causal fact that is **already a Pars I theorem**. Adds relativisation, not causation. |
+| A54 | II | Ideas are modes of thought | Prop. V's *demonstratio*, "*ut per se notum*" — the marker this project treats as a promotion candidate. Turns Prop. VI into Prop. V. |
+| A55 | II | The idea order reflects back to things | Prop. VII's "*idem est ac*" is an identity, and identities are symmetric. Closes **GAP-27a**. |
+| A56 | II | Prop. VIII's containment biconditional | 📜 Prop. II.VIII. Section II because Spinoza's *demonstratio* is "*patet ex præcedenti*" — offered as a restatement of Prop. VII in the register of containment. The manner-comparison itself is not claimed. |
+| A57 | II | An idea endures iff its object endures | Prop. VIII cor., both halves compacted into one `Iff`. Says nothing about `durat` on its own — a model may leave it empty or universal; `MensWitness` deliberately makes it split the carrier. |
+| A58 | II | The idea of a singular thing is itself singular | Prop. IX's *demonstratio*, first sentence ("*modus singularis cogitandi … et a reliquis distinctus*"). Adds the **finitude**; modehood and attribute already come from A54. Without it Prop. IX's regress could not stay inside the singular class. |
+| A59 | III | Every singular thing is caused by another distinct singular thing | 📜 Prop. I.XXVIII **at the modal layer**. Not new content: this is A42's commitment restated on `ResSingularis`, a predicate modes can actually satisfy. A42 itself never fires (`pars1_prop_28_vacuous_for_modes`). Not fixed in place because `Ethica/Pars1/` is frozen at v1.0.0, exactly as with GAP-25. |
+| A60 | II | *Hominis essentia non involvit necessariam existentiam* | **Pars II, Axioma I** — the first of Spinoza's own Pars II axioms to be entered. Rendered on `natureRequiresExistence`, the predicate Prop. I.VII cor. establishes of substances; setting the two side by side *is* Prop. X's argument. |
+| A61 | II | *Homo cogitat* | **Pars II, Axioma II.** Minimal content: a man has a mind. The "of thinking" half follows from A63 + A54 rather than being assumed. A46's docstring had flagged this axiom as the empirical premise Spinoza leans on for Prop. II.I and declined to import it there; here it is imported for its own proposition. |
+| A62 | II | A man's mind pertains to his essence | Pars II Def. II applied to the mind, via Prop. X cor. and Ax. II. **A composition of three things Spinoza writes, not a quotation** — flagged as such. It is the composition Prop. XI's *demonstratio* performs. |
+| A63 | II | The mind is an idea, and an idea of a singular thing | **Pars II, Axioma III** (*idea natura prior est*). The `ResSingularis` conjunct carries Prop. XI's "*rei alicujus singularis*", which Spinoza gets by excluding the infinite case via Props. I.XXI–XXII — an argument this formalisation cannot route, so it is folded in rather than faked. Actual existence is **not** folded in: it is derived from A57. |
+| A64 | II | *Nos corpus quoddam multis modis affici sentimus* | **Pars II, Axioma IV**, in the form Prop. XIII's *demonstratio* consumes ("*ideas affectionum corporis habemus*"). The plurality "*multis modis*" is dropped — nothing here counts affections, and one suffices. |
+| A65 | II | A mind perceives affections of its own object only | Prop. IX cor.'s "*quatenus tantum ejusdem objecti ideam habet*", stated where it is used rather than where it is blocked. Committed rather than derived **only because GAP-29 is open**; when GAP-29 closes this should become a theorem. |
+| A66 | II | The idea of an affection of `x` is comprehended in the idea of `x` | Prop. IX cor.'s positive half in the containment register. The only place outside Prop. VIII where batch 1.3's `comprehensaIn` does load-bearing work, and what makes Prop. XII a derivation. |
+| A67 | I | Every mode is a mode of some attribute | Typing bridge, Prop. I.XXV cor. re-typed. Makes no claim beyond the typing: whatever the untyped `Mode` holds of, the `Attr`-typed `modeUnder` holds of too. Same kind of statement as A10′/A12′/A14′/A15′. |
+| A68 | II | An affection follows from the natures of both the affected and the affecting body | **Pars II, the Axioma I after Lemma III's corollary** — the first axiom of the **physical digression** to enter the register, cited by name in Prop. XVI. Rendered on `involvitNaturam` rather than `followsFrom`, to keep a physical claim out of Pars I's God-to-mode consecution machinery. The *ita ut* variation tail is dropped (counting). |
+| A69 | II | What a thing involves, its idea involves | Prop. XVI's *demonstratio*, the step licensed by Ax. I.4 ("*quare eorum idea per axioma 4 partis I … involvet*"). A transfer principle, not new content. |
+| A70 | II | The human body has proper parts | **Pars II, Postulatum I** — the first *postulatum* to enter. Only "*a* part" is entered; "*plurimis*" and the recursive "*quorum unumquodque valde compositum*" are counting claims, and Prop. XV needs one part. Section II because Spinoza marks the digression's postulates as empirical, like Ax. II and Ax. IV. |
+| A71 | II | The idea of a part of a body is a part of that body's idea | Prop. XV's *demonstratio*. The parallelism relates *causal* orders, not part-whole ones, so the mereological transfer is its own bridge. **Restricted to bodies** on purpose — the unrestricted form is false in the witness, since A72 gives the mind a parthood that does not transfer up the idea ladder. |
+| A72 | II | The human mind is a proper part of God's infinite idea | Prop. XI cor.'s *pars* clause. **Closes GAP-30.** Not derived: the `comprehensaIn` route is blocked because A56 covers only non-enduring things, and the bridge to `properPart` is not innocent since A66 uses the same relation for affections. |
+
+> **Batch 1.5 added five axioms, all Section II**, and three of them
+> are sentences from the **physical digression** (Ax. I after Lemma
+> III cor., Postulatum I) or from a *demonstratio*. The batch also
+> closed GAP-30 by correcting a misdiagnosis rather than by paying
+> for it: `MereologyWorld` is data, `MereologyAxioms` is `Prop`, and
+> taking the first without the second costs nothing.
+
+> **Batch 1.4 added eight axioms — seven Section II, one Section I,
+> none Section III.** Five are Spinoza's own axioms of Pars II, which
+> had never been entered; two (A65, A66) are the halves of Prop. IX's
+> corollary batch 1.3 could state but not consume; one (A67) is a
+> typing bridge. **Every proposition in the batch is a derivation.**
+> Three notions that looked like they needed primitives — Def. I,
+> Def. II and "*percipi*" — turned out to be definable from `modeUnder`,
+> `durat` and `comprehensaIn`, all paid for by earlier batches. Only
+> `Homo`, `mensHominis` and `affectio` are new.
+
+> **Batch 1.3 added four axioms, three of them Section II.** The one
+> Section III commitment, A59, is A42's content on a working
+> predicate rather than a fresh metaphysical claim — so the batch's
+> net new metaphysics is zero, and its net new *usable* metaphysics
+> is Prop. I.XXVIII, which the register had paid for and could not
+> draw on. Props. VII cor. and IX (second half) are full derivations.
+
+> **Batch 1.2 added five axioms and not one Section III commitment.**
+> That is unusual here and worth stating plainly: the *quatenus*
+> machinery is expensive in **primitives** (three new relations) and
+> free in **metaphysics**. Every one of A51–A55 is a sentence Spinoza
+> writes in the relevant *demonstratio*. No 📜-pattern axiom appears
+> in this batch, and Props. V and VI are derivations rather than
+> adopted conclusions.
+
+## Models
+
+| Model | Role | Status |
+|-------|------|--------|
+| MensWitness | Consistency witness for A1–A15 + A4ₛ/A5ₛ + A33–A43 + A10′–A15′ + A45–A72 on one carrier (but **not** `MereologyAxioms`/A32 — `properPart` is taken as data only) | ✅ `Ethica/Pars2/Models/MensWitness.lean` — carrier `MensThing` = `deus \| idea : MensThing → MensThing \| res : Int → MensThing`, `MensAttr` = {`cogitatio`, `extensio`}. **Five things it establishes.** (1) *Both attribute verdicts at once*: `mens_duo_attributa` (God has two `Attr`-typed attributes) *and* `mens_pars1_collapse_holds` (no God has two `Thing`-typed attributes, via `god_no_two_attributes` — `Pars1Axioms` genuinely holds here); `mens_coexistence` packages the pair. (2) *Props. V and VI hold of real modes of **both** attributes*: `mens_prop_6` (a mode of thought), `mens_prop_6_extensio` (a mode of extension) and `mens_prop_6_cor_res` — batch 1.2's carrier had no extension modes, so its version of the corollary was vacuous. (3) *The parallelism is not trivial*: `mens_cause_irreflexive_deus` shows `Cause` is not the constant-`True` relation, so `mens_prop_7_iff` has content. (4) *Prop. VIII is tested, not waved through*: `mens_durat_splits` — `res (-1)` does not endure and `res 0` does, so `mens_prop_8`'s hypothesis is met on one side and failed on the other. (5) *Prop. IX holds at every rung*: `mens_prop_9` and `mens_prop_9_cor`, backed by `mens_res_isSingularis` at every index. |
+| — *(carrier note)* | Why the carrier is infinite, and why the index is `Int` | Two independent forcings, both discovered by trying to build the witness rather than read off the text. **(a)** A45 + A49 + A54 are **jointly unsatisfiable on any finite carrier** (every idea has an idea, ideas are modes, modes are not the unique substance) — Spinoza's *idea ideae in infinitum* is what makes the register consistent. **(b)** A59 demands every singular thing have a singular *cause* and A43 demands every thing have an *effect*, so the causal order on the singular stock needs **neither a first nor a last element**: `Nat` fails, `Int` works. Prop. IX's "*et sic in infinitum*" is thus a two-sided requirement, not a one-directional regress. |
+| — *(batch 1.4 note)* | What the witness forces about *affectio* | `affectio a b` is defined as `b = mensPred a` — each affection belongs to **exactly one** thing. The looser reading, "anything `b` causes", satisfies A64 and A66 but **falsifies A65** (a mind perceives affections of its own object only), because a mode has many effects and each would witness a different object. So the witness records which of the two readings of *affectio* the register can afford — a constraint that is invisible in the text. `comprehensaIn` was widened for the same batch (God's infinite idea **or** the idea of what one is an affection of), and the second disjunct is what makes A66, and with it Prop. XII, non-vacuous. `res 0` is a man, `idea (res 0)` his mind, `res (-1)` an affection of his body: every hypothesis of Props. X–XIII is met. |
+| — *(orientation note)* | What the register does **not** fix | In this model `res m` causes `res n` when `n < m`, which makes `Cause (idea x) x` come out true — the idea of a thing causing the thing. Nothing in the register forbids it, because nothing connects the causal order to the ideation order beyond the parallelism itself. That is a second, independent motivation for **GAP-28** (Prop. II.V's *hoc est* gloss), which is exactly the axiom that would orient them. |
