@@ -80,6 +80,7 @@ Ethica/
     ├── Quatenus.lean                     -- Props V, VI, VII-iff; A51–A55 (QuatenusAxioms)
     ├── Parallelismus.lean                -- Props VII-cor, VIII, IX; A56–A59; ResSingularis; A42-vacuity
     ├── Mens.lean                         -- Props X–XIII; A60–A67; Pars II's own axiomata; Corpus, percipit
+    ├── Corpus.lean                       -- Props XIV–XVI; A68–A72; physical digression; GAP-30 closed
     └── Models/
         └── MensWitness.lean              -- Consistency witness; coexistence + real modes + Int-indexed regress + a man
 texts/
@@ -469,16 +470,70 @@ which *is* Prop. VIII's corollary — exactly what he cites at that
 step, and the second job batch 1.3's `durat` was built for. Prop.
 XIII's *corpus* clause is his reductio run forwards.
 
-Two things the batch could not get. **GAP-30**: Prop. XI's corollary
-says the mind is a *part* of God's infinite intellect, and although
-`Ethica/Pars1/Mereology.lean` has `properPart`, importing
-`MereologyWorld` would drag A32 — a Section III commitment about the
-indivisibility of substance — into Pars II for one corollary. And
+Two things the batch could not get. **GAP-30** (closed one batch
+later, see below): Prop. XI's corollary says the mind is a *part* of
+God's infinite intellect, and `properPart` looked out of reach. And
 GAP-29 now has a price tag: **A65** exists *only* because that gap is
 open. It is the first axiom in the project whose existence is
 entirely attributable to an unclosed gap, and it is flagged as such
 so that closing GAP-29 shrinks the register rather than leaving a
 fossil behind.
+
+## Pars II — the composite-body layer (batch 1.5)
+
+`Ethica/Pars2/Corpus.lean` adds Props. XIV, XV and XVI with its first
+corollary — the first propositions in Pars II whose *demonstrationes*
+cite the **physical digression** Spinoza inserts after Prop. XIII.
+Five new axioms, all Section II, two of them from the digression
+itself (its Axioma I after Lemma III's corollary, and Postulatum I).
+
+**GAP-30 closed, by correcting a misdiagnosis rather than by paying
+for it.** Batch 1.4 deferred the *pars* clause of Prop. XI's
+corollary on the grounds that importing `MereologyWorld` meant
+importing A32, a Section III commitment about the indivisibility of
+substance. It does not. `MereologyWorld` is a **data** class;
+`MereologyAxioms` is a separate `Prop` class:
+
+```lean
+class CorpusWorld (Thing : Type u) (Attr : outParam (Type v))
+    extends MensWorld Thing Attr, MereologyWorld Thing where
+  involvitNaturam : Thing → Thing → Prop
+```
+
+`properPart` comes for nothing, A32 stays out, and the `EthicaWorld`
+diamond resolves exactly as `Pars2World`'s did. Prop. XV's conclusion
+is then `Divisible m` — Pars I's own predicate, applied to a mode,
+raising no conflict with `prop_12_substanceIndivisible`, which is
+about substances.
+
+**Prop. XVI is a two-step derivation matching its two citations**:
+A68 is the physical Axioma I, A69 the transfer to ideas Spinoza
+licenses by Ax. I.4. Resting a Pars II proposition on the physical
+digression turned out to cost one axiom, entered verbatim minus its
+counting tail.
+
+**A recurring shape in what gets dropped.** Three of the five axioms
+shed a *counting* clause on entry, and so do two of the propositions:
+A68's "*ita ut … diversimode*", A70's "*plurimis*", Prop. XIV's "*eo
+aptior quo … pluribus modis*", Prop. XVI cor. I's "*plurimorum*". It
+is the same cardinality obstacle that leaves Def. VI's "*infinitis
+attributis*" partial (GAP-8a). Pars II's physical material is dense
+in quantity talk and none of it is mechanised — stated here once
+rather than repeated per proposition.
+
+Prop. XVI's **second** corollary is a different kind of miss: "our
+ideas of external bodies indicate our own body's constitution *more
+than* the external bodies' nature" is a comparative about which of
+two natures an idea represents better. It is the epistemological seed
+of Props. XXIV–XXXI and waits for the adequacy layer. Spinoza offers
+no *demonstratio* for it either.
+
+**Bonus finding**: Pars I Def. V reads modes as "*substantiæ
+affectiones*", which invites the bridge `Mode x → affectio x g`. That
+bridge is **inconsistent with A65** — if every mode were an affection
+of God, every affection a mind perceives would witness God as its
+object, collapsing Prop. XIII. So the *affectio* of Props. XII–XVI is
+provably not Def. V's *affectio substantiæ*.
 
 ## Build
 

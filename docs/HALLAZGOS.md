@@ -583,6 +583,70 @@ define entonces `affectio a b ≝ b = mensPred a` —un dueño por
 afección—. Es una restricción invisible en el texto que el registro
 impone al modelo, del mismo tipo que el `Int` del hallazgo 12(c).
 
+## 14. El GAP-30 no costaba nada: `MereologyWorld` es dato, `MereologyAxioms` es Prop
+
+**Archivos**: `Ethica/Pars2/Corpus.lean` ·
+**Teoremas**: `prop_2_11_cor_mensParsIntellectusDei`,
+`prop_2_15_mensNonSimplex`, `prop_2_16_ideaAffectionisUtramqueNaturam`
+
+**(a) Un hueco mal diagnosticado.** El batch 1.4 aplazó la cláusula
+*pars* del corolario de la Prop. XI —la mente humana es **parte** del
+intelecto infinito de Dios— con el argumento de que importar
+`MereologyWorld` significaba importar A32, un compromiso de Sección
+III sobre la indivisibilidad de la sustancia. **No lo significa.**
+`MereologyWorld` es una clase de **datos**; `MereologyAxioms` es una
+clase `Prop` aparte. Tomar la primera sin la segunda:
+
+```lean
+class CorpusWorld (Thing : Type u) (Attr : outParam (Type v))
+    extends MensWorld Thing Attr, MereologyWorld Thing where
+  involvitNaturam : Thing → Thing → Prop
+```
+
+`properPart` sale gratis, A32 se queda fuera, y el diamante por
+`EthicaWorld` se resuelve exactamente igual que el de `Pars2World`
+(con `Attr` como `outParam`). El batch 1.5 cierra el GAP-30 con eso y
+un solo axioma (A72) para la frase del corolario.
+
+Lección de método, no de Spinoza: **un hueco documentado puede estar
+mal medido**. Es la segunda vez que pasa —el GAP-26 resultó ser un
+`import` faltante (hallazgo 11b)— y en ambos casos el coste real fue
+cero. Conviene releer los huecos antes de pagarlos.
+
+Beneficio inmediato: la Prop. XV (la mente no es simple) concluye
+`Divisible m`, el predicado que la propia `Mereology.lean` de la Pars
+I define, aplicado a un modo. No hay conflicto con
+`prop_12_substanceIndivisible` porque ese teorema habla de sustancias.
+
+**(b) La digresión física es barata.** Las Props. XV y XVI son las
+primeras de la Pars II cuyas *demonstrationes* citan la digresión
+física que Spinoza intercala tras la Prop. XIII. Entran dos piezas de
+ella —el Axioma I posterior al corolario del Lema III y el Postulado
+I— y la Prop. XVI queda como **derivación en exactamente dos pasos,
+uno por cada cita**: A68 es el axioma físico, A69 el traslado a las
+ideas que Spinoza autoriza por el Ax. I.4.
+
+**(c) Un patrón en lo que se cae.** Tres de los cinco axiomas del
+batch pierden una cláusula de **conteo** al entrar, y dos
+proposiciones también: el *ita ut … diversimode* de A68, el
+*plurimis* de A70, el *eo aptior quo … pluribus modis* de la Prop.
+XIV, el *plurimorum* del cor. I de la Prop. XVI. Es el mismo obstáculo
+de cardinalidad que deja parcial el *infinitis attributis* de la Def.
+VI (GAP-8a) y que ya se llevó el *multis modis* del Ax. IV en el batch
+1.4. **El material físico de la Pars II es denso en lenguaje de
+cantidad y nada de eso está mecanizado** — vale la pena decirlo una
+vez en vez de repetirlo proposición por proposición.
+
+**(d) Dos sentidos de *affectio*, y el registro los separa.** La Def.
+V de la Pars I lee los modos como "*substantiæ affectiones*", lo que
+invita al puente `Mode x → affectio x g`. Ese puente es
+**inconsistente con A65** (una mente percibe solo afecciones de su
+propio objeto): si todo modo fuera afección de Dios, cualquier
+afección que una mente percibiera testificaría a Dios como su objeto,
+y la Prop. XIII colapsaría. Luego la *affectio* de las Props. XII–XVI
+**no es** la *affectio substantiæ* de la Def. V — y eso queda
+demostrado, no supuesto.
+
 ---
 
 ## Resumen numérico del estado (rama `pars1-extensions`)
@@ -604,21 +668,21 @@ impone al modelo, del mismo tipo que el `Int` del hallazgo 12(c).
   del tipado, no de los axiomas).
 - **Capa nueva `Ethica/Attributum/`**: 5 módulos; GAP-25 y GAP-8a
   cerrados; Def. VI recuperada; Pars II desbloqueada.
-- **Pars II en marcha**: 12/49 proposiciones (I, II, III, V, VI, VII,
-  VIII, IX, X, XI, XII, XIII) más siete corolarios y el resultado de
-  dos atributos que la conjunción I+II entrega. Axiomas A45–A67; A6
-  de Spinoza promovido tras estar como `True` desde v1.0.0, y cuatro
-  de los cinco axiomas propios de la Pars II entrados por fin (el
-  quinto es redundante — hallazgo 13). **A51–A55 son todos de Sección
-  II**; de A56–A59 solo A59 es de Sección III, y no es contenido nuevo
-  sino A42 sobre un predicado que sí se satisface; **A60–A67 no
-  añaden ni un compromiso de Sección III**. Cuatro de las siete
-  definiciones de la Pars II (I, II, III, V, VII) están mecanizadas y
-  tres de ellas **sin primitivo nuevo**. GAP-26 y GAP-27a cerrados; el
-  caveat del GAP-2 cumplido; GAP-27b, GAP-28, GAP-29 y el nuevo
-  GAP-30 abiertos con ruta.
-- **Total de la obra**: 41/259 proposiciones con contenido (29 de
-  Pars I + 12 de Pars II) — con la salvedad, ahora demostrada, de que
+- **Pars II en marcha**: 15/49 proposiciones (I, II, III, V, VI, VII,
+  VIII, IX, X, XI, XII, XIII, XIV, XV, XVI) más nueve corolarios y el
+  resultado de dos atributos que la conjunción I+II entrega. Axiomas
+  A45–A72; A6 de Spinoza promovido tras estar como `True` desde
+  v1.0.0, cuatro de los cinco axiomas propios de la Pars II entrados
+  (el quinto es redundante — hallazgo 13) y las dos primeras piezas de
+  la **digresión física** (su Ax. I y su Postulado I). **A51–A55,
+  A60–A67 y A68–A72 no añaden ni un compromiso de Sección III**; de
+  A56–A59 solo A59, y no es contenido nuevo sino A42 sobre un
+  predicado que sí se satisface. Cinco de las siete definiciones de la
+  Pars II (I, II, III, V, VII) mecanizadas, tres de ellas **sin
+  primitivo nuevo**. GAP-26, GAP-27a y GAP-30 cerrados; el caveat del
+  GAP-2 cumplido; GAP-27b, GAP-28 y GAP-29 abiertos con ruta.
+- **Total de la obra**: 44/259 proposiciones con contenido (29 de
+  Pars I + 15 de Pars II) — con la salvedad, ahora demostrada, de que
   una de las 29 de Pars I (la XXVIII) es vacua en su propio registro.
 - `lake build` limpio, **0 `sorry`**, **0 `axiom`**, ninguna
   declaración de v1.0.0 modificada. El gate de CI ahora verifica

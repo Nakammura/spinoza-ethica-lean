@@ -44,6 +44,7 @@ import Ethica.Pars2.Idea
 import Ethica.Pars2.Quatenus
 import Ethica.Pars2.Parallelismus
 import Ethica.Pars2.Mens
+import Ethica.Pars2.Corpus
 import Ethica.Pars2.Models.MensWitness
 
 -- Future Pars (stubs):

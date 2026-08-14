@@ -1,14 +1,21 @@
 /-
-  Spinoza, *Ethica* Pars II — consistency witness for all four layers
-  built so far (batches 1.1 to 1.4).
+  Spinoza, *Ethica* Pars II — consistency witness for all five layers
+  built so far (batches 1.1 to 1.5).
 
-  Carries a full `MensAxioms` instance on one carrier:
+  Carries a full `CorpusAxioms` instance on one carrier:
   `Pars1Axioms` (A1–A15) + `CausalAxioms` (A4ₛ, A5ₛ) +
   `InherenceAxioms` (A33–A36) + `ConsecutioAxioms` (A37–A43) +
   `AttrAxioms` (A10′/A12′/A14′/A15′) + `Pars2Axioms` (A45–A50) +
   `QuatenusAxioms` (A51–A55) + `ParallelismusAxioms` (A56–A59) +
-  `MensAxioms` (A60–A67). So no layer introduces a contradiction, and
-  Props. II.I–II.XIII are not vacuously true by explosion.
+  `MensAxioms` (A60–A67) + `CorpusAxioms` (A68–A72). So no layer
+  introduces a contradiction, and Props. II.I–II.XVI are not
+  vacuously true by explosion.
+
+  Note what is **not** instantiated: `MereologyAxioms`. The witness
+  carries `MereologyWorld`'s `properPart` as data, exactly as
+  `CorpusWorld` does, so A32 is absent and Pars I's
+  `prop_12_substanceIndivisible` is not in scope — which is why
+  `mens_prop_15` (the human mind *is* divisible) raises no conflict.
 
   **The carrier, and why it has three constructors.**
 
@@ -101,12 +108,14 @@ import Ethica.Pars1.Propositions
 import Ethica.Pars1.Realitas
 import Ethica.Pars1.Inherence
 import Ethica.Pars1.Consecutio
+import Ethica.Pars1.Mereology
 import Ethica.Attributum.Core
 import Ethica.Attributum.Axioms
 import Ethica.Pars2.Idea
 import Ethica.Pars2.Quatenus
 import Ethica.Pars2.Parallelismus
 import Ethica.Pars2.Mens
+import Ethica.Pars2.Corpus
 
 namespace Ethica.Pars2.Models.MensWitness
 
@@ -278,6 +287,37 @@ def mensHomo (x : MensThing) : Prop :=
 def mensAffectio (a b : MensThing) : Prop :=
   mensIndex a ≠ none ∧ b = mensPred a
 
+/-- The thing an idea is ultimately an idea *of*: strip the ideas and
+    keep what is left. `mensBase (idea (idea (res n))) = res n`. -/
+def mensBase : MensThing → MensThing
+  | .idea x => mensBase x
+  | x       => x
+
+/-- Parthood. A thing's proper part is its causal predecessor —
+    Spinoza's "*ab alia ejusdem naturæ*" read mereologically — and
+    every idea is additionally a proper part of God's infinite idea.
+
+    The second disjunct is what A72 (Prop. XI cor.'s *pars* clause)
+    needs; the first is what A70 and A71 (Postulate I and Prop. XV)
+    need. Note that `MereologyAxioms` is **not** instantiated here, so
+    `prop_12_substanceIndivisible` is not in scope and no conflict
+    with `mens_prop_15` (the mind *is* divisible) can arise. -/
+def mensProperPart (p x : MensThing) : Prop :=
+  p ≠ x ∧
+    (x = mensPred p ∨
+      (x = MensThing.idea MensThing.deus ∧
+        mensAttrOf p = some MensAttr.cogitatio))
+
+/-- Nature-involvement: `x` involves the nature of `y` exactly when
+    the base of `y` causes the base of `x`.
+
+    Reading the ideas away on both sides is what makes A69 (what a
+    thing involves, its idea involves) hold definitionally, and the
+    causal clause is what makes A68 (the physical Axioma I) hold on
+    real structure rather than on a constant. -/
+def mensInvolvit (x y : MensThing) : Prop :=
+  mensCause (mensBase y) (mensBase x)
+
 /-- Everything has an effect — by induction on the carrier. This is
     what discharges A43 (`ax_omnia_effectum`) **non-vacuously**; a
     one-element carrier gets A43 for free by reflexivity, this one
@@ -327,6 +367,65 @@ theorem mens_pred_cause (x : MensThing) (h : mensIndex x ≠ none) :
   | idea y ih => exact ih h
   | res n     => show (n : Int) < n + 1; omega
 
+/-! ### Facts about `mensBase`
+
+  Four small lemmas, and the last one is the only real induction in
+  this batch: causation survives stripping the ideas off both sides,
+  provided the effect is singular. That is what discharges A68's
+  second conjunct. -/
+
+/-- Stripping one idea changes nothing. -/
+theorem mens_base_idea (x : MensThing) :
+    mensBase (MensThing.idea x) = mensBase x := rfl
+
+/-- The base carries the singular index. -/
+theorem mens_base_index (x : MensThing) : mensIndex (mensBase x) = mensIndex x := by
+  induction x with
+  | deus      => rfl
+  | idea _ ih => exact ih
+  | res _     => rfl
+
+/-- A singular thing's base is a `res`. -/
+theorem mens_base_res (x : MensThing) (h : mensIndex x ≠ none) :
+    ∃ n : Int, mensBase x = MensThing.res n := by
+  induction x with
+  | deus      => exact absurd rfl h
+  | idea _ ih => exact ih h
+  | res n     => exact ⟨n, rfl⟩
+
+/-- `mensBase` commutes with `mensPred`. -/
+theorem mens_base_pred (x : MensThing) :
+    mensBase (mensPred x) = mensPred (mensBase x) := by
+  induction x with
+  | deus      => rfl
+  | idea _ ih => exact ih
+  | res _     => rfl
+
+/-- **Causation survives stripping the ideas**, when the effect is
+    singular. The one genuine induction of batch 1.5; it is what makes
+    `mensInvolvit` satisfy A68 rather than needing a constant. -/
+theorem mens_cause_base : ∀ a e : MensThing, mensIndex a ≠ none →
+    mensCause e a → mensCause (mensBase e) (mensBase a) := by
+  intro a
+  induction a with
+  | deus => intro _ hidx _; exact absurd rfl hidx
+  | res _ =>
+      intro e _ h
+      cases e with
+      | deus   => trivial
+      | idea _ => exact h.elim
+      | res _  => exact h
+  | idea a' ih =>
+      intro e hidx h
+      cases e with
+      | deus =>
+          obtain ⟨n, hn⟩ := mens_base_res a' hidx
+          show mensCause MensThing.deus (mensBase a')
+          rw [hn]
+          trivial
+      | idea e' => exact ih e' hidx h
+      | res _   => exact h.elim
+
 /-! ## The world -/
 
 /-- The full world instance: Pars I's thirteen primitives, the
@@ -348,7 +447,7 @@ theorem mens_pred_cause (x : MensThing) (h : mensIndex x ≠ none) :
     single-valued, so each mode refuses every attribute but its own.
     Batch 1.2's witness could only exhibit the refusal of `extensio`;
     this one exhibits the refusal of `cogitatio` as well. -/
-instance mensWorld : MensWorld MensThing MensAttr where
+instance corpusWorld : CorpusWorld MensThing MensAttr where
   -- EthicaWorld (Pars I, `Definitions.lean`)
   inItself                    x     := x = MensThing.deus
   perSeConceived              x     := x = MensThing.deus
@@ -397,6 +496,10 @@ instance mensWorld : MensWorld MensThing MensAttr where
   Homo                              := mensHomo
   mensHominis                 m h   := mensHomo h ∧ m = MensThing.idea h
   affectio                          := mensAffectio
+  -- MereologyWorld (`Ethica/Pars1/Mereology.lean`) — data only, no A32
+  properPart                        := mensProperPart
+  -- CorpusWorld (`Ethica/Pars2/Corpus.lean`)
+  involvitNaturam                   := mensInvolvit
 
 /-- `deus` is a substance; nothing else is. -/
 theorem mens_substance_iff (x : MensThing) :
@@ -468,6 +571,15 @@ theorem mens_homo_res (x : MensThing) (h : mensHomo x) :
   | idea _ => exact MensAttr.noConfusion (Option.some.inj h.1)
   | res n  => exact ⟨n, rfl, h.2⟩
 
+/-- Anything that is a mode of extension is a `res`. -/
+theorem mens_attrOf_extensio_res (x : MensThing)
+    (h : mensAttrOf x = some MensAttr.extensio) :
+    ∃ n : Int, x = MensThing.res n := by
+  cases x with
+  | deus   => exact Option.noConfusion h
+  | idea _ => exact MensAttr.noConfusion (Option.some.inj h)
+  | res n  => exact ⟨n, rfl⟩
+
 /-- Hence a man is singular. -/
 theorem mens_homo_index (x : MensThing) (h : mensHomo x) :
     mensIndex x ≠ none := by
@@ -512,7 +624,7 @@ theorem mens_ideaDei_non_singularis :
       `mens_singularis_of_index`), and **A59** (needs
       `mens_pred_cause`, and with it the `Int` index — on `Nat` the
       axiom would be false in this model). -/
-instance mensAxioms : MensAxioms MensThing MensAttr where
+instance corpusAxioms : CorpusAxioms MensThing MensAttr where
   -- Pars1Axioms (A1–A15)
   ax1_inItselfOrInAnother                  := mens_deus_or_not
   ax1_exclusive                    _ h     := h.2 h.1
@@ -677,6 +789,52 @@ instance mensAxioms : MensAxioms MensThing MensAttr where
     subst hix
     exact ⟨rfl, Or.inr (congrArg MensThing.idea haff.2)⟩
   ax_mode_has_attribute x hm := mens_attrOf_isSome x hm.1
+  -- CorpusAxioms (A68–A72)
+  ax2_affectio_ex_utraque_natura := by
+    intro a b e haff hcause
+    obtain ⟨hidx, hbp⟩ := haff
+    refine ⟨?_, mens_cause_base a e hidx hcause⟩
+    subst hbp
+    show mensCause (mensBase (mensPred a)) (mensBase a)
+    rw [mens_base_pred]
+    refine mens_pred_cause (mensBase a) ?_
+    rw [mens_base_index]
+    exact hidx
+  ax_idea_involvit_naturam := by
+    intro x y i hxy hi
+    subst hi
+    exact hxy
+  ax2_corpus_humanum_compositum := by
+    intro b hb
+    obtain ⟨n, hn⟩ := mens_attrOf_extensio_res b hb
+    subst hn
+    refine ⟨MensThing.res (n - 1), fun hc => ?_, Or.inl ?_⟩
+    · have := MensThing.res.inj hc
+      omega
+    · show MensThing.res n = MensThing.res (n - 1 + 1)
+      congr 1
+      omega
+  ax_idea_partis_pars_ideae := by
+    intro b p ip ib hb hpart hip hib
+    subst hip
+    subst hib
+    obtain ⟨n, hn⟩ := mens_attrOf_extensio_res b hb
+    subst hn
+    rcases hpart.2 with hd | hd
+    · exact ⟨fun hc => hpart.1 (MensThing.idea.inj hc),
+        Or.inl (congrArg MensThing.idea hd)⟩
+    · exact MensThing.noConfusion hd.1
+  ax_mens_pars_intellectus_dei := by
+    intro h m g ig hh hm hgod hig
+    obtain ⟨_, hme⟩ := hm
+    subst hme
+    have hg : g = MensThing.deus := hgod.1.1
+    subst hg
+    subst hig
+    obtain ⟨n, hn, _⟩ := mens_homo_res h hh
+    subst hn
+    exact ⟨fun hc => MensThing.noConfusion (MensThing.idea.inj hc),
+      Or.inr ⟨rfl, rfl⟩⟩
 
 /-! ## The results -/
 
@@ -914,6 +1072,53 @@ theorem mens_corpus_selective :
     Corpus (Attr := MensAttr) (MensThing.res 0) ∧
       ¬ Corpus (Attr := MensAttr) (MensThing.idea (MensThing.res 0)) :=
   ⟨rfl, fun h => MensAttr.noConfusion (Option.some.inj h)⟩
+
+/-! ### Batch 1.5's results, applied -/
+
+/-- **Prop. II.XV**: the mind of `res 0` is not simple — it has a
+    proper part, namely the idea of a part of his body. -/
+theorem mens_prop_15 : Divisible (MensThing.idea (MensThing.res 0)) :=
+  prop_2_15_mensNonSimplex (Attr := MensAttr)
+    (MensThing.res 0) (MensThing.idea (MensThing.res 0)) (MensThing.res 0)
+    mens_homo_zero mens_mens_zero rfl
+
+/-- **Prop. II.XI cor., full form** — GAP-30's result, instantiated:
+    the human mind is a proper part of God's infinite idea. -/
+theorem mens_prop_11_cor_pars :
+    MereologyWorld.properPart (MensThing.idea (MensThing.res 0))
+      (MensThing.idea MensThing.deus) :=
+  (prop_2_11_cor_mensParsIntellectusDei (Attr := MensAttr)
+    MensThing.deus (MensThing.idea MensThing.deus) mens_deus_isGod_pars1 rfl
+    (MensThing.res 0) (MensThing.idea (MensThing.res 0))
+    mens_homo_zero mens_mens_zero).2.2.2
+
+/-- **Prop. II.XVI on a real affection**: `res (-1)` is an affection
+    of the body `res 0` caused by the external body `res 5`, and its
+    idea involves the nature of both. Non-vacuous — `mensInvolvit` is
+    a causal relation here, not a constant. -/
+theorem mens_prop_16 :
+    CorpusWorld.involvitNaturam (Attr := MensAttr)
+        (MensThing.idea (MensThing.res (-1))) (MensThing.res 0) ∧
+      CorpusWorld.involvitNaturam (Attr := MensAttr)
+        (MensThing.idea (MensThing.res (-1))) (MensThing.res 5) :=
+  prop_2_16_ideaAffectionisUtramqueNaturam (Attr := MensAttr)
+    (MensThing.res (-1)) (MensThing.res 0) (MensThing.res 5)
+    (MensThing.idea (MensThing.res (-1)))
+    ⟨fun hc => Option.noConfusion hc, by decide⟩
+    (show mensCause (MensThing.res 5) (MensThing.res (-1)) by
+      show (-1 : Int) < 5
+      omega)
+    rfl
+
+/-- `involvitNaturam` is **selective**: the idea of `res (-1)` does
+    not involve the nature of `res (-5)`, which nothing causes it
+    from. So Prop. XVI is a claim with content here. -/
+theorem mens_involvit_selective :
+    ¬ CorpusWorld.involvitNaturam (Attr := MensAttr)
+        (MensThing.idea (MensThing.res (-1))) (MensThing.res (-5)) := by
+  show ¬ mensCause (MensThing.res (-5)) (MensThing.res (-1))
+  show ¬ ((-1 : Int) < -5)
+  omega
 
 /-! ## Sanity checks -/
 

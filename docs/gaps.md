@@ -1576,7 +1576,43 @@ the commitment. (b) is cheap and would also make `properPart`
 available to Pars II's individuation machinery, which Props.
 XIV–XXXI will need for the composite bodies of the *lemmata*.
 
-**Status**: ⏳ open. Cross-references GAP-29.
+**Status**: ✅ **closed (batch 1.5)** — and the obstacle turned out to
+be misdiagnosed.
+
+`MereologyWorld` is a **data** class; `MereologyAxioms` is a separate
+`Prop` class. Taking the first without the second is resolution path
+(b), and it costs nothing at all:
+
+```lean
+class CorpusWorld (Thing : Type u) (Attr : outParam (Type v))
+    extends MensWorld Thing Attr, MereologyWorld Thing where
+  involvitNaturam : Thing → Thing → Prop
+```
+
+A32 is not imported, `prop_12_substanceIndivisible` is not in scope,
+and `properPart` is. The `EthicaWorld` diamond resolves the same way
+`Pars2World`'s did, by `Attr` being an `outParam`. The *pars* clause
+is then **A72**, and `prop_2_11_cor_mensParsIntellectusDei`
+(`Pars2/Corpus.lean`) states the corollary in full.
+
+**Why A72 rather than a derivation.** The natural route runs through
+`comprehensaIn` plus a bridge `comprehensaIn i j → i ≠ j →
+properPart i j`. Two things block it: A56 gives containment in God's
+infinite idea only for the ideas of things that do *not* endure, and
+the mind of a living man endures; and the bridge is not innocent,
+since `comprehensaIn` is also A66's relation for affections, where
+parthood is not obviously right. Committing the corollary's own
+sentence is the smaller claim.
+
+**Bonus finding — two senses of *affectio*.** Pars I Def. V reads
+modes as "*substantiæ affectiones*", which invites the bridge
+`Mode x → affectio x g`. That bridge is **inconsistent with A65** (a
+mind perceives affections of its own object only): if every mode were
+an affection of God, every affection a mind perceives would witness
+God as its object, collapsing Prop. XIII. So the `affectio` of Props.
+XII–XVI is provably *not* Def. V's *affectio substantiæ*. Recorded
+here rather than as a new gap, since nothing needs the
+identification.
 
 ---
 

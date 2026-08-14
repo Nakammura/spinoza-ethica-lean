@@ -2803,6 +2803,199 @@ the same coin.
 
 ---
 
+# Composite-body-layer auxiliary axioms (A68–A72)
+
+Introduced by `Ethica/Pars2/Corpus.lean` (batch 1.5: Props. II.XIV,
+XV, XVI with its first corollary, and the completion of Prop. XI's
+corollary). All live in `CorpusAxioms`, which extends `MensAxioms`.
+
+**All five are Section II.** Three come from the **physical
+digression** Spinoza inserts after Prop. XIII — the first material
+from that digression to enter the register:
+
+| | Latin | Field |
+|---|---|---|
+| Ax. I (after Lemma III cor.) | *Omnes modi quibus corpus aliquod ab alio afficitur corpore, ex natura corporis affecti et simul ex natura corporis afficientis sequuntur* | A68 |
+| Postulatum I | *Corpus humanum componitur ex plurimis … individuis* | A70 |
+
+**GAP-30 closed at zero cost, by correcting a misdiagnosis.**
+`CorpusWorld` extends `MereologyWorld Thing` as well as `MensWorld`.
+Batch 1.4 had deferred the *pars* clause of Prop. XI's corollary
+because it read importing `MereologyWorld` as importing A32 (a
+Section III commitment about the indivisibility of substance). They
+are not a package: `MereologyWorld` is a **data** class,
+`MereologyAxioms` a separate `Prop` class, and taking the first
+without the second gives `properPart` for nothing. The `EthicaWorld`
+diamond resolves the same way `Pars2World`'s did.
+
+**A recurring shape in what is dropped.** Three of the five axioms
+shed a *counting* clause on entry — A68's "*ita ut … diversimode*",
+A70's "*plurimis*", and (in the propositions) Prop. XIV's "*eo aptior
+quo … pluribus modis*" and Prop. XVI cor. I's "*plurimorum*". This is
+the same cardinality obstacle that leaves Def. VI's "*infinitis
+attributis*" partial (GAP-8a) and that dropped Ax. IV's "*multis
+modis*" in batch 1.4. Pars II's physical material is dense in
+quantity talk, and it is worth noting in one place that none of it is
+mechanised.
+
+Consistency witness for all five:
+`Ethica/Pars2/Models/MensWitness.lean`, which gains `properPart` and
+`involvitNaturam` and **does not** instantiate `MereologyAxioms`.
+
+---
+
+## A68 — An affection follows from both natures (Section II — Pars II, the Axioma I after Lemma III's corollary)
+
+**Lean signature**:
+```lean
+ax2_affectio_ex_utraque_natura :
+  ∀ a b e : Thing, affectio a b → CausalWorld.Cause e a →
+    involvitNaturam a b ∧ involvitNaturam a e
+```
+
+**Why we add it**: it is the physical digression's Axioma I,
+verbatim minus its tail, and Prop. XVI cites it by name ("*per axioma
+1 post corollarium lemmatis 3*"). Every mode by which one body is
+affected by another follows from the nature of the affected body
+**and** the nature of the affecting one.
+
+**Why `involvitNaturam` rather than `followsFrom`**: Spinoza's
+*sequuntur* here is a claim about what the affection's nature
+contains, whereas `followsFrom` (`Consecutio.lean`) is the God-to-mode
+consecution relation A37/A38 govern, tied to `inheresIn` and to
+Prop. I.XVI. Routing a physical claim through it would import the
+whole Pars I consecution apparatus into the digression for no gain.
+
+**Dropped**: the *ita ut* tail — "*ut unum idemque corpus diversimode
+moveatur pro diversitate naturæ corporum moventium*" — a claim about
+variation, hence about counting.
+
+**Commentary**: Bennett 1984 §22 treats this axiom as the whole
+physical content of Spinoza's account of interaction, and notes that
+it is symmetric in a way Spinoza never exploits: the affection
+involves both natures equally, and nothing privileges the affected
+body. Prop. XVI cor. II is where Spinoza would need the asymmetry,
+and it is exactly the corollary we cannot mechanise.
+
+**Used by**: `prop_2_16_ideaAffectionisUtramqueNaturam`.
+
+---
+
+## A69 — What a thing involves, its idea involves (Section II — Prop. XVI's *demonstratio*)
+
+**Lean signature**:
+```lean
+ax_idea_involvit_naturam :
+  ∀ x y i : Thing, involvitNaturam x y → ideaOf i x → involvitNaturam i y
+```
+
+**Why we add it**: Prop. XVI's second step is "*quare eorum idea (per
+axioma 4 partis I) utriusque corporis naturam necessario involvet*".
+A4ₛ states the intelligibility form of Ax. I.4 for the
+`Cause`/`intelligibleThrough` pair; this is the nature-involving form
+the *demonstratio* actually uses.
+
+It is a **transfer principle**, not a content claim: whatever natures
+a thing involves, its idea involves the same ones. Nothing is added
+about *which* natures anything involves.
+
+**Used by**: `prop_2_16_ideaAffectionisUtramqueNaturam`.
+
+---
+
+## A70 — The human body has proper parts (Section II — Pars II, Postulatum I)
+
+**Lean signature**:
+```lean
+ax2_corpus_humanum_compositum :
+  ∀ b : Thing, Corpus (Attr := Attr) b → ∃ p : Thing, MereologyWorld.properPart p b
+```
+
+**Why we add it**: Spinoza's Postulatum I — *Corpus humanum
+componitur ex plurimis (diversæ naturæ) individuis quorum unumquodque
+valde compositum est* — cited by Prop. XV. The first *postulatum* to
+enter the register.
+
+Only "*a* part" is entered. The "*plurimis*" and the recursive
+"*quorum unumquodque valde compositum*" are counting claims, and
+Prop. XV's conclusion (the mind is not simple) needs one part.
+
+**Section II, not I**: Spinoza marks the physical digression's
+postulates as empirical in the same way Ax. II (*Homo cogitat*) and
+Ax. IV (*Nos corpus … sentimus*) are — they are things he asks the
+reader to grant about human bodies, not consequences of the geometry.
+
+**Used by**: `prop_2_15_mensNonSimplex`.
+
+---
+
+## A71 — The idea of a part is a part of the idea (Section II — Prop. XV's *demonstratio*)
+
+**Lean signature**:
+```lean
+ax_idea_partis_pars_ideae :
+  ∀ b p ip ib : Thing, Corpus (Attr := Attr) b →
+    MereologyWorld.properPart p b → ideaOf ip p → ideaOf ib b →
+      MereologyWorld.properPart ip ib
+```
+
+**Why we add it**: Prop. XV concludes "*idea corporis humani ex
+plurimis hisce partium componentium ideis est composita*" from "each
+part has an idea in God" plus Prop. VII. But the parallelism as
+mechanised relates **causal** orders, not part-whole ones — A50 and
+A55 say nothing about mereology. So the transfer from parthood among
+bodies to parthood among their ideas is entered as its own bridge.
+
+**Restricted to bodies, on purpose.** The unrestricted form is
+**false** in the consistency witness: A72 gives the human mind a
+parthood in God's infinite idea, and that parthood does not transfer
+up the idea ladder (nothing makes God's idea a part of the idea of
+God's idea). Whether the unrestricted form is *Spinoza's* the text
+does not settle — he states it of the body. The restriction is
+therefore honest rather than convenient, and it is recorded in the
+field's own docstring.
+
+**Used by**: `prop_2_15_mensNonSimplex`.
+
+---
+
+## A72 — The human mind is a proper part of God's infinite idea (Section II — Prop. XI cor.)
+
+**Lean signature**:
+```lean
+ax_mens_pars_intellectus_dei :
+  ∀ h m g ig : Thing, Homo h → mensHominis m h → IsGod g →
+    ideaOf ig g → MereologyWorld.properPart m ig
+```
+
+**Why we add it**: *Mentem humanam partem esse infiniti intellectus
+Dei.* Batch 1.4 derived every other clause of Prop. XI's corollary —
+the mind is a mode of thought (A58 + A54), the mind is in God
+(`prop_15_allInGod`) — and left "*pars*" open as **GAP-30**, because
+`properPart` was out of scope. It is in scope now, and this field
+supplies the clause. **Closes GAP-30.**
+
+**Why not derived.** The natural route is `comprehensaIn` plus a
+bridge `comprehensaIn i j → i ≠ j → properPart i j`. Two things block
+it. A56 gives containment in God's infinite idea only for the ideas
+of things that do **not** endure, and the mind of a living man
+endures. And the bridge is not innocent: `comprehensaIn` is also the
+relation A66 uses for affections, where reading containment as
+parthood is not obviously right. Committing the corollary's own
+sentence is the smaller claim.
+
+**Commentary**: Bennett 1984 §40 argues Spinoza's "*pars*" here is
+loose and does the work of the *quatenus* idiom — the corollary's own
+second half immediately glosses it as God having an idea "*quatenus
+humanæ mentis essentiam constituit*". On that reading A72 and GAP-29
+are the same commitment seen twice, and closing GAP-29 would make A72
+derivable. Curley 1969 ch. 4 takes the mereology literally. The
+formalisation records the parthood and takes no side.
+
+**Used by**: `prop_2_11_cor_mensParsIntellectusDei`.
+
+---
+
 ## Note on the extension classes
 
 The Attributum layer re-types the `Pars1Axioms` attribute axioms
