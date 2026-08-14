@@ -1,15 +1,14 @@
 /-
-  Spinoza, *Ethica* Pars II — consistency witness for the idea layer,
-  the *quatenus* layer and the *esse objectivum* layer (batches 1.1,
-  1.2 and 1.3).
+  Spinoza, *Ethica* Pars II — consistency witness for all four layers
+  built so far (batches 1.1 to 1.4).
 
-  Carries a full `ParallelismusAxioms` instance on one carrier:
+  Carries a full `MensAxioms` instance on one carrier:
   `Pars1Axioms` (A1–A15) + `CausalAxioms` (A4ₛ, A5ₛ) +
   `InherenceAxioms` (A33–A36) + `ConsecutioAxioms` (A37–A43) +
   `AttrAxioms` (A10′/A12′/A14′/A15′) + `Pars2Axioms` (A45–A50) +
-  `QuatenusAxioms` (A51–A55) + `ParallelismusAxioms` (A56–A59). So no
-  layer introduces a contradiction, and Props. II.I–II.IX are not
-  vacuously true by explosion.
+  `QuatenusAxioms` (A51–A55) + `ParallelismusAxioms` (A56–A59) +
+  `MensAxioms` (A60–A67). So no layer introduces a contradiction, and
+  Props. II.I–II.XIII are not vacuously true by explosion.
 
   **The carrier, and why it has three constructors.**
 
@@ -79,6 +78,21 @@
   There is no tension: the `Thing`-typed attribution channel is
   degenerate exactly as the collapse theorem forces, while the
   load-bearing attribute structure lives in `MensAttr`.
+
+  **Batch 1.4's additions.** `Homo` picks out the enduring `res n`;
+  the mind of `h` is `idea h`; and `a` is an affection of `b` exactly
+  when `b = mensPred a`. That last choice is forced by **A65** (a mind
+  perceives affections of its own object only): a looser reading of
+  `affectio` — "anything `b` causes" — satisfies A64 and A66 but
+  **falsifies** A65, because a mode has many effects and each would
+  then witness a different object. The witness therefore records
+  which of the two readings of *affectio* the register can afford.
+
+  `comprehensaIn` was widened for the same batch: an idea is now
+  comprehended in God's infinite idea (Prop. VIII) **or** in the idea
+  of what it is an affection of (Prop. IX cor., containment
+  register). The second disjunct is what makes A66 — and with it
+  Prop. XII — non-vacuous.
 -/
 import Ethica.Pars1.Definitions
 import Ethica.Pars1.Axioms
@@ -92,6 +106,7 @@ import Ethica.Attributum.Axioms
 import Ethica.Pars2.Idea
 import Ethica.Pars2.Quatenus
 import Ethica.Pars2.Parallelismus
+import Ethica.Pars2.Mens
 
 namespace Ethica.Pars2.Models.MensWitness
 
@@ -237,6 +252,32 @@ def mensPred : MensThing → MensThing
   | .idea x => .idea (mensPred x)
   | .res n  => .res (n + 1)
 
+/-- `mensPred` commutes with `idea`, as an equation — the clause that
+    keeps the parallelism intact at every rung, stated so proofs can
+    rewrite with it. -/
+theorem mens_pred_idea (x : MensThing) :
+    mensPred (MensThing.idea x) = MensThing.idea (mensPred x) := rfl
+
+/-- Who counts as a man here: an actually existing mode of extension.
+
+    Nothing in the register requires men to be extended things rather
+    than, say, ideas — `Homo` is a primitive precisely because the
+    register does not pin it down. This choice makes Props. X–XIII
+    non-vacuous, which is all a witness has to do. -/
+def mensHomo (x : MensThing) : Prop :=
+  mensAttrOf x = some MensAttr.extensio ∧ mensDurat x
+
+/-- Affections: `a` is an affection of `b` exactly when `b` is `a`'s
+    causal predecessor.
+
+    Each affection therefore belongs to **exactly one** thing, which
+    is what A65 (a mind perceives affections of its own object only)
+    needs. A looser reading — "anything `b` causes" — would satisfy
+    A64 and A66 but falsify A65, since a mode has many effects and
+    they would then witness many objects. -/
+def mensAffectio (a b : MensThing) : Prop :=
+  mensIndex a ≠ none ∧ b = mensPred a
+
 /-- Everything has an effect — by induction on the carrier. This is
     what discharges A43 (`ax_omnia_effectum`) **non-vacuously**; a
     one-element carrier gets A43 for free by reflexivity, this one
@@ -307,7 +348,7 @@ theorem mens_pred_cause (x : MensThing) (h : mensIndex x ≠ none) :
     single-valued, so each mode refuses every attribute but its own.
     Batch 1.2's witness could only exhibit the refusal of `extensio`;
     this one exhibits the refusal of `cogitatio` as well. -/
-instance parallelismusWorld : ParallelismusWorld MensThing MensAttr where
+instance mensWorld : MensWorld MensThing MensAttr where
   -- EthicaWorld (Pars I, `Definitions.lean`)
   inItself                    x     := x = MensThing.deus
   perSeConceived              x     := x = MensThing.deus
@@ -346,8 +387,16 @@ instance parallelismusWorld : ParallelismusWorld MensThing MensAttr where
   -- ParallelismusWorld (`Ethica/Pars2/Parallelismus.lean`)
   durat                             := mensDurat
   essentiaFormalisIn          x a   := mensAttrOf x = some a
+  -- An idea is comprehended in God's infinite idea (Prop. VIII), and
+  -- in the idea of whatever it is an affection of (Prop. IX cor.,
+  -- containment register — A66). Nothing else contains anything.
   comprehensaIn               i j   :=
-    mensAttrOf i = some MensAttr.cogitatio ∧ j = MensThing.idea MensThing.deus
+    mensAttrOf i = some MensAttr.cogitatio ∧
+      (j = MensThing.idea MensThing.deus ∨ j = mensPred i)
+  -- MensWorld (`Ethica/Pars2/Mens.lean`)
+  Homo                              := mensHomo
+  mensHominis                 m h   := mensHomo h ∧ m = MensThing.idea h
+  affectio                          := mensAffectio
 
 /-- `deus` is a substance; nothing else is. -/
 theorem mens_substance_iff (x : MensThing) :
@@ -407,6 +456,25 @@ theorem mens_singularis_iff_index (x : MensThing) :
     ResSingularis (Attr := MensAttr) x ↔ mensIndex x ≠ none :=
   ⟨mens_index_of_singularis x, mens_singularis_of_index x⟩
 
+/-! ### Men
+
+  `mensHomo` picks out exactly the enduring `res n`. -/
+
+/-- A man is an enduring singular thing of the `res` family. -/
+theorem mens_homo_res (x : MensThing) (h : mensHomo x) :
+    ∃ n : Int, x = MensThing.res n ∧ (0 : Int) ≤ n := by
+  cases x with
+  | deus   => exact Option.noConfusion h.1
+  | idea _ => exact MensAttr.noConfusion (Option.some.inj h.1)
+  | res n  => exact ⟨n, rfl, h.2⟩
+
+/-- Hence a man is singular. -/
+theorem mens_homo_index (x : MensThing) (h : mensHomo x) :
+    mensIndex x ≠ none := by
+  obtain ⟨n, hn, _⟩ := mens_homo_res x h
+  subst hn
+  exact fun hc => Option.noConfusion hc
+
 /-- **God's infinite idea is not a singular thing.** Prop. VIII
     compares the two containments precisely because they are
     different; a model in which `idea deus` counted as a *res
@@ -444,7 +512,7 @@ theorem mens_ideaDei_non_singularis :
       `mens_singularis_of_index`), and **A59** (needs
       `mens_pred_cause`, and with it the `Int` index — on `Nat` the
       axiom would be false in this model). -/
-instance parallelismusAxioms : ParallelismusAxioms MensThing MensAttr where
+instance mensAxioms : MensAxioms MensThing MensAttr where
   -- Pars1Axioms (A1–A15)
   ax1_inItselfOrInAnother                  := mens_deus_or_not
   ax1_exclusive                    _ h     := h.2 h.1
@@ -543,7 +611,7 @@ instance parallelismusAxioms : ParallelismusAxioms MensThing MensAttr where
     · intro _
       exact mens_attrOf_isSome x hx.1.1
     · intro _
-      exact ⟨rfl, rfl⟩
+      exact ⟨rfl, Or.inl rfl⟩
   ax_idea_durat_iff := by
     intro i x h
     subst h
@@ -558,6 +626,57 @@ instance parallelismusAxioms : ParallelismusAxioms MensThing MensAttr where
     have hidx := mens_index_of_singularis x hx
     exact ⟨mensPred x, mens_singularis_of_index _ (mens_pred_index x hidx),
       (mens_pred_ne x hidx).symm, mens_pred_cause x hidx⟩
+  -- MensAxioms (A60–A67)
+  ax2_hominis_essentia_non_involvit_existentiam := by
+    intro h hh hc
+    obtain ⟨n, hn, _⟩ := mens_homo_res h hh
+    subst hn
+    exact MensThing.noConfusion hc
+  ax2_homo_cogitat := by
+    intro h hh
+    exact ⟨MensThing.idea h, hh, rfl⟩
+  ax_mens_pertinet_ad_essentiam := by
+    intro h m _ hm
+    obtain ⟨_, hme⟩ := hm
+    subst hme
+    exact Iff.rfl
+  ax2_idea_natura_prior := by
+    intro h m hh hm
+    obtain ⟨_, hme⟩ := hm
+    subst hme
+    exact ⟨h, rfl, mens_singularis_of_index h (mens_homo_index h hh)⟩
+  ax2_corpus_affici_sentimus := by
+    intro h m hh hm
+    obtain ⟨_, hme⟩ := hm
+    subst hme
+    obtain ⟨n, hn, hnd⟩ := mens_homo_res h hh
+    subst hn
+    have hstep : MensThing.res (n - 1 + 1) = MensThing.res n := by
+      congr 1
+      omega
+    exact ⟨MensThing.res n, MensThing.res (n - 1), rfl, hnd,
+      ⟨fun hc => Option.noConfusion hc, hstep.symm⟩,
+      MensThing.idea (MensThing.res (n - 1)), rfl, rfl,
+      Or.inr (congrArg MensThing.idea hstep.symm)⟩
+  ax_mens_percipit_sui_objecti := by
+    intro h m x a b hh hm hx hperc haff
+    obtain ⟨_, hme⟩ := hm
+    subst hme
+    have hhx : h = x := MensThing.idea.inj hx
+    obtain ⟨i, hi, _, hdisj⟩ := hperc
+    subst hi
+    rw [mens_pred_idea] at hdisj
+    rcases hdisj with hd | hd
+    · obtain ⟨n, hn, _⟩ := mens_homo_res h hh
+      subst hn
+      exact MensThing.noConfusion (MensThing.idea.inj hd)
+    · exact haff.2.trans ((MensThing.idea.inj hd).symm.trans hhx)
+  ax_idea_affectionis_in_idea := by
+    intro a x i ix haff hi hix
+    subst hi
+    subst hix
+    exact ⟨rfl, Or.inr (congrArg MensThing.idea haff.2)⟩
+  ax_mode_has_attribute x hm := mens_attrOf_isSome x hm.1
 
 /-! ## The results -/
 
@@ -727,6 +846,74 @@ theorem mens_prop_9_cor :
 theorem mens_pars1_prop28_vacuous :
     ¬ ∃ x : MensThing, Mode x ∧ finitumInSuoGenere x :=
   pars1_prop_28_vacuous_for_modes
+
+/-! ### Batch 1.4's results, applied
+
+  `res 0` is a man; `idea (res 0)` is his mind; `res (-1)` is an
+  affection of his body. Every hypothesis of Props. X–XIII is met, so
+  none of them holds here by an empty antecedent. -/
+
+/-- `res 0` is a man in this model. -/
+theorem mens_homo_zero : MensWorld.Homo (Attr := MensAttr) (MensThing.res 0) :=
+  ⟨rfl, mens_res_zero_durat⟩
+
+/-- …and `idea (res 0)` is his mind. -/
+theorem mens_mens_zero :
+    MensWorld.mensHominis (Attr := MensAttr)
+      (MensThing.idea (MensThing.res 0)) (MensThing.res 0) :=
+  ⟨mens_homo_zero, rfl⟩
+
+/-- **Prop. II.X on a real man**: `res 0` is not a substance. Not
+    vacuous — `mens_homo_zero` shows the hypothesis is met, and
+    `mens_substance_iff` shows `Substance` is a relation that
+    genuinely holds of something here (namely `deus`). -/
+theorem mens_prop_10 : ¬ Substance (MensThing.res 0) :=
+  prop_2_10_substantiaNonConstituitHominem (Attr := MensAttr)
+    (MensThing.res 0) mens_homo_zero
+
+/-- **Prop. II.X cor.**: he is a mode, and a mode of an attribute. -/
+theorem mens_prop_10_cor :
+    Mode (MensThing.res 0) ∧
+      ∃ a : MensAttr, QuatenusWorld.modeUnder (MensThing.res 0) a :=
+  prop_2_10_cor_essentiaHominisModis MensThing.deus mens_deus_isGod_pars1
+    (MensThing.res 0) mens_homo_zero
+
+/-- **Prop. II.XI**: his mind is the idea of a singular, actually
+    existing thing. -/
+theorem mens_prop_11 :
+    ∃ x : MensThing,
+      Pars2World.ideaOf (MensThing.idea (MensThing.res 0)) x ∧
+        ResSingularis (Attr := MensAttr) x ∧ ParallelismusWorld.durat x :=
+  prop_2_11_mensEstIdeaReiSingularis (Attr := MensAttr)
+    (MensThing.res 0) (MensThing.idea (MensThing.res 0))
+    mens_homo_zero mens_mens_zero mens_res_zero_durat
+
+/-- **Prop. II.XII on a real affection**: `res (-1)` is an affection
+    of `res 0`, and the mind perceives it. -/
+theorem mens_prop_12 :
+    percipit (Attr := MensAttr)
+      (MensThing.idea (MensThing.res 0)) (MensThing.res (-1)) :=
+  prop_2_12_quicquidInObjectoPercipitur (Attr := MensAttr)
+    (MensThing.res 0) (MensThing.idea (MensThing.res 0))
+    (MensThing.res 0) (MensThing.res (-1))
+    mens_homo_zero mens_mens_zero rfl
+    ⟨fun hc => Option.noConfusion hc, by decide⟩
+
+/-- **Prop. II.XIII**: the object of his mind is an actually existing
+    body. -/
+theorem mens_prop_13 :
+    Corpus (Attr := MensAttr) (MensThing.res 0) ∧
+      ParallelismusWorld.durat (MensThing.res 0) :=
+  prop_2_13_objectumMentisEstCorpus (Attr := MensAttr)
+    (MensThing.res 0) (MensThing.idea (MensThing.res 0)) (MensThing.res 0)
+    mens_homo_zero mens_mens_zero rfl
+
+/-- `Corpus` is a **selective** predicate here, so Prop. XIII says
+    something: bodies are the `res`, and no idea is one. -/
+theorem mens_corpus_selective :
+    Corpus (Attr := MensAttr) (MensThing.res 0) ∧
+      ¬ Corpus (Attr := MensAttr) (MensThing.idea (MensThing.res 0)) :=
+  ⟨rfl, fun h => MensAttr.noConfusion (Option.some.inj h)⟩
 
 /-! ## Sanity checks -/
 

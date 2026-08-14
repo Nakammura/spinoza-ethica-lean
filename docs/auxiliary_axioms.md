@@ -1964,12 +1964,19 @@ things forces `j ≠ i` among their ideas precisely because an idea
 has at most one object. Without A45 the regress could revisit the
 same idea and "*et sic in infinitum*" would not follow.
 
+Also `prop_2_13_objectumUnicum` (`Pars2/Mens.lean`, batch 1.4) — the
+"*et nihil aliud*" of Prop. II.XIII. There A45 does something
+stronger than help: it makes **Spinoza's Axioma V redundant**, since
+the uniqueness he argues for through Prop. I.XXXVI, Prop. XII and an
+empirical premise is analytic once an idea has at most one object.
+See the human-mind-layer preamble below.
+
 Recorded for the history: batches 1.1 and 1.2 both left A45
 **unconsumed** (Props. V–VI turn on `modeUnder`/`causeUnder`, not on
 ideatum uniqueness), and this entry said so, on the ground that an
 unused axiom is a claim the project carries without earning. It is
-earned now. The stronger correspondence reading remains for the
-adequacy machinery of batch 1.5.
+earned twice over now. The stronger correspondence reading remains
+for the adequacy machinery of the cognition batch.
 
 ---
 
@@ -2491,6 +2498,308 @@ undisturbed, and is why A59 is Section III rather than II.
 
 **Used by**: `prop_2_9_ideaSingularisAbAliaIdea`, hence
 `prop_2_9_cor_nullaPrimaIdea`.
+
+---
+
+# Human-mind-layer auxiliary axioms (A60–A67)
+
+Introduced by `Ethica/Pars2/Mens.lean` (batch 1.4: Props. II.X–XIII
+with three corollaries). All live in `MensAxioms`, which extends
+`ParallelismusAxioms`.
+
+**Seven Section II, one Section I, none Section III.** And five of
+the eight are not reconstructions at all — they are **Spinoza's own
+axiomata of Pars II**, entered here for the first time:
+
+| | Latin | Field |
+|---|---|---|
+| Ax. I | *Hominis essentia non involvit necessariam existentiam* | A60 |
+| Ax. II | *Homo cogitat* | A61 |
+| Ax. III | *Modi cogitandi … idea natura prior est* | A63 |
+| Ax. IV | *Nos corpus quoddam multis modis affici sentimus* | A64 |
+| Ax. V | *Nullas res singulares præter corpora et cogitandi modos sentimus* | **not entered** |
+
+Pars I's seven axiomata were in the register from the start. Pars
+II's five had never been entered, which is why Props. X–XIII could
+not be attempted before this batch.
+
+**Axioma V is redundant.** Its only job in Pars II is to secure the
+"*et nihil aliud*" of Prop. XIII, and Spinoza's route to that clause
+runs through Prop. I.XXXVI and Prop. XII: a second object of the mind
+would have some effect, of which we would then have an idea, "*atqui
+per axioma 5 nulla ejus idea datur*". On our reading of his **Axioma
+VI** (A45 — an idea has at most one object) the clause is analytic:
+the mind is one idea, so it has one object. See
+`prop_2_13_objectumUnicum`. The redundancy is exhibited by a theorem,
+not asserted, and it is a small result about the *Ethica*'s own
+economy rather than a formalisation shortcut.
+
+**Three notions that looked like primitives are definitions.**
+`Pars2/Mens.lean` also supplies
+
+```lean
+Corpus b                ≝ modeUnder b extensio            -- Pars II Def. I
+pertinetAdEssentiam m x ≝ (durat m ↔ durat x)             -- Pars II Def. II
+percipit m a            ≝ ∃ i, ideaOf i a ∧ comprehensaIn i m
+```
+
+each built from machinery an earlier batch already paid for
+(`modeUnder` from 1.2, `durat` and `comprehensaIn` from 1.3). The
+third is Spinoza's own gloss on Prop. XII — "*id ab humana mente
+debet percipi **sive ejus rei dabitur in mente necessario idea***".
+Only `Homo`, `mensHominis` and `affectio` are new primitives, and
+`mensHominis` is deliberately *not* defined as "the idea of the
+body": that identification is Prop. XIII's content, and defining it
+away would turn the proposition into a tautology.
+
+Consistency witness for all eight:
+`Ethica/Pars2/Models/MensWitness.lean`, in which `res 0` is a man,
+`idea (res 0)` is his mind, and `res (-1)` is an affection of his
+body — so every hypothesis of Props. X–XIII is met.
+
+---
+
+## A60 — *Hominis essentia non involvit necessariam existentiam* (Section II — Pars II, Axioma I)
+
+**Lean signature**:
+```lean
+ax2_hominis_essentia_non_involvit_existentiam :
+  ∀ h : Thing, Homo h → ¬ EthicaWorld.natureRequiresExistence h
+```
+
+**Why we add it**: it is Spinoza's Axioma I of Pars II, verbatim. The
+choice of predicate is the substantive part: `natureRequiresExistence`
+is what Prop. I.VII's corollary (`prop_7_natureRequiresExistence`)
+establishes of substances, so entering man's axiom on the same
+predicate is what lets Prop. X be a two-line derivation. Setting the
+two side by side *is* Spinoza's *demonstratio*.
+
+**Commentary**: the axiom is Spinoza's concession that particular
+human beings are contingent — "*it may or may not be the case that
+this or that man exists*". Bennett 1984 §38 notes that it is the only
+place in the *Ethica* where contingency of a finite thing is asserted
+outright rather than derived, and reads it as an empirical
+placeholder. That is exactly the status an axiom has here.
+
+**Used by**: `prop_2_10_substantiaNonConstituitHominem`.
+
+---
+
+## A61 — *Homo cogitat* (Section II — Pars II, Axioma II)
+
+**Lean signature**:
+```lean
+ax2_homo_cogitat : ∀ h : Thing, Homo h → ∃ m : Thing, mensHominis m h
+```
+
+**Why we add it**: two words in the Latin, and Spinoza offers no
+gloss. What Prop. XI's *demonstratio* uses it for is that a man's
+essence is constituted by modes **of thinking**, so the minimal
+content is that a man has a mind at all. That is what is entered; the
+"of thinking" half is *derived*, from A63 plus A54, rather than
+assumed.
+
+**Commentary**: A46's entry above already flagged this axiom, as the
+empirical premise Spinoza leans on for Prop. II.I (*Cogitatio
+attributum Dei est*), and declined to import it there — committing
+A46's conclusion directly instead. Here it is imported, but for its
+own proposition and as the axiom Spinoza states, not as a hidden step
+in someone else's *demonstratio*. The distinction is the whole point
+of the Section I/II/III taxonomy.
+
+**Used by**: `prop_2_13_cor_homoMenteEtCorpore`.
+
+---
+
+## A62 — A man's mind pertains to his essence (Section II — Pars II Def. II applied)
+
+**Lean signature**:
+```lean
+ax_mens_pertinet_ad_essentiam :
+  ∀ h m : Thing, Homo h → mensHominis m h → pertinetAdEssentiam m h
+```
+
+**Why we add it**: Prop. X's corollary establishes that a man's
+essence is constituted by modes; Ax. II says one of them is his mind;
+Def. II says what "pertains to the essence" means (`durat m ↔ durat
+h`). This field is the three put together.
+
+**Spinoza does not write this sentence**, and that is worth stating
+plainly: A62 is a **composition** of three things he does write, not
+a quotation. It is Section II rather than Section III because each
+component is his, and because the composition is precisely the one
+Prop. XI's *demonstratio* performs in its opening clause ("*Essentia
+hominis … a certis Dei attributorum modis constituitur nempe … a
+modis cogitandi*").
+
+**Commentary**: Della Rocca 1996 ch. 3 reads Def. II as a
+reciprocal-dependence condition and notes that Spinoza applies it
+asymmetrically in practice. The biconditional form here is the
+symmetric reading; it is what Prop. XI needs, and nothing in this
+batch would be weakened by the asymmetric one.
+
+**Used by**: `prop_2_11_mensEstIdeaReiSingularis`,
+`prop_2_13_mensEstIdeaCorporisExistentis`.
+
+---
+
+## A63 — The mind is the idea of a singular thing (Section II — Pars II, Axioma III)
+
+**Lean signature**:
+```lean
+ax2_idea_natura_prior :
+  ∀ h m : Thing, Homo h → mensHominis m h →
+    ∃ x : Thing, ideaOf m x ∧ ResSingularis (Attr := Attr) x
+```
+
+**Why we add it**: Spinoza's Axioma III asserts the **priority of the
+idea** among modes of thinking — "*At idea potest dari quamvis nullus
+alius detur cogitandi modus*". Prop. XI turns that priority into "the
+first thing constituting the mind is an idea", and that is the first
+conjunct.
+
+The `ResSingularis x` conjunct carries Prop. XI's "*rei alicujus
+singularis*". Spinoza gets it by excluding the infinite case ("*At
+non rei infinitæ. Res namque infinita (per propositiones 21 et 22
+partis I) debet semper necessario existere; atqui hoc (per axioma 1
+hujus) est absurdum*"), an argument that routes through Props. I.XXI
+and I.XXII in the eternity/infinity vocabulary of `Consecutio.lean`,
+which does not connect to `ResSingularis` (batch 1.3's modal-layer
+predicate). Rather than fake the connection, the clause is folded
+into the axiom and the folding is recorded here.
+
+**What is deliberately *not* folded in**: actual existence. `durat x`
+is **derived** in `prop_2_11_mensEstIdeaReiSingularis`, from A62 and
+**A57** — and A57 is Prop. VIII's corollary, which is exactly what
+Spinoza cites at that step ("*At non idea rei non existentis. Nam tum
+(per corollarium propositionis 8 hujus) ipsa idea non potest dici
+existere*"). Batch 1.3 introduced `durat` for Prop. VIII; here it
+does the second job Spinoza wrote it for.
+
+**Used by**: `prop_2_11_mensEstIdeaReiSingularis`,
+`prop_2_11_cor_mensInDeo`, `prop_2_13_cor_homoMenteEtCorpore`.
+
+---
+
+## A64 — *Nos corpus quoddam multis modis affici sentimus* (Section II — Pars II, Axioma IV)
+
+**Lean signature**:
+```lean
+ax2_corpus_affici_sentimus :
+  ∀ h m : Thing, Homo h → mensHominis m h →
+    ∃ b a : Thing, Corpus (Attr := Attr) b ∧ durat b ∧
+      affectio a b ∧ percipit m a
+```
+
+**Why we add it**: Spinoza's Axioma IV, in the form Prop. XIII's
+*demonstratio* consumes it — "*atqui (per axioma 4 hujus) ideas
+affectionum corporis habemus*": the mind perceives an affection of
+some actually existing body.
+
+The plurality ("*multis modis*") is dropped. It is a claim about *how
+many* affections, and nothing in this batch counts them; one suffices
+for Prop. XIII. The same discipline A16's "*infinitis modis*" clause
+received in Pars I.
+
+**Commentary**: this is the most frankly empirical of Spinoza's five
+axioms — "we *feel*" — and Bennett 1984 §39 treats the pair Ax. II /
+Ax. IV as the *Ethica*'s only concession to first-person data.
+Curley 1969 ch. 4 reads Ax. IV instead as a summary of the
+*postulata* that follow Prop. XIII. Either way it is asserted, not
+argued, which is what Section II records.
+
+**Used by**: `prop_2_13_objectumMentisEstCorpus`.
+
+---
+
+## A65 — A mind perceives affections of its own object only (Section II — Prop. IX cor.'s *quatenus tantum*)
+
+**Lean signature**:
+```lean
+ax_mens_percipit_sui_objecti :
+  ∀ h m x a b : Thing, Homo h → mensHominis m h → ideaOf m x →
+    percipit m a → affectio a b → b = x
+```
+
+**Why we add it**: Prop. IX's corollary reads "*ejus datur in Deo
+cognitio **quatenus tantum** ejusdem objecti ideam habet*". Batch 1.3
+mechanised the positive half and left the *quatenus tantum* out,
+because relativising God to an individual idea rather than to an
+attribute is exactly what **GAP-29** tracks as missing. This field is
+that exclusion, stated where it is used (Prop. XIII's reductio)
+rather than where it is blocked.
+
+**This axiom exists only because a gap is open.** It is Section II —
+Spinoza writes the sentence — but it is *committed* rather than
+*derived* solely for want of the `causeQuaAffected` primitive GAP-29
+calls for. When GAP-29 closes, A65 should become a theorem and the
+register should shrink by one. It is the first axiom in the project
+whose existence is entirely attributable to an open gap, and it is
+flagged in GAP-29's own entry as such rather than being allowed to
+settle into the register unremarked.
+
+**Consistency note**: this axiom is what pins down the reading of
+`affectio` in the witness. If affections are read loosely — "anything
+`b` causes" — A64 and A66 still discharge but A65 becomes **false**,
+since a mode has many effects and each would witness a different
+object. `Models/MensWitness.lean` therefore defines `affectio a b` as
+`b = mensPred a`, one owner per affection. That constraint is
+invisible in the text and was found by building the model.
+
+**Used by**: `prop_2_13_objectumMentisEstCorpus`.
+
+---
+
+## A66 — The idea of an affection is comprehended in the idea of its object (Section II — Prop. IX cor., containment register)
+
+**Lean signature**:
+```lean
+ax_idea_affectionis_in_idea :
+  ∀ a x i ix : Thing, affectio a x → ideaOf i a → ideaOf ix x →
+    comprehensaIn i ix
+```
+
+**Why we add it**: Prop. IX's corollary says the knowledge of whatever
+happens in an object is in God in so far as he has that object's
+idea. Batch 1.3 could state that only up to the *quatenus* clause
+(GAP-29 again). `comprehensaIn` — the containment relation built for
+Prop. VIII — gives the reading Prop. XII actually needs: the idea of
+the affection sits **inside** the idea of the object.
+
+This is what makes Prop. XII a derivation rather than a commitment,
+and it is the only place outside Prop. VIII where batch 1.3's
+`comprehensaIn` does load-bearing work. Together with `percipit`'s
+definition it discharges both citations of Prop. XII's
+*demonstratio* (Prop. IX cor. and Prop. XI cor.).
+
+**Used by**: `prop_2_12_quicquidInObjectoPercipitur`.
+
+---
+
+## A67 — Every mode is a mode of some attribute (Section I — typing bridge)
+
+**Lean signature**:
+```lean
+ax_mode_has_attribute :
+  ∀ x : Thing, Mode x → ∃ a : Attr, modeUnder x a
+```
+
+**Why we add it**: Prop. I.XXV cor. reads particular things as "*Dei
+attributorum affectiones sive modi quibus Dei attributa certo et
+determinato modo exprimuntur*" — every mode expresses *some*
+attribute. Pars I mechanises the untyped half
+(`prop_25_cor_everythingGodOrMode`: everything is God or a mode);
+this bridges it to the `Attr`-typed `modeUnder` the Attributum layer
+introduced.
+
+**Section I, not II**: it makes no claim beyond the typing. Whatever
+the untyped `Mode` predicate holds of, the typed one holds of too,
+for some attribute. It is the same kind of statement as
+A10′/A12′/A14′/A15′ in the Attributum layer — a consequence of having
+moved attributes off the `Thing` universe in Fase 0, and payable in
+the same coin.
+
+**Used by**: `prop_2_10_cor_essentiaHominisModis`.
 
 ---
 

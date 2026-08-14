@@ -1520,6 +1520,64 @@ or not at all.
 
 **Status**: ⏳ open. Cross-references GAP-22.
 
+**Update (batch 1.4)** — *the gap now has a price tag*. Props. XII
+and XIII both route through the *quatenus tantum* clause, so batch
+1.4 had to enter its consequence as **A65**
+(`ax_mens_percipit_sui_objecti`: a mind perceives affections of its
+own object only). That is a Section II axiom — Spinoza writes the
+sentence — but it is committed rather than derived **solely** because
+GAP-29 is open. When GAP-29 closes, A65 should become a theorem and
+the register should shrink by one. This is the first axiom in the
+project whose existence is entirely attributable to an open gap, and
+it is worth naming as such rather than letting it settle into the
+register unremarked.
+
+---
+
+## GAP-30 — Prop. II.XI cor.'s "*pars infiniti intellectus Dei*"
+
+**Location**: `Ethica/Pars2/Mens.lean`, `prop_2_11_cor_mensInDeo`.
+
+**Issue**: Prop. XI's corollary says the human mind is a **part** of
+God's infinite intellect ("*mentem humanam partem esse infiniti
+intellectus Dei*"). What is mechanised is that the mind is a mode of
+thought and that it is *in* God — the localisation Prop. I.XV
+supplies, which is the same route Prop. II.III's *in Deo* clause took
+in batch 1.2. Parthood proper is not mechanised.
+
+**Why it is not simply done**: this project *has* a mereological
+layer. `Ethica/Pars1/Mereology.lean` supplies `MereologyWorld` with
+`properPart : Thing → Thing → Prop`, and `Divisible` on top of it.
+The obstacle is structural, not expressive: `MereologyWorld` extends
+`EthicaWorld` directly and sits outside the Pars II class chain
+(`AttrWorld` → `Pars2World` → `QuatenusWorld` → `ParallelismusWorld`
+→ `MensWorld`). Making `MensWorld` extend it as well would add a
+second `EthicaWorld` path — the diamond `Pars2World` already had to
+resolve with `outParam` — and, worse, would drag `MereologyAxioms`
+into Pars II. That register carries **A32**, a Section III commitment
+about the indivisibility of substance, which nothing in Pars II
+needs. Paying a Section III axiom for one corollary is exactly the
+trade this project declines elsewhere (see A43's docstring on
+inventing a `power` relation to route a single proof).
+
+**Reading**: the corollary's own second half suggests Spinoza's
+"*pars*" is not straightforwardly mereological — he immediately
+glosses it in terms of God having an idea "*quatenus humanæ mentis
+essentiam constituit*", i.e. in the *quatenus* register, not the
+part-whole one. On that reading GAP-30 and GAP-29 are the same gap
+seen twice, and closing GAP-29 may close this one too. Bennett 1984
+§40 argues the mereological language here is loose and does the work
+of the *quatenus* idiom; Curley 1969 ch. 4 takes it literally.
+
+**Resolution path**: (a) close GAP-29 and re-derive the corollary in
+the *quatenus* register, or (b) split `MereologyWorld`'s primitive
+from `MereologyAxioms`' A32 so the relation can be imported without
+the commitment. (b) is cheap and would also make `properPart`
+available to Pars II's individuation machinery, which Props.
+XIV–XXXI will need for the composite bodies of the *lemmata*.
+
+**Status**: ⏳ open. Cross-references GAP-29.
+
 ---
 
 ## Closure protocol

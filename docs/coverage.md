@@ -362,12 +362,12 @@ formalisations of Pars I — base FOL, modal S5, categorical / topos.
 
 # Pars II — De natura et origine mentis
 
-49 propositions. **Batches 1.1, 1.2 and 1.3 landed**: Props. I, II,
+49 propositions. **Batches 1.1 through 1.4 landed**: Props. I, II,
 III (now including its *in Deo* clause), V, VI with its corollary,
 VII in biconditional form with its corollary, VIII with its
-corollary, and IX with both its *in infinitum* corollary and its
-own — plus the two-attribute result the opening pair's conjunction
-yields.
+corollary, IX with both its *in infinitum* corollary and its own, and
+X–XIII with three more corollaries — plus the two-attribute result
+the opening pair's conjunction yields.
 
 Pars II could not be started before the Attributum layer: its
 opening pair asserts that Thought and Extension are two *distinct*
@@ -435,6 +435,28 @@ A56–A59.
 > the repair exposes is A42 — see the Pars I table above and
 > `pars1_prop_28_vacuous_for_modes`.
 
+`MensWorld Thing Attr` (batch 1.4) extends `ParallelismusWorld` with
+`Homo : Thing → Prop`, `mensHominis : Thing → Thing → Prop` and
+`affectio : Thing → Thing → Prop`. `MensAxioms` extends
+`ParallelismusAxioms` with A60–A67.
+
+Only three primitives, because three notions that looked like they
+needed one turned out to be definable from machinery earlier batches
+already paid for:
+
+```lean
+Corpus b                ≝ modeUnder b extensio           -- Pars II Def. I
+pertinetAdEssentiam m x ≝ (durat m ↔ durat x)            -- Pars II Def. II
+percipit m a            ≝ ∃ i, ideaOf i a ∧ comprehensaIn i m
+```
+
+The third is Spinoza's own gloss on Prop. XII ("*sive ejus rei
+dabitur in mente necessario idea*") and reuses batch 1.3's
+`comprehensaIn`. Note also that `mensHominis` is deliberately **not**
+defined as "the idea of the body": that identification is Prop.
+XIII's content, and defining it away would turn the proposition into
+a tautology.
+
 ## Propositions (I–XLIX)
 
 | Prop | Statement (abbrev.) | Status | Lean name / location |
@@ -454,9 +476,41 @@ A56–A59.
 | IX | The idea of an actually existing singular thing has God for cause not qua infinite but qua affected by another idea, and so on to infinity. | ✅ (with qualifier) | `prop_2_9_deusQuatenusCogitans` (first half — specialisation of Prop. V, `Mode i` from **A58**) + `prop_2_9_ideaSingularisAbAliaIdea` (second half). **The second half is a full derivation following the *demonstratio* step for step**: A59 gives the object another singular cause, A49 gives that cause an idea, A58 keeps it singular, Prop. VII transfers the causal fact, A45 forces the two ideas apart. **Qualifier**: the *quatenus … affectus* locution is rendered by its extension (God causes `i` under thought alone, and `j` causes `i`) — a primitive relativising God to an *individual mode* rather than to an attribute would be needed for the locution itself. **GAP-29.** |
 | IX (*sic in infinitum*) | — | ✅ | `prop_2_9_cor_nullaPrimaIdea` — no first singular idea. Same shape as `prop_28_cor_noFirstFiniteCause`, but with content: the class it refutes is genuinely inhabited (`mens_res_isSingularis` supplies witnesses at every index), where Pars I's is empty. |
 | IX cor. | Whatever happens in the object of an idea, the knowledge of it is in God. | ✅ (partial) | `prop_2_9_cor_cognitioInDeo` — the localisation is Prop. II.III's (hence Prop. I.XV's), the exclusion is Prop. V's. **Not mechanised**: "*quatenus tantum ejusdem objecti ideam habet*" — GAP-29, same cause as Prop. IX's qualifier. |
-| X–XLIX | — | ⏳ | Not started. Props. X–XIII (the human mind) and XIV–XXXI (the body) are batch 1.4; XXXII–XLIX (the kinds of cognition) batch 1.5. |
+| X    | The being of substance does not appertain to the essence of man. | ✅ (partial) | `prop_2_10_substantiaNonConstituitHominem` (`Pars2/Mens.lean`) — the *sive* clause (no man is a substance), **derived**: Prop. I.VII cor. (`prop_7_natureRequiresExistence`) says a substance's nature requires existence, Pars II Ax. I (**A60**) says a man's does not. **Not mechanised**: the *ad essentiam* form, which would need "*esse substantiæ*" as an object `pertinetAdEssentiam` could take. Spinoza offers both forms in the same sentence as equivalent. |
+| X cor. | A man's essence is constituted by modifications of God's attributes. | ✅ | `prop_2_10_cor_essentiaHominisModis` — **both clauses derived**, by Spinoza's own route: Prop. X plus `prop_25_cor_everythingGodOrMode` (Prop. I.XXV cor., already in Pars I) gives modehood; **A67**, the typing bridge, gives the attribute. |
+| XI   | The first element constituting the actual being of the human mind is the idea of a singular actually existing thing. | ✅ (with qualifier) | `prop_2_11_mensEstIdeaReiSingularis` — the actual-existence clause is a **derivation along Spinoza's own citation**: he gets "not the idea of a non-existent thing" from Prop. VIII cor., we get it from **A57**, which *is* Prop. VIII cor. **Qualifier**: the "*rei alicujus singularis*" clause is folded into **A63** rather than derived — Spinoza excludes the infinite case via Props. I.XXI–XXII plus Ax. I, in a vocabulary that does not connect to `ResSingularis`. |
+| XI cor. | The human mind is part of God's infinite intellect. | ✅ (partial) | `prop_2_11_cor_mensInDeo` — that the mind is a mode of thought (**A58** + **A54**) and is in God (`prop_15_allInGod`), all derived. **Not mechanised**: "*pars*". `Ethica/Pars1/Mereology.lean` has `properPart`, but `MereologyWorld` sits outside the Pars II class chain and importing it would drag in A32 (a Section III commitment about the indivisibility of substance) for one corollary — **GAP-30**. Also deferred: the inadequacy clause of the second half, which needs Def. II.IV. |
+| XII  | Whatever happens in the object of the idea constituting the human mind must be perceived by it. | ✅ (partial) | `prop_2_12_quicquidInObjectoPercipitur` — **derived**: A49 gives the affection an idea, **A66** puts that idea inside the idea of the object, and `percipit` is *defined* as exactly that containment (Spinoza's own gloss, "*sive ejus rei dabitur in mente necessario idea*"). **Not mechanised**: the exclusion the *demonstratio* passes through (God has the knowledge *qua* constituting **this** mind) — GAP-29. |
+| XIII | The object of the idea constituting the human mind is the body, an actually existing mode of extension, and nothing else. | ✅ | `prop_2_13_objectumMentisEstCorpus` + `prop_2_13_objectumUnicum` — **all three clauses derived**. *corpus*: Ax. IV (**A64**) gives the mind an affection of an existing body, **A65** (Prop. IX cor.'s exclusion half) forces that body to be the mind's own object — Spinoza's reductio run forwards. *actu existens*: comes with it. ***et nihil aliud*: from A45 alone** — see the axiom table's note on Spinoza's Axioma V. |
+| XIII cor. | Man consists of mind and body, and the body exists as we feel it. | ✅ | `prop_2_13_cor_homoMenteEtCorpore`, assembled from A61, A63 and Prop. XIII. `prop_2_13_mensEstIdeaCorporisExistentis` packages Props. XI and XIII in the form Props. XIV onwards will consume. |
+| XIV–XLIX | — | ⏳ | Not started. Props. XIV–XXXI (the body, the *lemmata* and *postulata*) are batch 1.5; XXXII–XLIX (the kinds of cognition) batch 1.6. |
 
-## Axioms (Pars II, A45–A59)
+## Definitions and Axiomata (Pars II)
+
+| | Latin | Status |
+|---|---|---|
+| Def. I | *Per corpus intelligo modum qui Dei essentiam quatenus ut res extensa consideratur … exprimit* | ✅ **definition, no primitive**: `Corpus b ≝ modeUnder b extensio` (`Pars2/Mens.lean`) |
+| Def. II | *Ad essentiam alicujus rei id pertinere dico quo dato res necessario ponitur…* | ✅ (first clause) **definition, no primitive**: `pertinetAdEssentiam m x ≝ (durat m ↔ durat x)`. The "*vel*" variant is about *conception*, not existence; not committed, nothing consumes it. |
+| Def. III | *Per ideam intelligo mentis conceptum…* | ✅ `ideaOf` (`Pars2World`, batch 1.1) |
+| Def. IV | *Per ideam adæquatam…* | ⏳ the cognition batch |
+| Def. V | *Duratio est indefinita existendi continuatio* | ✅ `durat` (`ParallelismusWorld`, batch 1.3) |
+| Def. VI | *Per realitatem et perfectionem idem intelligo* | ⏳ |
+| Def. VII | *Per res singulares intelligo res quæ finitæ sunt…* | ✅ **definition, no primitive**: `ResSingularis` (batch 1.3) |
+| Ax. I | *Hominis essentia non involvit necessariam existentiam* | ✅ **A60** |
+| Ax. II | *Homo cogitat* | ✅ **A61** |
+| Ax. III | *Modi cogitandi … idea natura prior est* | ✅ **A63** |
+| Ax. IV | *Nos corpus quoddam multis modis affici sentimus* | ✅ **A64** |
+| Ax. V | *Nullas res singulares præter corpora et cogitandi modos sentimus nec percipimus* | ❎ **not entered — redundant**. Its only job in Pars II is the "*et nihil aliud*" of Prop. XIII, which A45 delivers outright. See `prop_2_13_objectumUnicum`. |
+
+> Pars I's seven axiomata were entered from the start. Pars II's five
+> had never been entered at all, which is why Props. X–XIII could not
+> be attempted before batch 1.4. Four are now in the register; the
+> fifth turns out to be redundant given Spinoza's own Axioma VI on the
+> reading A45 gives it. That is a small result about the *Ethica*'s
+> internal economy, not a formalisation shortcut — the redundancy is
+> exhibited by a theorem, not asserted.
+
+## Axioms (Pars II, A45–A67)
 
 | Axiom | Section | Content | Note |
 |-------|---------|---------|------|
@@ -475,6 +529,24 @@ A56–A59.
 | A57 | II | An idea endures iff its object endures | Prop. VIII cor., both halves compacted into one `Iff`. Says nothing about `durat` on its own — a model may leave it empty or universal; `MensWitness` deliberately makes it split the carrier. |
 | A58 | II | The idea of a singular thing is itself singular | Prop. IX's *demonstratio*, first sentence ("*modus singularis cogitandi … et a reliquis distinctus*"). Adds the **finitude**; modehood and attribute already come from A54. Without it Prop. IX's regress could not stay inside the singular class. |
 | A59 | III | Every singular thing is caused by another distinct singular thing | 📜 Prop. I.XXVIII **at the modal layer**. Not new content: this is A42's commitment restated on `ResSingularis`, a predicate modes can actually satisfy. A42 itself never fires (`pars1_prop_28_vacuous_for_modes`). Not fixed in place because `Ethica/Pars1/` is frozen at v1.0.0, exactly as with GAP-25. |
+| A60 | II | *Hominis essentia non involvit necessariam existentiam* | **Pars II, Axioma I** — the first of Spinoza's own Pars II axioms to be entered. Rendered on `natureRequiresExistence`, the predicate Prop. I.VII cor. establishes of substances; setting the two side by side *is* Prop. X's argument. |
+| A61 | II | *Homo cogitat* | **Pars II, Axioma II.** Minimal content: a man has a mind. The "of thinking" half follows from A63 + A54 rather than being assumed. A46's docstring had flagged this axiom as the empirical premise Spinoza leans on for Prop. II.I and declined to import it there; here it is imported for its own proposition. |
+| A62 | II | A man's mind pertains to his essence | Pars II Def. II applied to the mind, via Prop. X cor. and Ax. II. **A composition of three things Spinoza writes, not a quotation** — flagged as such. It is the composition Prop. XI's *demonstratio* performs. |
+| A63 | II | The mind is an idea, and an idea of a singular thing | **Pars II, Axioma III** (*idea natura prior est*). The `ResSingularis` conjunct carries Prop. XI's "*rei alicujus singularis*", which Spinoza gets by excluding the infinite case via Props. I.XXI–XXII — an argument this formalisation cannot route, so it is folded in rather than faked. Actual existence is **not** folded in: it is derived from A57. |
+| A64 | II | *Nos corpus quoddam multis modis affici sentimus* | **Pars II, Axioma IV**, in the form Prop. XIII's *demonstratio* consumes ("*ideas affectionum corporis habemus*"). The plurality "*multis modis*" is dropped — nothing here counts affections, and one suffices. |
+| A65 | II | A mind perceives affections of its own object only | Prop. IX cor.'s "*quatenus tantum ejusdem objecti ideam habet*", stated where it is used rather than where it is blocked. Committed rather than derived **only because GAP-29 is open**; when GAP-29 closes this should become a theorem. |
+| A66 | II | The idea of an affection of `x` is comprehended in the idea of `x` | Prop. IX cor.'s positive half in the containment register. The only place outside Prop. VIII where batch 1.3's `comprehensaIn` does load-bearing work, and what makes Prop. XII a derivation. |
+| A67 | I | Every mode is a mode of some attribute | Typing bridge, Prop. I.XXV cor. re-typed. Makes no claim beyond the typing: whatever the untyped `Mode` holds of, the `Attr`-typed `modeUnder` holds of too. Same kind of statement as A10′/A12′/A14′/A15′. |
+
+> **Batch 1.4 added eight axioms — seven Section II, one Section I,
+> none Section III.** Five are Spinoza's own axioms of Pars II, which
+> had never been entered; two (A65, A66) are the halves of Prop. IX's
+> corollary batch 1.3 could state but not consume; one (A67) is a
+> typing bridge. **Every proposition in the batch is a derivation.**
+> Three notions that looked like they needed primitives — Def. I,
+> Def. II and "*percipi*" — turned out to be definable from `modeUnder`,
+> `durat` and `comprehensaIn`, all paid for by earlier batches. Only
+> `Homo`, `mensHominis` and `affectio` are new.
 
 > **Batch 1.3 added four axioms, three of them Section II.** The one
 > Section III commitment, A59, is A42's content on a working
@@ -495,6 +567,7 @@ A56–A59.
 
 | Model | Role | Status |
 |-------|------|--------|
-| MensWitness | Consistency witness for A1–A15 + A4ₛ/A5ₛ + A33–A43 + A10′–A15′ + A45–A50 + A51–A55 + A56–A59 on one carrier | ✅ `Ethica/Pars2/Models/MensWitness.lean` — carrier `MensThing` = `deus \| idea : MensThing → MensThing \| res : Int → MensThing`, `MensAttr` = {`cogitatio`, `extensio`}. **Five things it establishes.** (1) *Both attribute verdicts at once*: `mens_duo_attributa` (God has two `Attr`-typed attributes) *and* `mens_pars1_collapse_holds` (no God has two `Thing`-typed attributes, via `god_no_two_attributes` — `Pars1Axioms` genuinely holds here); `mens_coexistence` packages the pair. (2) *Props. V and VI hold of real modes of **both** attributes*: `mens_prop_6` (a mode of thought), `mens_prop_6_extensio` (a mode of extension) and `mens_prop_6_cor_res` — batch 1.2's carrier had no extension modes, so its version of the corollary was vacuous. (3) *The parallelism is not trivial*: `mens_cause_irreflexive_deus` shows `Cause` is not the constant-`True` relation, so `mens_prop_7_iff` has content. (4) *Prop. VIII is tested, not waved through*: `mens_durat_splits` — `res (-1)` does not endure and `res 0` does, so `mens_prop_8`'s hypothesis is met on one side and failed on the other. (5) *Prop. IX holds at every rung*: `mens_prop_9` and `mens_prop_9_cor`, backed by `mens_res_isSingularis` at every index. |
+| MensWitness | Consistency witness for A1–A15 + A4ₛ/A5ₛ + A33–A43 + A10′–A15′ + A45–A50 + A51–A55 + A56–A59 + A60–A67 on one carrier | ✅ `Ethica/Pars2/Models/MensWitness.lean` — carrier `MensThing` = `deus \| idea : MensThing → MensThing \| res : Int → MensThing`, `MensAttr` = {`cogitatio`, `extensio`}. **Five things it establishes.** (1) *Both attribute verdicts at once*: `mens_duo_attributa` (God has two `Attr`-typed attributes) *and* `mens_pars1_collapse_holds` (no God has two `Thing`-typed attributes, via `god_no_two_attributes` — `Pars1Axioms` genuinely holds here); `mens_coexistence` packages the pair. (2) *Props. V and VI hold of real modes of **both** attributes*: `mens_prop_6` (a mode of thought), `mens_prop_6_extensio` (a mode of extension) and `mens_prop_6_cor_res` — batch 1.2's carrier had no extension modes, so its version of the corollary was vacuous. (3) *The parallelism is not trivial*: `mens_cause_irreflexive_deus` shows `Cause` is not the constant-`True` relation, so `mens_prop_7_iff` has content. (4) *Prop. VIII is tested, not waved through*: `mens_durat_splits` — `res (-1)` does not endure and `res 0` does, so `mens_prop_8`'s hypothesis is met on one side and failed on the other. (5) *Prop. IX holds at every rung*: `mens_prop_9` and `mens_prop_9_cor`, backed by `mens_res_isSingularis` at every index. |
 | — *(carrier note)* | Why the carrier is infinite, and why the index is `Int` | Two independent forcings, both discovered by trying to build the witness rather than read off the text. **(a)** A45 + A49 + A54 are **jointly unsatisfiable on any finite carrier** (every idea has an idea, ideas are modes, modes are not the unique substance) — Spinoza's *idea ideae in infinitum* is what makes the register consistent. **(b)** A59 demands every singular thing have a singular *cause* and A43 demands every thing have an *effect*, so the causal order on the singular stock needs **neither a first nor a last element**: `Nat` fails, `Int` works. Prop. IX's "*et sic in infinitum*" is thus a two-sided requirement, not a one-directional regress. |
+| — *(batch 1.4 note)* | What the witness forces about *affectio* | `affectio a b` is defined as `b = mensPred a` — each affection belongs to **exactly one** thing. The looser reading, "anything `b` causes", satisfies A64 and A66 but **falsifies A65** (a mind perceives affections of its own object only), because a mode has many effects and each would witness a different object. So the witness records which of the two readings of *affectio* the register can afford — a constraint that is invisible in the text. `comprehensaIn` was widened for the same batch (God's infinite idea **or** the idea of what one is an affection of), and the second disjunct is what makes A66, and with it Prop. XII, non-vacuous. `res 0` is a man, `idea (res 0)` his mind, `res (-1)` an affection of his body: every hypothesis of Props. X–XIII is met. |
 | — *(orientation note)* | What the register does **not** fix | In this model `res m` causes `res n` when `n < m`, which makes `Cause (idea x) x` come out true — the idea of a thing causing the thing. Nothing in the register forbids it, because nothing connects the causal order to the ideation order beyond the parallelism itself. That is a second, independent motivation for **GAP-28** (Prop. II.V's *hoc est* gloss), which is exactly the axiom that would orient them. |

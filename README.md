@@ -79,8 +79,9 @@ Ethica/
     ├── Idea.lean                         -- Props I, II, III, VII; A45–A50 (Pars2Axioms)
     ├── Quatenus.lean                     -- Props V, VI, VII-iff; A51–A55 (QuatenusAxioms)
     ├── Parallelismus.lean                -- Props VII-cor, VIII, IX; A56–A59; ResSingularis; A42-vacuity
+    ├── Mens.lean                         -- Props X–XIII; A60–A67; Pars II's own axiomata; Corpus, percipit
     └── Models/
-        └── MensWitness.lean              -- Consistency witness; coexistence + real modes + Int-indexed regress
+        └── MensWitness.lean              -- Consistency witness; coexistence + real modes + Int-indexed regress + a man
 texts/
 ├── ethica1_la.txt … ethica5_la.txt       -- Latin per Pars
 └── en_part1_elwes.txt … en_part5_elwes.txt   -- Elwes EN per Pars
@@ -412,6 +413,72 @@ New gap: **GAP-29** — the *quatenus … affectus* locution relativises
 God to an *individual mode*, where `causeUnder` relativises only to
 an attribute. Same shape as GAP-22's outstanding target; the two
 should be closed together.
+
+## Pars II — the human-mind layer (batch 1.4)
+
+`Ethica/Pars2/Mens.lean` adds Props. X–XIII and three corollaries —
+where Pars II stops being about God's idea in general and starts
+being about us. **Every proposition in the batch is a derivation**,
+and the eight new axioms are seven Section II and one Section I; none
+is Section III.
+
+**Five of the eight are Spinoza's own axiomata of Pars II**, entered
+here for the first time. Pars I's seven were in the register from the
+start; Pars II's five had never been entered at all, which is why
+Props. X–XIII could not be attempted before now.
+
+| | Latin | Field |
+|---|---|---|
+| Ax. I | *Hominis essentia non involvit necessariam existentiam* | A60 |
+| Ax. II | *Homo cogitat* | A61 |
+| Ax. III | *Modi cogitandi … idea natura prior est* | A63 |
+| Ax. IV | *Nos corpus quoddam multis modis affici sentimus* | A64 |
+| Ax. V | *Nullas res singulares præter corpora et cogitandi modos sentimus* | **not entered** |
+
+**Axioma V is redundant, and there is a theorem for it.** Its only
+job in Pars II is the "*et nihil aliud*" of Prop. XIII, which Spinoza
+reaches through Prop. I.XXXVI, Prop. XII and an empirical premise: a
+second object of the mind would have some effect, we would have an
+idea of that effect, and "*atqui per axioma 5 nulla ejus idea
+datur*". On our reading of his **Axioma VI** — A45, an idea has at
+most one object — the clause is analytic, because the mind is one
+idea. `prop_2_13_objectumUnicum` is two lines. That is a small result
+about the *Ethica*'s own economy rather than a formalisation
+shortcut: the redundancy is exhibited, not asserted.
+
+**Three notions that looked like primitives are definitions**, each
+built from machinery an earlier batch already paid for:
+
+```lean
+Corpus b                ≝ modeUnder b extensio            -- Def. I,  from batch 1.2
+pertinetAdEssentiam m x ≝ (durat m ↔ durat x)             -- Def. II, from batch 1.3
+percipit m a            ≝ ∃ i, ideaOf i a ∧ comprehensaIn i m
+```
+
+The third is Spinoza's own gloss on Prop. XII — "*id ab humana mente
+debet percipi **sive ejus rei dabitur in mente necessario idea***".
+Only `Homo`, `mensHominis` and `affectio` are new primitives. Note
+that `mensHominis` is deliberately *not* defined as "the idea of the
+body": that identification is Prop. XIII's **content**, and defining
+it away would turn the proposition into a tautology. Spinoza proves
+it; so do we.
+
+The derivations follow Spinoza's citations rather than working
+around them. Prop. XI's actual-existence clause comes from **A57**,
+which *is* Prop. VIII's corollary — exactly what he cites at that
+step, and the second job batch 1.3's `durat` was built for. Prop.
+XIII's *corpus* clause is his reductio run forwards.
+
+Two things the batch could not get. **GAP-30**: Prop. XI's corollary
+says the mind is a *part* of God's infinite intellect, and although
+`Ethica/Pars1/Mereology.lean` has `properPart`, importing
+`MereologyWorld` would drag A32 — a Section III commitment about the
+indivisibility of substance — into Pars II for one corollary. And
+GAP-29 now has a price tag: **A65** exists *only* because that gap is
+open. It is the first axiom in the project whose existence is
+entirely attributable to an unclosed gap, and it is flagged as such
+so that closing GAP-29 shrinks the register rather than leaving a
+fossil behind.
 
 ## Build
 

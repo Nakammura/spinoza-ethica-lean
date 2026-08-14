@@ -501,6 +501,88 @@ est* de la Prop. II.V), y es una segunda motivación para él,
 independiente del texto: el registro está genuinamente
 subdeterminado ahí, y un modelo lo aprovecha.
 
+## 13. ⭐ El Axioma V de la Pars II es redundante — y hay un teorema que lo muestra
+
+**Archivos**: `Ethica/Pars2/Mens.lean`,
+`Ethica/Pars2/Models/MensWitness.lean` ·
+**Teoremas**: `prop_2_13_objectumUnicum`,
+`prop_2_10_substantiaNonConstituitHominem`,
+`prop_2_11_mensEstIdeaReiSingularis`,
+`prop_2_13_objectumMentisEstCorpus`
+
+**(a) Los axiomas de la Pars II no estaban.** Los siete axiomas de la
+Pars I entraron al registro desde el principio; los **cinco de la Pars
+II nunca se habían entrado**. Ese es el motivo real por el que las
+Props. X–XIII no podían intentarse: no faltaba maquinaria conceptual,
+faltaba el propio texto de Spinoza. El batch 1.4 entra cuatro:
+
+| | Latín | Campo |
+|---|---|---|
+| Ax. I | *Hominis essentia non involvit necessariam existentiam* | A60 |
+| Ax. II | *Homo cogitat* | A61 |
+| Ax. III | *Modi cogitandi … idea natura prior est* | A63 |
+| Ax. IV | *Nos corpus quoddam multis modis affici sentimus* | A64 |
+| Ax. V | *Nullas res singulares præter corpora et cogitandi modos sentimus* | **no entra** |
+
+**(b) El quinto es redundante.** El único trabajo que el Axioma V hace
+en toda la Pars II es asegurar el "*et nihil aliud*" de la Prop. XIII:
+si la mente tuviera un segundo objeto, ese objeto tendría algún efecto
+(Prop. I.XXXVI), tendríamos idea de ese efecto (Prop. XII), "*atqui
+per axioma 5 nulla ejus idea datur*". Es un argumento de tres pasos
+con una premisa empírica al final.
+
+Sobre la lectura que A45 da del **Axioma VI** de Spinoza —una idea
+tiene a lo sumo un ideatum— la cláusula es **analítica**: la mente es
+*una* idea, luego tiene *un* objeto. `prop_2_13_objectumUnicum` son
+dos líneas.
+
+Conviene ser preciso sobre qué se afirma: no es que Spinoza se
+equivocara, sino que **uno de sus cinco axiomas de la Pars II es
+derivable de otro** bajo la lectura funcional de A6 que este proyecto
+adoptó en el batch 1.1 (y que documentó entonces como la lectura *más
+débil* que la palabra "*convenire*" puede soportar). La redundancia se
+exhibe con un teorema, no se asegura de palabra. Y es del mismo género
+que el hallazgo 4 (A34 se deriva de A37+A38) y el 8 (A42 se descompone
+en A44): el proyecto lleva ya tres economías internas de la *Ética*
+detectadas por el kernel.
+
+**(c) Tres nociones que parecían primitivas son definiciones.** La
+Def. I de la Pars II (*corpus*), la Def. II (*ad essentiam
+pertinere*) y la propia glosa de Spinoza sobre "*percipi*" se dejan
+definir con maquinaria que los batches anteriores ya habían pagado:
+
+```lean
+Corpus b                ≝ modeUnder b extensio            -- Def. I,  del batch 1.2
+pertinetAdEssentiam m x ≝ (durat m ↔ durat x)             -- Def. II, del batch 1.3
+percipit m a            ≝ ∃ i, ideaOf i a ∧ comprehensaIn i m
+```
+
+La tercera es literalmente la glosa de la Prop. XII ("*id ab humana
+mente debet percipi **sive ejus rei dabitur in mente necessario
+idea***"). Solo `Homo`, `mensHominis` y `affectio` son primitivos
+nuevos — y `mensHominis` **no** se define como "la idea del cuerpo",
+aunque sería lo cómodo, porque esa identificación es el *contenido* de
+la Prop. XIII: definirla sería convertir la proposición en una
+tautología. Spinoza la demuestra; nosotros también.
+
+**(d) Un axioma que existe solo porque hay un hueco abierto.** A65
+(una mente percibe solo afecciones de su propio objeto) es la mitad de
+exclusión del corolario de la Prop. IX. Está *comprometida* en vez de
+*derivada* únicamente porque el GAP-29 sigue abierto: falta el
+primitivo que relativiza a Dios a un modo individual. Es el primer
+axioma del proyecto cuya existencia es atribuible por entero a un
+hueco, y queda marcado como tal para que cerrar el GAP-29 **encoja**
+el registro en vez de dejar un fósil dentro.
+
+**(e) El modelo decide entre dos lecturas de *affectio*.** Al construir
+el testigo apareció que A65 no tolera la lectura laxa: si "afección de
+`b`" se lee como "cualquier cosa que `b` cause", A64 y A66 se
+descargan igual pero **A65 se vuelve falso**, porque un modo tiene
+muchos efectos y cada uno testificaría un objeto distinto. El testigo
+define entonces `affectio a b ≝ b = mensPred a` —un dueño por
+afección—. Es una restricción invisible en el texto que el registro
+impone al modelo, del mismo tipo que el `Int` del hallazgo 12(c).
+
 ---
 
 ## Resumen numérico del estado (rama `pars1-extensions`)
@@ -522,18 +604,21 @@ subdeterminado ahí, y un modelo lo aprovecha.
   del tipado, no de los axiomas).
 - **Capa nueva `Ethica/Attributum/`**: 5 módulos; GAP-25 y GAP-8a
   cerrados; Def. VI recuperada; Pars II desbloqueada.
-- **Pars II en marcha**: 8/49 proposiciones (I, II, III, V, VI, VII,
-  VIII, IX) más los corolarios de la VI, la VII, la VIII y la IX, y
-  el resultado de dos atributos que la conjunción I+II entrega.
-  Axiomas A45–A59; A6 de Spinoza promovido tras estar como `True`
-  desde v1.0.0. **A51–A55 son todos de Sección II** (el batch 1.2 no
-  añadió ningún compromiso metafísico sustantivo) y de A56–A59 solo
-  A59 es de Sección III — y no es contenido nuevo, sino A42 sobre un
-  predicado que sí se satisface. GAP-26 y GAP-27a cerrados; el caveat
-  del GAP-2 cumplido; GAP-27b, GAP-28 y el nuevo GAP-29 abiertos con
-  ruta.
-- **Total de la obra**: 37/259 proposiciones con contenido (29 de
-  Pars I + 8 de Pars II) — con la salvedad, ahora demostrada, de que
+- **Pars II en marcha**: 12/49 proposiciones (I, II, III, V, VI, VII,
+  VIII, IX, X, XI, XII, XIII) más siete corolarios y el resultado de
+  dos atributos que la conjunción I+II entrega. Axiomas A45–A67; A6
+  de Spinoza promovido tras estar como `True` desde v1.0.0, y cuatro
+  de los cinco axiomas propios de la Pars II entrados por fin (el
+  quinto es redundante — hallazgo 13). **A51–A55 son todos de Sección
+  II**; de A56–A59 solo A59 es de Sección III, y no es contenido nuevo
+  sino A42 sobre un predicado que sí se satisface; **A60–A67 no
+  añaden ni un compromiso de Sección III**. Cuatro de las siete
+  definiciones de la Pars II (I, II, III, V, VII) están mecanizadas y
+  tres de ellas **sin primitivo nuevo**. GAP-26 y GAP-27a cerrados; el
+  caveat del GAP-2 cumplido; GAP-27b, GAP-28, GAP-29 y el nuevo
+  GAP-30 abiertos con ruta.
+- **Total de la obra**: 41/259 proposiciones con contenido (29 de
+  Pars I + 12 de Pars II) — con la salvedad, ahora demostrada, de que
   una de las 29 de Pars I (la XXVIII) es vacua en su propio registro.
 - `lake build` limpio, **0 `sorry`**, **0 `axiom`**, ninguna
   declaración de v1.0.0 modificada. El gate de CI ahora verifica
